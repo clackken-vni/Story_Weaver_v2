@@ -1,0 +1,56 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Documentation
+*.md
+LICENSE
+docs/
+
+# Tests
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+coverage/
+*.coverage
+src/tests/
+
+# Build
+dist/
+build/
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Local files
+.env
+.env.local
+.env.*.local
+
+# Node modules
+node_modules/
+
+# OS files
+**/.DS_Store
+**/Thumbs.db
+
+# Claude
+.claude/
+.agents/
+
+# VSCode
+**/VSCODE-PLUGIN/**
+**/.vscode-test/**
+
+# Logs
+*.log
+logs/

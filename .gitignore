@@ -1,0 +1,110 @@
+# Dependencies
+node_modules/
+vendor/
+*.vendor
+go/pkg/
+go/mod/
+
+# Build outputs
+build/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+coverage/
+*.test
+*.out
+
+# Environment (keep .env.example)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local data
+data/
+*.db
+*.sqlite
+
+# Cache & temporary
+.cache/
+tmp/
+temp/
+.sandbox-tmp
+.sandbox-home
+
+# Memory MCP
+.memory/
+
+# Search indexes
+.memsearch/
+
+# Workflow (project-specific rules in workflows/, but not the folder)
+.workflow/
+
+# Claude
+.claude/settings.json
+.claude/settings.local.json
+
+# Evidence & Progress (recreated at runtime)
+.evidence/
+.progress/
+
+# Worktrees
+.worktrees/
+
+# AMP
+.amp/
+
+# GitNexus
+.gitnexus/
+
+# Playwright MCP
+.playwright-mcp/
+
+# TTS output
+.tts/
+
+# OMC
+.omc/
+
+# Emdash
+.emdash.json
+
+frontend/.next
+frontend/.next-bak
+admin-dashboard/.next
+api-gateway/internal/*/*_test.go
+
+# AI tool temp directories
+.augment/
+.continue/
+.factory/
+.kiro/
+.qwen/
+
+# Build artifacts
+admin-dashboard/tsconfig.tsbuildinfo
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude Code memory
+.memory/

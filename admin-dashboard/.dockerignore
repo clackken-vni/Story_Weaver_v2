@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# Tests
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+coverage/
+*.coverage
+node_modules/
+
+# Build
+.next/
+out/
+dist/
+build/
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Local files
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db

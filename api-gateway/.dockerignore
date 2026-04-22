@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# Tests
+*_test.go
+_test.go
+coverage.out
+coverage.html
+*.test
+
+# Build output
+api-gateway
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Local files
+.env
+.env.local
+.env.*.local
