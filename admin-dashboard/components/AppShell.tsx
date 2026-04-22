@@ -1,4 +1,5 @@
 import { useState, useCallback, type ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Sidebar, type NavItem } from './Sidebar';
 import {
   Crosshair,
@@ -18,42 +19,33 @@ import {
   Sun,
 } from 'lucide-react';
 
-export type ModuleId =
-  | 'command-center'
-  | 'users-access'
-  | 'projects-wizard'
-  | 'ai-operations'
-  | 'tts-operations'
-  | 'kb-operations'
-  | 'audit-compliance'
-  | 'system-infra'
-  | 'settings-center';
-
-const NAV_ITEMS: NavItem[] = [
-  { id: 'command-center', label: 'Command Center', icon: Crosshair },
-  { id: 'system-infra', label: 'Monitoring', icon: Settings },
-  { id: 'audit-compliance', label: 'Audit Logs', icon: Search },
-  { id: 'users-access', label: 'Users & Access', icon: Users },
-  { id: 'settings-center', label: 'Settings', icon: Sliders },
-  { id: 'projects-wizard', label: 'Projects & Wizard', icon: BookOpen },
-  { id: 'ai-operations', label: 'AI Operations', icon: Bot },
-  { id: 'tts-operations', label: 'TTS Operations', icon: Volume2 },
-  { id: 'kb-operations', label: 'KB Operations', icon: Library },
+export const NAV_ITEMS: NavItem[] = [
+  { id: 'command-center', label: 'Command Center', icon: Crosshair, href: '/admin' },
+  { id: 'system-infra', label: 'Monitoring', icon: Settings, href: '/admin/monitoring' },
+  { id: 'audit-compliance', label: 'Audit Logs', icon: Search, href: '/admin/audit' },
+  { id: 'users-access', label: 'Users & Access', icon: Users, href: '/admin/users' },
+  { id: 'settings-center', label: 'Settings', icon: Sliders, href: '/admin/settings' },
+  { id: 'projects-wizard', label: 'Projects & Wizard', icon: BookOpen, href: '/admin/projects' },
+  { id: 'ai-operations', label: 'AI Operations', icon: Bot, href: '/admin/ai' },
+  { id: 'tts-operations', label: 'TTS Operations', icon: Volume2, href: '/admin/tts' },
+  { id: 'kb-operations', label: 'KB Operations', icon: Library, href: '/admin/kb' },
 ];
 
+export type ModuleId = typeof NAV_ITEMS[number]['id'];
+
 interface AppShellProps {
-  activeModule: ModuleId;
-  onModuleChange: (id: ModuleId) => void;
   onLogout: () => void;
   children: ReactNode;
 }
 
-function moduleTitle(activeModule: ModuleId): string {
-  const target = NAV_ITEMS.find((item) => item.id === activeModule);
-  return target?.label ?? 'Admin';
+export function getAppTitle(): string {
+  const router = useRouter();
+  const activeItem = NAV_ITEMS.find((item) => router.pathname === item.href);
+  return activeItem?.label ?? 'Admin';
 }
 
-export function AppShell({ activeModule, onModuleChange, onLogout, children }: AppShellProps) {
+export function AppShell({ onLogout, children }: AppShellProps) {
+  const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(false);
@@ -78,14 +70,6 @@ export function AppShell({ activeModule, onModuleChange, onLogout, children }: A
     localStorage.setItem('admin_theme', dark ? 'dark' : 'light');
   }, [dark]);
 
-  const handleModuleChange = useCallback(
-    (id: string) => {
-      onModuleChange(id as ModuleId);
-      setMobileOpen(false);
-    },
-    [onModuleChange]
-  );
-
   const toggleCollapsed = useCallback(() => {
     setSidebarCollapsed((prev) => !prev);
   }, []);
@@ -93,6 +77,9 @@ export function AppShell({ activeModule, onModuleChange, onLogout, children }: A
   const toggleMobile = useCallback(() => {
     setMobileOpen((prev) => !prev);
   }, []);
+
+  const activeModule = NAV_ITEMS.find((item) => router.pathname === item.href)?.id ?? 'command-center';
+  const moduleTitle = NAV_ITEMS.find((item) => item.id === activeModule)?.label ?? 'Admin';
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--surface-primary)' }}>
@@ -156,7 +143,7 @@ export function AppShell({ activeModule, onModuleChange, onLogout, children }: A
           )}
         </div>
 
-        <Sidebar items={NAV_ITEMS} activeId={activeModule} collapsed={sidebarCollapsed} onSelect={handleModuleChange} />
+        <Sidebar items={NAV_ITEMS} collapsed={sidebarCollapsed} />
 
         <div
           style={{
@@ -241,7 +228,7 @@ export function AppShell({ activeModule, onModuleChange, onLogout, children }: A
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
           <span style={{ marginLeft: 'var(--space-3)', fontWeight: 'var(--weight-semibold)' as unknown as number, fontSize: 'var(--text-base)' }}>
-            {moduleTitle(activeModule)}
+            {moduleTitle}
           </span>
         </header>
 
@@ -259,7 +246,7 @@ export function AppShell({ activeModule, onModuleChange, onLogout, children }: A
         >
           <div>
             <h1 style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--weight-semibold)' as unknown as number, color: 'var(--text-primary)' }}>
-              {moduleTitle(activeModule)}
+              {moduleTitle}
             </h1>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Admin operations dashboard</p>
           </div>

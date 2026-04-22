@@ -1,12 +1,12 @@
 import { AuthGuard } from '../../components/AuthGuard';
 import { AdminShell } from '../../components/AdminShell';
-import { CommandCenterPanel } from '../../components/CommandCenterPanel';
+import { AuditPanel } from '../../components/AuditPanel';
 
-export default function CommandCenterPage() {
+export default function AuditPage() {
   return (
     <AuthGuard>
       <AdminShell>
-        <CommandCenterPanel />
+        <AuditPanel />
       </AdminShell>
     </AuthGuard>
   );

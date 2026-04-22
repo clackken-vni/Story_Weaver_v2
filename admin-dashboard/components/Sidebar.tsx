@@ -1,32 +1,35 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   id: string;
   label: string;
   icon: LucideIcon;
+  href: string;
   badge?: number;
 }
 
 interface SidebarProps {
   items: NavItem[];
-  activeId: string;
   collapsed: boolean;
-  onSelect: (id: string) => void;
 }
 
-export function Sidebar({ items, activeId, collapsed, onSelect }: SidebarProps) {
+export function Sidebar({ items, collapsed }: SidebarProps) {
+  const router = useRouter();
+
   return (
     <nav aria-label="Main navigation" style={{ flex: 1, overflow: 'auto', padding: 'var(--space-3)' }}>
       <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
         {items.map((item) => {
-          const isActive = item.id === activeId;
+          const isActive = router.pathname === item.href;
           const Icon = item.icon;
 
           return (
             <li key={item.id}>
-              <button
+              <Link
+                href={item.href}
                 aria-current={isActive ? 'page' : undefined}
-                onClick={() => onSelect(item.id)}
                 title={collapsed ? item.label : undefined}
                 style={{
                   display: 'flex',
@@ -44,6 +47,7 @@ export function Sidebar({ items, activeId, collapsed, onSelect }: SidebarProps) 
                   transition: `all var(--duration-fast) var(--ease-out)`,
                   justifyContent: collapsed ? 'center' : 'flex-start',
                   textAlign: 'left',
+                  textDecoration: 'none',
                   boxShadow: isActive ? 'var(--shadow-lg)' : 'none',
                 }}
                 className="sidebar-nav-btn"
@@ -74,7 +78,7 @@ export function Sidebar({ items, activeId, collapsed, onSelect }: SidebarProps) 
                     {item.badge}
                   </span>
                 )}
-              </button>
+              </Link>
             </li>
           );
         })}
