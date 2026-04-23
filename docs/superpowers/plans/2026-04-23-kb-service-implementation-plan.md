@@ -69,7 +69,7 @@ kb-service/
 - Modify: `kb-service/requirements.txt`
 - Create: `kb-service/app/config.py`
 
-- [ ] **Step 1: Update requirements.txt**
+- [x] **Step 1: Update requirements.txt**
 
 ```txt
 fastapi==0.109.0
@@ -84,7 +84,7 @@ pytest-asyncio==0.23.0
 pytest-cov>=4.0.0
 ```
 
-- [ ] **Step 2: Create config.py**
+- [x] **Step 2: Create config.py**
 
 ```python
 import os
@@ -135,7 +135,7 @@ git commit -m "feat(kb): add dependencies and config for KB service"
 - Create: `kb-service/app/database.py`
 - Create: `kb-service/tests/test_database.py`
 
-- [ ] **Step 1: Write failing test for database connection**
+- [x] **Step 1: Write failing test for database connection**
 
 ```python
 # kb-service/tests/test_database.py
@@ -168,12 +168,12 @@ async def test_database_init_schema():
     await db.disconnect()
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd kb-service && python -m pytest tests/test_database.py -v`
 Expected: FAIL with "ModuleNotFoundError: No module named 'app.database'"
 
-- [ ] **Step 3: Implement database.py**
+- [x] **Step 3: Implement database.py**
 
 ```python
 # kb-service/app/database.py
@@ -256,12 +256,12 @@ class Database:
 db = Database()
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd kb-service && python -m pytest tests/test_database.py -v`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add kb-service/app/database.py kb-service/tests/test_database.py
@@ -277,7 +277,7 @@ git commit -m "feat(kb): add database schema and connection"
 - Create: `kb-service/app/repositories/kb_repo.py`
 - Create: `kb-service/tests/test_repositories.py`
 
-- [ ] **Step 1: Create KB model**
+- [x] **Step 1: Create KB model**
 
 ```python
 # kb-service/app/models/kb.py
@@ -308,7 +308,7 @@ class KB(BaseModel):
     updated_at: datetime
 ```
 
-- [ ] **Step 2: Write failing test for KB repository**
+- [x] **Step 2: Write failing test for KB repository**
 
 ```python
 # kb-service/tests/test_repositories.py
@@ -371,12 +371,12 @@ async def test_kb_repo_list_all():
     await db.disconnect()
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd kb-service && python -m pytest tests/test_repositories.py -v`
 Expected: FAIL with "ModuleNotFoundError"
 
-- [ ] **Step 4: Implement KB repository**
+- [x] **Step 4: Implement KB repository**
 
 ```python
 # kb-service/app/repositories/kb_repo.py
@@ -470,12 +470,12 @@ class KBRepository:
         )
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `cd kb-service && python -m pytest tests/test_repositories.py -v`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add kb-service/app/models/kb.py kb-service/app/repositories/kb_repo.py kb-service/tests/test_repositories.py
@@ -490,7 +490,7 @@ git commit -m "feat(kb): add KB model and repository"
 - Create: `kb-service/app/models/document.py`
 - Create: `kb-service/app/repositories/document_repo.py`
 
-- [ ] **Step 1: Create Document model**
+- [x] **Step 1: Create Document model**
 
 ```python
 # kb-service/app/models/document.py
@@ -524,7 +524,7 @@ class Document(BaseModel):
     updated_at: datetime
 ```
 
-- [ ] **Step 2: Implement Document repository**
+- [x] **Step 2: Implement Document repository**
 
 ```python
 # kb-service/app/repositories/document_repo.py
@@ -628,7 +628,7 @@ class DocumentRepository:
         )
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add kb-service/app/models/document.py kb-service/app/repositories/document_repo.py
@@ -643,7 +643,7 @@ git commit -m "feat(kb): add Document model and repository"
 - Create: `kb-service/app/models/job.py`
 - Create: `kb-service/app/repositories/job_repo.py`
 
-- [ ] **Step 1: Create Job model**
+- [x] **Step 1: Create Job model**
 
 ```python
 # kb-service/app/models/job.py
@@ -671,7 +671,7 @@ class Job(BaseModel):
     updated_at: datetime
 ```
 
-- [ ] **Step 2: Implement Job repository**
+- [x] **Step 2: Implement Job repository**
 
 ```python
 # kb-service/app/repositories/job_repo.py
@@ -772,7 +772,7 @@ class JobRepository:
         )
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add kb-service/app/models/job.py kb-service/app/repositories/job_repo.py
@@ -787,7 +787,7 @@ git commit -m "feat(kb): add Job model and repository"
 - Create: `kb-service/app/models/mapping.py`
 - Create: `kb-service/app/repositories/mapping_repo.py`
 
-- [ ] **Step 1: Create Mapping model**
+- [x] **Step 1: Create Mapping model**
 
 ```python
 # kb-service/app/models/mapping.py
@@ -806,7 +806,7 @@ class MappingCreate(BaseModel):
     project_id: str
 ```
 
-- [ ] **Step 2: Implement Mapping repository**
+- [x] **Step 2: Implement Mapping repository**
 
 ```python
 # kb-service/app/repositories/mapping_repo.py
@@ -865,7 +865,7 @@ class MappingRepository:
         )
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add kb-service/app/models/mapping.py kb-service/app/repositories/mapping_repo.py
@@ -879,7 +879,7 @@ git commit -m "feat(kb): add KB-Project mapping model and repository"
 **Files:**
 - Modify: `kb-service/app/services/search_providers.py`
 
-- [ ] **Step 1: Write failing test for parallel search**
+- [x] **Step 1: Write failing test for parallel search**
 
 ```python
 # kb-service/tests/test_search_providers.py
@@ -894,12 +894,12 @@ async def test_parallel_search():
     # Should return results from at least one provider
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd kb-service && python -m pytest tests/test_search_providers.py -v`
 Expected: FAIL
 
-- [ ] **Step 3: Implement parallel search**
+- [x] **Step 3: Implement parallel search**
 
 ```python
 # kb-service/app/services/search_providers.py
@@ -980,12 +980,12 @@ class SearchProviders:
             ]
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd kb-service && python -m pytest tests/test_search_providers.py -v`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add kb-service/app/services/search_providers.py kb-service/tests/test_search_providers.py
@@ -999,7 +999,7 @@ git commit -m "feat(kb): add parallel search providers"
 **Files:**
 - Create: `kb-service/app/services/llm_client.py`
 
-- [ ] **Step 1: Implement LLM client**
+- [x] **Step 1: Implement LLM client**
 
 ```python
 # kb-service/app/services/llm_client.py
@@ -1068,7 +1068,7 @@ class LLMClient:
             return data["content"][0]["text"]
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add kb-service/app/services/llm_client.py
@@ -1082,7 +1082,7 @@ git commit -m "feat(kb): add LLM client for synthesis"
 **Files:**
 - Create: `kb-service/app/services/collection_pipeline.py`
 
-- [ ] **Step 1: Implement collection pipeline**
+- [x] **Step 1: Implement collection pipeline**
 
 ```python
 # kb-service/app/services/collection_pipeline.py
@@ -1212,7 +1212,7 @@ Create 3-8 documents covering different aspects of the topic."""
             raise
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add kb-service/app/services/collection_pipeline.py
@@ -1226,7 +1226,7 @@ git commit -m "feat(kb): add AI collection pipeline"
 **Files:**
 - Create: `kb-service/app/services/verification.py`
 
-- [ ] **Step 1: Implement verification service**
+- [x] **Step 1: Implement verification service**
 
 ```python
 # kb-service/app/services/verification.py
@@ -1282,7 +1282,7 @@ class VerificationService:
         return min(matches / len(search_results), 1.0)
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add kb-service/app/services/verification.py
@@ -1300,7 +1300,7 @@ git commit -m "feat(kb): add trust verification service"
 - Create: `kb-service/app/routers/jobs.py`
 - Create: `kb-service/app/routers/search.py`
 
-- [ ] **Step 1: Implement KB router**
+- [x] **Step 1: Implement KB router**
 
 ```python
 # kb-service/app/routers/kb.py
@@ -1354,7 +1354,7 @@ async def delete_kb(kb_id: str):
     return {"message": "KB deleted"}
 ```
 
-- [ ] **Step 2: Implement Documents router**
+- [x] **Step 2: Implement Documents router**
 
 ```python
 # kb-service/app/routers/documents.py
@@ -1393,7 +1393,7 @@ async def delete_document(kb_id: str, doc_id: str):
     return {"message": "Document deleted"}
 ```
 
-- [ ] **Step 3: Implement Mapping router**
+- [x] **Step 3: Implement Mapping router**
 
 ```python
 # kb-service/app/routers/mapping.py
@@ -1423,7 +1423,7 @@ async def unmap_kb(project_id: str, kb_id: str):
     return {"message": "KB unmapped"}
 ```
 
-- [ ] **Step 4: Implement Jobs router**
+- [x] **Step 4: Implement Jobs router**
 
 ```python
 # kb-service/app/routers/jobs.py
@@ -1468,7 +1468,7 @@ async def retry_job(job_id: str):
     raise HTTPException(status_code=501, detail="Not implemented yet")
 ```
 
-- [ ] **Step 5: Implement Search router**
+- [x] **Step 5: Implement Search router**
 
 ```python
 # kb-service/app/routers/search.py
@@ -1491,7 +1491,7 @@ async def search_documents(kb_id: str, data: SearchRequest):
     return await repo.search(kb_id, data.query, data.tags)
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add kb-service/app/routers/
@@ -1505,7 +1505,7 @@ git commit -m "feat(kb): add all API routers"
 **Files:**
 - Modify: `kb-service/app/main.py`
 
-- [ ] **Step 1: Update main.py to include all routers**
+- [x] **Step 1: Update main.py to include all routers**
 
 ```python
 # kb-service/app/main.py
@@ -1549,7 +1549,7 @@ async def api_health():
     return {"status": "ok", "service": "kb-service"}
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add kb-service/app/main.py
@@ -1563,7 +1563,7 @@ git commit -m "feat(kb): update main app with all routers"
 **Files:**
 - Create: `kb-service/app/nats/client.py`
 
-- [ ] **Step 1: Implement NATS client**
+- [x] **Step 1: Implement NATS client**
 
 ```python
 # kb-service/app/nats/client.py
@@ -1596,7 +1596,7 @@ class NATSClient:
 nats_client = NATSClient()
 ```
 
-- [ ] **Step 2: Integrate NATS into main.py**
+- [x] **Step 2: Integrate NATS into main.py**
 
 Add to `kb-service/app/main.py`:
 ```python
@@ -1614,7 +1614,7 @@ async def shutdown():
     await db.disconnect()
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add kb-service/app/nats/ kb-service/app/main.py
@@ -1628,7 +1628,7 @@ git commit -m "feat(kb): add NATS integration"
 **Files:**
 - Modify: `kb-service/Dockerfile`
 
-- [ ] **Step 1: Update Dockerfile**
+- [x] **Step 1: Update Dockerfile**
 
 ```dockerfile
 FROM python:3.11-slim
@@ -1645,7 +1645,7 @@ EXPOSE 3004
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3004"]
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add kb-service/Dockerfile
@@ -1659,7 +1659,7 @@ git commit -m "feat(kb): update Dockerfile with new dependencies"
 **Files:**
 - Modify: `infrastructure/docker-compose.yml`
 
-- [ ] **Step 1: Add database dependencies and environment variables to kb-service**
+- [x] **Step 1: Add database dependencies and environment variables to kb-service**
 
 Find the `kb-service` service block in `infrastructure/docker-compose.yml` and update it:
 
@@ -1701,12 +1701,12 @@ Find the `kb-service` service block in `infrastructure/docker-compose.yml` and u
       - storyweaver-net
 ```
 
-- [ ] **Step 2: Verify docker-compose syntax**
+- [x] **Step 2: Verify docker-compose syntax**
 
 Run: `cd infrastructure && docker-compose config`
 Expected: No syntax errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add infrastructure/docker-compose.yml
@@ -1717,17 +1717,17 @@ git commit -m "feat(kb): add database and NATS dependencies to kb-service in doc
 
 ## Task 16: Final Integration Test
 
-- [ ] **Step 1: Run all tests**
+- [x] **Step 1: Run all tests**
 
 Run: `cd kb-service && python -m pytest tests/ -v`
 Expected: All tests pass
 
-- [ ] **Step 2: Build and run locally**
+- [x] **Step 2: Build and run locally**
 
 Run: `cd kb-service && docker build -t kb-service . && docker run -p 3004:3004 kb-service`
 Expected: Service starts on port 3004
 
-- [ ] **Step 3: Test API endpoints**
+- [x] **Step 3: Test API endpoints**
 
 ```bash
 # Health check
@@ -1745,7 +1745,7 @@ curl http://localhost:3004/api/v1/kb/
 curl http://localhost:3004/api/v1/kb/jobs/
 ```
 
-- [ ] **Step 4: Final commit**
+- [x] **Step 4: Final commit**
 
 ```bash
 git add -A
