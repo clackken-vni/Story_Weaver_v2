@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryWeaver Admin v2 · UI/UX Pro Max Gallery</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f7fb;
+        color: #122034;
+      }
+      .wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+      }
+      p {
+        margin: 10px 0 0;
+        color: #3c4f6a;
+      }
+      .grid {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #dbe4f1;
+        border-radius: 14px;
+        overflow: hidden;
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+      .head {
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e4ebf5;
+      }
+      .title {
+        font-weight: 700;
+        font-size: 0.98rem;
+      }
+      .open {
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #0e58c7;
+        border: 1px solid #bad0f1;
+        padding: 7px 10px;
+        border-radius: 8px;
+        transition: background 180ms ease;
+      }
+      .open:hover,
+      .open:focus-visible {
+        background: #e8f1ff;
+        outline: none;
+      }
+      iframe {
+        width: 100%;
+        height: 330px;
+        border: 0;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>StoryWeaver Admin Dashboard v2 · 5 Experimental Prototypes</h1>
+      <p>Each concept is fully interactive with route-switching nav, KPI cards, user table, and activity feed.</p>
+
+      <div class="grid">
+        <article class="card">
+          <div class="head">
+            <div class="title">Style 1 — Swiss Grid Precision</div>
+            <a class="open" href="./style-1-swiss-grid.html" target="_blank" rel="noopener">Open Full</a>
+          </div>
+          <iframe title="Swiss Grid Precision" src="./style-1-swiss-grid.html"></iframe>
+        </article>
+
+        <article class="card">
+          <div class="head">
+            <div class="title">Style 2 — Warm Analog Dashboard</div>
+            <a class="open" href="./style-2-warm-analog.html" target="_blank" rel="noopener">Open Full</a>
+          </div>
+          <iframe title="Warm Analog Dashboard" src="./style-2-warm-analog.html"></iframe>
+        </article>
+
+        <article class="card">
+          <div class="head">
+            <div class="title">Style 3 — Tokyo Neon Night</div>
+            <a class="open" href="./style-3-tokyo-neon.html" target="_blank" rel="noopener">Open Full</a>
+          </div>
+          <iframe title="Tokyo Neon Night" src="./style-3-tokyo-neon.html"></iframe>
+        </article>
+
+        <article class="card">
+          <div class="head">
+            <div class="title">Style 4 — Scandinavian Craft</div>
+            <a class="open" href="./style-4-scandinavian-craft.html" target="_blank" rel="noopener">Open Full</a>
+          </div>
+          <iframe title="Scandinavian Craft" src="./style-4-scandinavian-craft.html"></iframe>
+        </article>
+
+        <article class="card">
+          <div class="head">
+            <div class="title">Style 5 — Architectural Blueprint</div>
+            <a class="open" href="./style-5-architectural-blueprint.html" target="_blank" rel="noopener">Open Full</a>
+          </div>
+          <iframe title="Architectural Blueprint" src="./style-5-architectural-blueprint.html"></iframe>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

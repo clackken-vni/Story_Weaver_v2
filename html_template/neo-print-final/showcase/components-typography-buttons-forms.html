@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Component Catalog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Libre+Bodoni:opsz,wght@6..96,400;6..96,500;6..96,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #fffdf9;
+        --ink: #1f1a16;
+        --muted: #6b5d4d;
+        --accent: #ad3f14;
+        --line: #d9cec0;
+        --focus: color-mix(in srgb, var(--accent) 60%, white);
+      }
+
+      :root[data-theme='dark'] {
+        --bg: #141311;
+        --panel: #1d1a17;
+        --ink: #f0e7d8;
+        --muted: #baa98d;
+        --accent: #c46a2d;
+        --line: #473d32;
+        --focus: color-mix(in srgb, var(--accent) 70%, white);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line) 65%, transparent) 1px, transparent 0),
+          linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--accent) 3%, transparent) 100%);
+        background-size: 18px 18px, 100% 100%;
+      }
+
+      .grain-overlay {
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        opacity: 0.05;
+        mix-blend-mode: multiply;
+        background-image: repeating-radial-gradient(circle at 0 0, #000 0 1px, transparent 1px 2px);
+        background-size: 4px 4px;
+      }
+
+      .page-shell {
+        width: min(1240px, 94vw);
+        margin: 2rem auto 4rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .top-header {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 8px 8px 0 color-mix(in srgb, var(--accent) 20%, transparent);
+        padding: 1.25rem 1.25rem 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .header-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.9rem;
+      }
+
+      .eyebrow {
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-size: 0.74rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+      }
+
+      .title {
+        margin: 0;
+        font-family: 'Libre Bodoni', serif;
+        font-size: clamp(1.8rem, 1.2rem + 2vw, 3rem);
+        line-height: 1;
+      }
+
+      .subtitle {
+        margin: 0.35rem 0 0;
+        color: var(--muted);
+      }
+
+      .theme-toggle {
+        border: 1px solid var(--ink);
+        background: var(--panel);
+        color: var(--ink);
+        padding: 0.65rem 1rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: transform 140ms ease, box-shadow 140ms ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 5px 5px 0 color-mix(in srgb, var(--accent) 25%, transparent);
+      }
+
+      .theme-toggle:active {
+        transform: translate(0, 0);
+      }
+
+      .toc-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .toc-title {
+        font-family: 'Libre Bodoni', serif;
+        margin: 0 0 0.75rem;
+        font-size: 1.4rem;
+      }
+
+      .toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 0.75rem 1rem;
+      }
+
+      .toc-group h4 {
+        margin: 0 0 0.35rem;
+        font-size: 0.88rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .toc-group a {
+        display: block;
+        color: var(--ink);
+        text-decoration: none;
+        padding: 0.15rem 0;
+        font-size: 0.92rem;
+      }
+
+      .toc-group a:hover {
+        color: var(--accent);
+      }
+
+      .section-title {
+        margin: 2.2rem 0 1rem;
+        font-family: 'Libre Bodoni', serif;
+        font-size: clamp(1.4rem, 1rem + 1.2vw, 2.2rem);
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 0.45rem;
+      }
+
+      .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 1rem;
+      }
+
+      .catalog-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 280px;
+      }
+
+      .catalog-card h3 {
+        margin: 0 0 0.7rem;
+        font-size: 1rem;
+        font-family: 'Libre Bodoni', serif;
+      }
+
+      .live-demo {
+        border: 1px dashed color-mix(in srgb, var(--line) 80%, var(--ink));
+        padding: 0.85rem;
+        flex: 1;
+        margin-bottom: 0.75rem;
+        background: color-mix(in srgb, var(--panel) 85%, var(--bg));
+      }
+
+      .variant-list {
+        margin: 0;
+        padding-left: 1rem;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .variant-list li + li {
+        margin-top: 0.25rem;
+      }
+
+      .display-stack h1,
+      .display-stack h2,
+      .display-stack h3,
+      .display-stack h4,
+      .display-stack h5,
+      .display-stack h6 {
+        margin: 0;
+        font-family: 'Libre Bodoni', serif;
+        line-height: 1.05;
+      }
+
+      .display-stack h1 { font-size: 2.2rem; }
+      .display-stack h2 { font-size: 1.8rem; }
+      .display-stack h3 { font-size: 1.56rem; }
+      .display-stack h4 { font-size: 1.3rem; }
+      .display-stack h5 { font-size: 1.08rem; }
+      .display-stack h6 { font-size: 0.95rem; letter-spacing: 0.03em; }
+
+      .body-large { font-size: 1.09rem; }
+      .body-regular { font-size: 0.95rem; }
+      .body-small { font-size: 0.84rem; color: var(--muted); }
+
+      .caption-lg { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      .caption-sm { font-size: 0.7rem; color: var(--muted); }
+
+      .label-row { display: grid; gap: 0.35rem; }
+      .label-row label { font-size: 0.82rem; font-weight: 600; }
+      .label-row small { color: var(--muted); font-size: 0.76rem; }
+
+      .link-showcase p,
+      .link-showcase a { font-size: 0.92rem; }
+      .link-showcase a { color: var(--accent); text-underline-offset: 2px; }
+      .link-showcase .standalone-link { display: inline-block; margin-top: 0.35rem; font-weight: 600; }
+
+      .quote-block,
+      .pull-quote {
+        margin: 0;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.8rem;
+        font-family: 'Libre Bodoni', serif;
+      }
+
+      .quote-block cite {
+        display: block;
+        margin-top: 0.45rem;
+        font-size: 0.76rem;
+        color: var(--muted);
+      }
+
+      .pull-quote {
+        margin-top: 0.8rem;
+        font-size: 1.05rem;
+        letter-spacing: 0.02em;
+      }
+
+      code.inline-code {
+        background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+        border: 1px solid var(--line);
+        padding: 0.08rem 0.3rem;
+        font-size: 0.82rem;
+      }
+
+      .code-block {
+        margin: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 82%, var(--bg));
+        overflow: auto;
+      }
+
+      .code-line {
+        display: grid;
+        grid-template-columns: 2.3rem 1fr;
+        column-gap: 0.45rem;
+        border-bottom: 1px dashed color-mix(in srgb, var(--line) 80%, transparent);
+      }
+
+      .code-line:last-child { border-bottom: none; }
+
+      .line-number {
+        color: var(--muted);
+        text-align: right;
+        border-right: 1px solid var(--line);
+        padding: 0.2rem 0.35rem 0.2rem 0;
+        user-select: none;
+      }
+
+      .line-content { padding: 0.2rem 0.4rem; white-space: pre; }
+
+      .overline {
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 0.71rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .lead-text {
+        margin: 0;
+        font-size: 1.07rem;
+        line-height: 1.45;
+      }
+
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .btn,
+      .icon-btn,
+      .fab {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+
+      .btn {
+        padding: 0.5rem 0.8rem;
+      }
+
+      .btn-primary {
+        background: var(--ink);
+        color: var(--panel);
+        border-color: var(--ink);
+      }
+
+      .btn-primary.is-hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 3px 3px 0 color-mix(in srgb, var(--accent) 40%, transparent);
+      }
+
+      .btn-primary.is-active {
+        transform: translate(0, 0);
+        box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+      }
+
+      .btn-primary:disabled,
+      .btn-disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary-outline {
+        background: transparent;
+        color: var(--ink);
+        border-color: var(--ink);
+      }
+
+      .btn-secondary-filled {
+        background: color-mix(in srgb, var(--line) 45%, var(--panel));
+        color: var(--ink);
+        border-color: var(--line);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border-color: transparent;
+        color: var(--muted);
+      }
+
+      .btn-ghost:hover {
+        color: var(--ink);
+        background: color-mix(in srgb, var(--line) 35%, transparent);
+      }
+
+      .btn-destructive {
+        background: color-mix(in srgb, var(--accent) 25%, var(--panel));
+        color: var(--accent);
+        border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+      }
+
+      .icon-btn {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink);
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .icon-btn.sm { width: 30px; height: 30px; font-size: 0.72rem; }
+      .icon-btn.md { width: 38px; height: 38px; font-size: 0.9rem; }
+      .icon-btn.lg { width: 46px; height: 46px; font-size: 1.02rem; }
+
+      .spinner {
+        display: inline-block;
+        width: 0.78rem;
+        height: 0.78rem;
+        border-radius: 50%;
+        border: 2px solid color-mix(in srgb, var(--panel) 60%, transparent);
+        border-top-color: var(--panel);
+        animation: spin 0.85s linear infinite;
+        vertical-align: middle;
+        margin-right: 0.42rem;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .button-group {
+        display: inline-flex;
+        border: 1px solid var(--line);
+      }
+
+      .button-group .btn {
+        border: none;
+        border-right: 1px solid var(--line);
+        background: transparent;
+      }
+
+      .button-group .btn:last-child {
+        border-right: none;
+      }
+
+      .split-wrap {
+        position: relative;
+        display: inline-flex;
+      }
+
+      .split-wrap .btn {
+        border-color: var(--ink);
+        background: var(--panel);
+      }
+
+      .split-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        min-width: 130px;
+        z-index: 5;
+      }
+
+      .split-menu button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 0.45rem 0.6rem;
+      }
+
+      .split-menu button:hover {
+        background: color-mix(in srgb, var(--line) 35%, transparent);
+      }
+
+      .toggle-btn {
+        border: 1px solid var(--ink);
+        padding: 0.48rem 0.85rem;
+        background: transparent;
+      }
+
+      .toggle-btn.on {
+        background: var(--ink);
+        color: var(--panel);
+      }
+
+      .fab {
+        width: 50px;
+        height: 50px;
+        border-radius: 999px;
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--panel);
+        box-shadow: 5px 5px 0 color-mix(in srgb, var(--ink) 25%, transparent);
+      }
+
+      .field-grid {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .field,
+      select,
+      textarea,
+      .search-shell,
+      .otp-box,
+      .number-shell,
+      .autocomplete-shell {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+
+      .field,
+      select,
+      .search-shell input,
+      .number-shell input,
+      .autocomplete-shell input {
+        height: 36px;
+        padding: 0 0.65rem;
+      }
+
+      .field:focus,
+      textarea:focus,
+      select:focus,
+      .search-shell input:focus,
+      .number-shell input:focus,
+      .autocomplete-shell input:focus,
+      .otp-box:focus {
+        outline: 2px solid var(--focus);
+        outline-offset: 1px;
+      }
+
+      .field.error { border-color: #b53922; }
+      .field.success { border-color: #2d7f4a; }
+
+      .with-icon {
+        position: relative;
+      }
+
+      .with-icon .icon-left {
+        position: absolute;
+        left: 0.55rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .with-icon input { padding-left: 1.7rem; }
+
+      textarea {
+        min-height: 70px;
+        resize: vertical;
+        padding: 0.55rem 0.65rem;
+      }
+
+      .counter {
+        text-align: right;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--line) 35%, var(--panel));
+        padding: 0.2rem 0.45rem;
+        font-size: 0.76rem;
+      }
+
+      .chip button {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.84rem;
+      }
+
+      .check-stack,
+      .radio-stack {
+        display: grid;
+        gap: 0.35rem;
+        font-size: 0.88rem;
+      }
+
+      .switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .switch-track {
+        width: 42px;
+        height: 24px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--line) 30%, var(--panel));
+        position: relative;
+        cursor: pointer;
+      }
+
+      .switch-track::after {
+        content: '';
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: transform 150ms ease;
+      }
+
+      .switch-track.on {
+        background: color-mix(in srgb, var(--accent) 45%, var(--panel));
+      }
+
+      .switch-track.on::after {
+        transform: translateX(18px);
+      }
+
+      .upload-zone {
+        border: 1px dashed var(--line);
+        padding: 0.8rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .search-shell,
+      .number-shell,
+      .autocomplete-shell {
+        display: flex;
+        align-items: center;
+      }
+
+      .search-shell span,
+      .autocomplete-shell span {
+        padding: 0 0.5rem;
+        color: var(--muted);
+      }
+
+      .search-shell input,
+      .number-shell input,
+      .autocomplete-shell input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .search-shell button,
+      .step-btn {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0 0.5rem;
+        height: 100%;
+      }
+
+      .stepper {
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid var(--line);
+      }
+
+      .step-btn {
+        height: 18px;
+        line-height: 16px;
+        font-size: 0.72rem;
+      }
+
+      .rating-row {
+        display: flex;
+        gap: 0.2rem;
+      }
+
+      .star-btn {
+        border: none;
+        background: transparent;
+        font-size: 1.18rem;
+        color: var(--line);
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .star-btn.active {
+        color: var(--accent);
+      }
+
+      .autocomplete-menu {
+        border: 1px solid var(--line);
+        border-top: none;
+      }
+
+      .autocomplete-menu button {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        padding: 0.4rem 0.6rem;
+      }
+
+      .autocomplete-menu button:hover {
+        background: color-mix(in srgb, var(--line) 35%, transparent);
+      }
+
+      .otp-row {
+        display: flex;
+        gap: 0.45rem;
+      }
+
+      .otp-box {
+        width: 42px;
+        height: 42px;
+        text-align: center;
+        font-size: 1.15rem;
+      }
+
+      .swatch-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.35rem;
+      }
+
+      .swatch {
+        width: 100%;
+        aspect-ratio: 1;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+
+      .swatch.selected {
+        border-color: var(--ink);
+      }
+
+      .validation-group {
+        display: grid;
+        gap: 0.3rem;
+      }
+
+      .validation-group small {
+        font-size: 0.75rem;
+      }
+
+      .validation-group .valid { color: #2d7f4a; }
+      .validation-group .invalid { color: #b53922; }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      @media (max-width: 780px) {
+        .catalog-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .toc-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div class="grain-overlay" aria-hidden="true"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useMemo, useRef, useState } = React;
+
+      function CatalogCard({ id, title, demo, variants }) {
+        return (
+          <article id={id} className="catalog-card">
+            <h3>{title}</h3>
+            <div className="live-demo">{demo}</div>
+            <ul className="variant-list">
+              {variants.map((variant, index) => (
+                <li key={`${id}-variant-${index}`}>{variant}</li>
+              ))}
+            </ul>
+          </article>
+        );
+      }
+
+      function TypographySection() {
+        const typographyCodeLines = [
+          '<section className="specimen">',
+          '  <h2>Neo Print Heading</h2>',
+          '  <p className="lead">Modular clarity, editorial rhythm.</p>',
+          '</section>'
+        ];
+
+        return (
+          <section id="section-typography">
+            <h2 className="section-title">Typography Components (11)</h2>
+            <div className="catalog-grid">
+              <CatalogCard
+                id="type-headings"
+                title="Heading H1-H6 (display sizes)"
+                demo={
+                  <div className="display-stack">
+                    <h1>H1 Display</h1>
+                    <h2>H2 Chapter</h2>
+                    <h3>H3 Segment</h3>
+                    <h4>H4 Cluster</h4>
+                    <h5>H5 Captioned</h5>
+                    <h6>H6 Utility</h6>
+                  </div>
+                }
+                variants={[
+                  'Display serif hierarchy with compressed line height',
+                  'Semantic heading tags from h1 to h6',
+                  'Responsive type scale with editorial contrast'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-body"
+                title="Body Text (large, regular, small)"
+                demo={
+                  <div>
+                    <p className="body-large">Large body copy for intros, context, and key framing.</p>
+                    <p className="body-regular">Regular body copy for the main narrative flow and routine UI content.</p>
+                    <p className="body-small">Small body copy for dense notes and supporting instructions.</p>
+                  </div>
+                }
+                variants={[
+                  'body-large 17px',
+                  'body-regular 15px',
+                  'body-small 13px with muted color'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-caption"
+                title="Caption (regular, small)"
+                demo={
+                  <div>
+                    <p className="caption-lg">Plate 07 · Offset Print Test</p>
+                    <p className="caption-sm">Caption small — metadata and low-priority descriptors.</p>
+                  </div>
+                }
+                variants={[
+                  'Caption regular in uppercase tracking',
+                  'Caption small in compact muted style'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-label"
+                title="Label (required, optional, helper)"
+                demo={
+                  <div className="label-row">
+                    <label>Studio Name <span style={{ color: 'var(--accent)' }}>*</span></label>
+                    <label>Apartment / Suite <small>(optional)</small></label>
+                    <small>Helper: Use legal naming for contracts and invoices.</small>
+                  </div>
+                }
+                variants={[
+                  'Required marker with accent color',
+                  'Optional indicator in helper microcopy',
+                  'Helper line under the field label'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-link"
+                title="Link (inline, standalone, external)"
+                demo={
+                  <div className="link-showcase">
+                    <p>
+                      Read the <a href="#type-blockquote">typographic notes</a> before publishing the next print run.
+                    </p>
+                    <a className="standalone-link" href="#section-buttons">Open button specs</a>
+                    <br />
+                    <a href="https://developer.mozilla.org/" target="_blank" rel="noreferrer">External reference ↗</a>
+                  </div>
+                }
+                variants={[
+                  'Inline text-link in running paragraph',
+                  'Standalone utility link',
+                  'External destination with target and rel attributes'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-blockquote"
+                title="Blockquote (with citation, pull quote)"
+                demo={
+                  <div>
+                    <blockquote className="quote-block">
+                      Typographic systems matter because rhythm determines whether readers stay or drift.
+                      <cite>— Neo Print Manual, Vol. II</cite>
+                    </blockquote>
+                    <blockquote className="pull-quote">“Design is architecture set to language.”</blockquote>
+                  </div>
+                }
+                variants={[
+                  'Standard blockquote with citation',
+                  'Pull quote for editorial interruption'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-inline-code"
+                title="Code Inline"
+                demo={<p>Use <code className="inline-code">--accent</code> token for all highlighted interactions.</p>}
+                variants={[
+                  'Inline monospace token',
+                  'Soft accent background for technical snippets'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-code-block"
+                title="Code Block (with line numbers)"
+                demo={
+                  <pre className="code-block" aria-label="Code block sample">
+                    {typographyCodeLines.map((line, index) => (
+                      <div className="code-line" key={`line-${index}`}>
+                        <span className="line-number">{index + 1}</span>
+                        <span className="line-content">{line}</span>
+                      </div>
+                    ))}
+                  </pre>
+                }
+                variants={[
+                  'Monospace block with fixed line numbers',
+                  'Horizontal overflow supported for long content'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-list"
+                title="List (bulleted, numbered, nested)"
+                demo={
+                  <div>
+                    <ul>
+                      <li>Grid rhythm</li>
+                      <li>Voice consistency</li>
+                    </ul>
+                    <ol>
+                      <li>Draft</li>
+                      <li>
+                        Review
+                        <ul>
+                          <li>Accessibility pass</li>
+                          <li>Final print pass</li>
+                        </ul>
+                      </li>
+                    </ol>
+                  </div>
+                }
+                variants={[
+                  'Bulleted list for unordered data',
+                  'Numbered list with nested hierarchy'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-overline"
+                title="Overline / Eyebrow text"
+                demo={
+                  <div>
+                    <p className="overline">Issue 2026 • Typeface Report</p>
+                    <h4 style={{ margin: '0.45rem 0 0' }}>Editorial Rhythm in Interface Design</h4>
+                  </div>
+                }
+                variants={[
+                  'Uppercase overline with high letter spacing',
+                  'Pairs with heading for pre-context'
+                ]}
+              />
+
+              <CatalogCard
+                id="type-lead"
+                title="Lead Text"
+                demo={<p className="lead-text">Lead text introduces a section with stronger cadence and wider line-height for readability.</p>}
+                variants={[
+                  'Lead paragraph for opening statements',
+                  'Uses body font with elevated size and spacing'
+                ]}
+              />
+            </div>
+          </section>
+        );
+      }
+
+      function ButtonsSection() {
+        const [splitMenuOpen, setSplitMenuOpen] = useState(false);
+        const [splitActionLabel, setSplitActionLabel] = useState('Publish');
+        const [toggleButtonActive, setToggleButtonActive] = useState(false);
+
+        const splitButtonActionStyle = { marginLeft: '-1px' };
+
+        return (
+          <section id="section-buttons">
+            <h2 className="section-title">Button Components (10)</h2>
+            <div className="catalog-grid">
+              <CatalogCard
+                id="btn-primary"
+                title="Primary Button (default, hover, active, disabled)"
+                demo={
+                  <div className="btn-row">
+                    <button className="btn btn-primary">Default</button>
+                    <button className="btn btn-primary is-hover">Hover</button>
+                    <button className="btn btn-primary is-active">Active</button>
+                    <button className="btn btn-primary btn-disabled" disabled>Disabled</button>
+                  </div>
+                }
+                variants={[
+                  'Default filled primary',
+                  'Visual hover and active snapshots',
+                  'Disabled state with reduced opacity'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-secondary"
+                title="Secondary Button (outlined, filled)"
+                demo={
+                  <div className="btn-row">
+                    <button className="btn btn-secondary-outline">Outlined</button>
+                    <button className="btn btn-secondary-filled">Filled</button>
+                  </div>
+                }
+                variants={[
+                  'Outlined secondary for low-emphasis actions',
+                  'Filled secondary for balanced emphasis'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-ghost"
+                title="Ghost/Tertiary Button"
+                demo={<button className="btn btn-ghost">Cancel draft</button>}
+                variants={[
+                  'Tertiary ghost style with low visual weight',
+                  'Hover introduces soft panel tint'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-destructive"
+                title="Destructive Button"
+                demo={<button className="btn btn-destructive">Delete version</button>}
+                variants={[
+                  'Accent-tinted warning surface',
+                  'Used for irreversible actions'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-icon"
+                title="Icon Button (small, medium, large)"
+                demo={
+                  <div className="btn-row">
+                    <button className="icon-btn sm" aria-label="Like">♥</button>
+                    <button className="icon-btn md" aria-label="Search">⌕</button>
+                    <button className="icon-btn lg" aria-label="Settings">⚙</button>
+                  </div>
+                }
+                variants={[
+                  'Small icon button 30x30',
+                  'Medium icon button 38x38',
+                  'Large icon button 46x46'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-loading"
+                title="Loading Button (with spinner)"
+                demo={<button className="btn btn-primary"><span className="spinner" aria-hidden="true"></span>Processing</button>}
+                variants={[
+                  'Inline spinner before label',
+                  'Disabled interaction while loading (recommended)'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-group"
+                title="Button Group (horizontal)"
+                demo={
+                  <div className="button-group" role="group" aria-label="Formatting actions">
+                    <button className="btn">Left</button>
+                    <button className="btn">Center</button>
+                    <button className="btn">Right</button>
+                  </div>
+                }
+                variants={[
+                  'Shared border group container',
+                  'Equalized segmented controls'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-split"
+                title="Split Button (with dropdown)"
+                demo={
+                  <div className="split-wrap">
+                    <button className="btn">{splitActionLabel}</button>
+                    <button
+                      className="btn"
+                      style={splitButtonActionStyle}
+                      aria-haspopup="menu"
+                      aria-expanded={splitMenuOpen}
+                      onClick={() => setSplitMenuOpen((open) => !open)}
+                    >
+                      ▾
+                    </button>
+                    {splitMenuOpen && (
+                      <div className="split-menu" role="menu">
+                        {['Publish', 'Schedule', 'Duplicate'].map((item) => (
+                          <button
+                            key={item}
+                            onClick={() => {
+                              setSplitActionLabel(item);
+                              setSplitMenuOpen(false);
+                            }}
+                          >
+                            {item}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                }
+                variants={[
+                  'Primary action paired with chevron trigger',
+                  'Dropdown menu for alternative actions'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-toggle"
+                title="Toggle Button (on/off)"
+                demo={
+                  <button
+                    className={`toggle-btn ${toggleButtonActive ? 'on' : ''}`}
+                    aria-pressed={toggleButtonActive}
+                    onClick={() => setToggleButtonActive((value) => !value)}
+                  >
+                    {toggleButtonActive ? 'On' : 'Off'}
+                  </button>
+                }
+                variants={[
+                  'Single control toggles active state',
+                  'ARIA pressed state for accessibility'
+                ]}
+              />
+
+              <CatalogCard
+                id="btn-fab"
+                title="Floating Action Button"
+                demo={<button className="fab" aria-label="Create">+</button>}
+                variants={[
+                  'Circular high-emphasis action',
+                  'Accent fill with offset shadow'
+                ]}
+              />
+            </div>
+          </section>
+        );
+      }
+
+      function FormsSection() {
+        const [textareaText, setTextareaText] = useState('Short copy for this specimen field.');
+        const [multiSelectionValues, setMultiSelectionValues] = useState(['Paper', 'Ink']);
+        const [checkboxState, setCheckboxState] = useState({ checked: true, indeterminate: true });
+        const [radioSelectionValue, setRadioSelectionValue] = useState('daily');
+        const [switchEnabled, setSwitchEnabled] = useState(true);
+        const [uploadedFileName, setUploadedFileName] = useState('');
+        const [searchTermValue, setSearchTermValue] = useState('');
+        const [sliderLevelValue, setSliderLevelValue] = useState(42);
+        const [numberInputValue, setNumberInputValue] = useState(8);
+        const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+        const [ratingScoreValue, setRatingScoreValue] = useState(3);
+        const [autocompleteQueryValue, setAutocompleteQueryValue] = useState('');
+        const [otpDigitsValue, setOtpDigitsValue] = useState(['', '', '', '']);
+        const [selectedColorValue, setSelectedColorValue] = useState('#ad3f14');
+        const [emailValue, setEmailValue] = useState('');
+        const otpInputRefs = useRef([]);
+
+        const autocompleteOptionsList = ['Bodoni Print', 'Plex Poster', 'Mono Utility', 'Serif Classic', 'Grid Archive'];
+
+        const filteredAutocompleteOptions = useMemo(() => {
+          if (!autocompleteQueryValue.trim()) return [];
+          return autocompleteOptionsList.filter((item) => item.toLowerCase().includes(autocompleteQueryValue.toLowerCase()));
+        }, [autocompleteQueryValue]);
+
+        const colorSwatchValues = ['#ad3f14', '#1f1a16', '#6b5d4d', '#d9cec0', '#2d7f4a', '#385b93', '#9f2f1d', '#8b6b1d', '#294e39', '#914a2b', '#3f3a35', '#c46a2d'];
+
+        const formValidationRuleStyle = { margin: 0 };
+
+        return (
+          <section id="section-forms">
+            <h2 className="section-title">Form Components (18)</h2>
+            <div className="catalog-grid">
+              <CatalogCard
+                id="form-text-input"
+                title="Text Input (default, error, success, disabled, with icon)"
+                demo={
+                  <div className="field-grid">
+                    <input className="field" type="text" placeholder="Default input" />
+                    <input className="field error" type="text" value="Error state" readOnly />
+                    <input className="field success" type="text" value="Success state" readOnly />
+                    <input className="field" type="text" value="Disabled input" disabled readOnly />
+                    <div className="with-icon">
+                      <span className="icon-left">⌕</span>
+                      <input className="field" type="text" placeholder="Input with icon" />
+                    </div>
+                  </div>
+                }
+                variants={[
+                  'Default, error, success, disabled visual states',
+                  'Icon-left field for contextual hinting'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-textarea"
+                title="Textarea (resizable, with counter)"
+                demo={
+                  <div>
+                    <textarea
+                      value={textareaText}
+                      maxLength={120}
+                      onChange={(event) => setTextareaText(event.target.value)}
+                    />
+                    <p className="counter">{textareaText.length}/120</p>
+                  </div>
+                }
+                variants={[
+                  'Vertical resize enabled',
+                  'Character counter anchored below'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-select"
+                title="Select/Dropdown"
+                demo={
+                  <select defaultValue="A3">
+                    <option value="A5">A5</option>
+                    <option value="A4">A4</option>
+                    <option value="A3">A3</option>
+                  </select>
+                }
+                variants={[
+                  'Native select for cross-browser reliability',
+                  'Default selected option A3'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-multi-select"
+                title="Multi-Select (with chips)"
+                demo={
+                  <div className="field-grid">
+                    <select
+                      onChange={(event) => {
+                        const choice = event.target.value;
+                        if (choice && !multiSelectionValues.includes(choice)) {
+                          setMultiSelectionValues((prev) => [...prev, choice]);
+                        }
+                        event.target.value = '';
+                      }}
+                    >
+                      <option value="">Add material…</option>
+                      {['Paper', 'Ink', 'Varnish', 'Foil', 'Cotton Rag'].map((item) => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                    </select>
+                    <div className="chip-row">
+                      {multiSelectionValues.map((item) => (
+                        <span className="chip" key={item}>
+                          {item}
+                          <button
+                            aria-label={`Remove ${item}`}
+                            onClick={() => setMultiSelectionValues((prev) => prev.filter((value) => value !== item))}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                }
+                variants={[
+                  'Add option creates removable chip',
+                  'De-duplication handled in state logic'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-checkbox"
+                title="Checkbox (checked, unchecked, indeterminate)"
+                demo={
+                  <div className="check-stack">
+                    <label><input type="checkbox" checked={checkboxState.checked} onChange={(event) => setCheckboxState((prev) => ({ ...prev, checked: event.target.checked }))} /> Checked</label>
+                    <label><input type="checkbox" /> Unchecked</label>
+                    <label><input type="checkbox" checked={checkboxState.indeterminate} ref={(node) => { if (node) node.indeterminate = true; }} onChange={(event) => setCheckboxState((prev) => ({ ...prev, indeterminate: event.target.checked }))} /> Indeterminate</label>
+                  </div>
+                }
+                variants={[
+                  'Checked and unchecked baseline states',
+                  'Indeterminate state with native property'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-radio"
+                title="Radio Button (selected, unselected)"
+                demo={
+                  <div className="radio-stack">
+                    <label><input type="radio" name="frequency" value="daily" checked={radioSelectionValue === 'daily'} onChange={(event) => setRadioSelectionValue(event.target.value)} /> Daily</label>
+                    <label><input type="radio" name="frequency" value="weekly" checked={radioSelectionValue === 'weekly'} onChange={(event) => setRadioSelectionValue(event.target.value)} /> Weekly</label>
+                  </div>
+                }
+                variants={[
+                  'Mutually exclusive selection group',
+                  'Controlled state for selected option'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-switch"
+                title="Toggle/Switch"
+                demo={
+                  <div className="switch">
+                    <button
+                      type="button"
+                      className={`switch-track ${switchEnabled ? 'on' : ''}`}
+                      role="switch"
+                      aria-checked={switchEnabled}
+                      onClick={() => setSwitchEnabled((value) => !value)}
+                    ></button>
+                    <span>{switchEnabled ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                }
+                variants={[
+                  'Binary switch with handle movement',
+                  'Text label mirrors current state'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-upload"
+                title="File Upload (drag-and-drop zone)"
+                demo={
+                  <div className="field-grid">
+                    <label className="upload-zone">
+                      Drop files here or click to upload
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          setUploadedFileName(file ? file.name : '');
+                        }}
+                      />
+                    </label>
+                    <small>{uploadedFileName ? `Selected: ${uploadedFileName}` : 'No file selected'}</small>
+                  </div>
+                }
+                variants={[
+                  'Dashed drop zone treatment',
+                  'File name preview once selected'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-date"
+                title="Date Picker (input style)"
+                demo={<input className="field" type="date" defaultValue="2026-05-01" />}
+                variants={[
+                  'Native date input for browser consistency',
+                  'Works under keyboard and pointer input'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-search"
+                title="Search Input (with icon, clear button)"
+                demo={
+                  <div className="search-shell">
+                    <span>⌕</span>
+                    <input
+                      type="text"
+                      value={searchTermValue}
+                      onChange={(event) => setSearchTermValue(event.target.value)}
+                      placeholder="Search specimen"
+                    />
+                    <button type="button" aria-label="Clear" onClick={() => setSearchTermValue('')}>×</button>
+                  </div>
+                }
+                variants={[
+                  'Leading icon and clear affordance',
+                  'Controlled input with quick reset'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-slider"
+                title="Slider/Range"
+                demo={
+                  <div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={sliderLevelValue}
+                      onChange={(event) => setSliderLevelValue(Number(event.target.value))}
+                      style={{ width: '100%' }}
+                    />
+                    <small>Value: {sliderLevelValue}</small>
+                  </div>
+                }
+                variants={[
+                  'Single-axis range input',
+                  'Live numeric output label'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-number"
+                title="Number Input (with stepper)"
+                demo={
+                  <div className="number-shell">
+                    <input
+                      type="number"
+                      value={numberInputValue}
+                      onChange={(event) => setNumberInputValue(Number(event.target.value || 0))}
+                    />
+                    <div className="stepper">
+                      <button className="step-btn" onClick={() => setNumberInputValue((value) => value + 1)}>▲</button>
+                      <button className="step-btn" onClick={() => setNumberInputValue((value) => value - 1)}>▼</button>
+                    </div>
+                  </div>
+                }
+                variants={[
+                  'Number field with custom up/down controls',
+                  'Supports keyboard and mouse stepping'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-password"
+                title="Password Input (with show/hide)"
+                demo={
+                  <div className="search-shell">
+                    <input type={isPasswordVisible ? 'text' : 'password'} defaultValue="NeoPrint#2026" />
+                    <button type="button" onClick={() => setIsPasswordVisible((value) => !value)}>
+                      {isPasswordVisible ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                }
+                variants={[
+                  'Toggle visibility while preserving value',
+                  'Avoids separate field duplication'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-rating"
+                title="Rating Input (stars)"
+                demo={
+                  <div className="rating-row" role="radiogroup" aria-label="Rating">
+                    {[1, 2, 3, 4, 5].map((starValue) => (
+                      <button
+                        key={starValue}
+                        className={`star-btn ${ratingScoreValue >= starValue ? 'active' : ''}`}
+                        onClick={() => setRatingScoreValue(starValue)}
+                        aria-label={`${starValue} star`}
+                        type="button"
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                }
+                variants={[
+                  'Five-star interactive rating',
+                  'Visual highlight follows selected score'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-autocomplete"
+                title="Autocomplete (with suggestions)"
+                demo={
+                  <div>
+                    <div className="autocomplete-shell">
+                      <span>⌕</span>
+                      <input
+                        type="text"
+                        value={autocompleteQueryValue}
+                        onChange={(event) => setAutocompleteQueryValue(event.target.value)}
+                        placeholder="Search font preset"
+                      />
+                    </div>
+                    {filteredAutocompleteOptions.length > 0 && (
+                      <div className="autocomplete-menu" role="listbox">
+                        {filteredAutocompleteOptions.map((item) => (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => setAutocompleteQueryValue(item)}
+                          >
+                            {item}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                }
+                variants={[
+                  'Text input filtered against local list',
+                  'Click suggestion to populate value'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-otp"
+                title="OTP Input (4 boxes)"
+                demo={
+                  <div className="otp-row">
+                    {otpDigitsValue.map((digitValue, index) => (
+                      <input
+                        key={`otp-${index}`}
+                        ref={(node) => { otpInputRefs.current[index] = node; }}
+                        className="otp-box"
+                        type="text"
+                        maxLength="1"
+                        inputMode="numeric"
+                        value={digitValue}
+                        onChange={(event) => {
+                          const nextValue = event.target.value.replace(/\D/g, '').slice(-1);
+                          setOtpDigitsValue((prev) => {
+                            const updated = [...prev];
+                            updated[index] = nextValue;
+                            return updated;
+                          });
+                          if (nextValue && index < 3) otpInputRefs.current[index + 1]?.focus();
+                        }}
+                      />
+                    ))}
+                  </div>
+                }
+                variants={[
+                  'Four fixed-size digit boxes',
+                  'Auto-focus advances on valid entry'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-color-picker"
+                title="Color Picker (swatch grid)"
+                demo={
+                  <div className="field-grid">
+                    <div className="swatch-grid">
+                      {colorSwatchValues.map((hexValue) => (
+                        <button
+                          key={hexValue}
+                          className={`swatch ${selectedColorValue === hexValue ? 'selected' : ''}`}
+                          style={{ background: hexValue }}
+                          onClick={() => setSelectedColorValue(hexValue)}
+                          aria-label={`Select color ${hexValue}`}
+                        />
+                      ))}
+                    </div>
+                    <small>Selected color: {selectedColorValue}</small>
+                  </div>
+                }
+                variants={[
+                  '12-color swatch matrix',
+                  'Selected state marked by outline'
+                ]}
+              />
+
+              <CatalogCard
+                id="form-group"
+                title="Form Group (with validation)"
+                demo={
+                  <div className="validation-group">
+                    <label htmlFor="emailField">Email Address</label>
+                    <input
+                      id="emailField"
+                      className={`field ${emailValue && !emailValue.includes('@') ? 'error' : emailValue.includes('@') ? 'success' : ''}`}
+                      type="email"
+                      value={emailValue}
+                      onChange={(event) => setEmailValue(event.target.value)}
+                      placeholder="name@studio.com"
+                    />
+                    <small className={emailValue.includes('@') ? 'valid' : 'invalid'} style={formValidationRuleStyle}>
+                      {emailValue.includes('@') ? 'Valid email format detected.' : 'Validation: Include @ in the address.'}
+                    </small>
+                  </div>
+                }
+                variants={[
+                  'Grouped label + field + feedback',
+                  'Inline validation hint based on input pattern'
+                ]}
+              />
+            </div>
+          </section>
+        );
+      }
+
+      function App() {
+        const [themeMode, setThemeMode] = useState('light');
+
+        useEffect(() => {
+          document.documentElement.setAttribute('data-theme', themeMode);
+        }, [themeMode]);
+
+        const tableOfContentsGroups = [
+          {
+            title: 'Typography',
+            links: [
+              ['Heading H1-H6', '#type-headings'],
+              ['Body Text', '#type-body'],
+              ['Caption', '#type-caption'],
+              ['Label', '#type-label'],
+              ['Link', '#type-link'],
+              ['Blockquote', '#type-blockquote'],
+              ['Code Inline', '#type-inline-code'],
+              ['Code Block', '#type-code-block'],
+              ['List', '#type-list'],
+              ['Overline', '#type-overline'],
+              ['Lead Text', '#type-lead']
+            ]
+          },
+          {
+            title: 'Buttons',
+            links: [
+              ['Primary', '#btn-primary'],
+              ['Secondary', '#btn-secondary'],
+              ['Ghost/Tertiary', '#btn-ghost'],
+              ['Destructive', '#btn-destructive'],
+              ['Icon', '#btn-icon'],
+              ['Loading', '#btn-loading'],
+              ['Button Group', '#btn-group'],
+              ['Split Button', '#btn-split'],
+              ['Toggle Button', '#btn-toggle'],
+              ['Floating Action', '#btn-fab']
+            ]
+          },
+          {
+            title: 'Form Elements',
+            links: [
+              ['Text Input', '#form-text-input'],
+              ['Textarea', '#form-textarea'],
+              ['Select', '#form-select'],
+              ['Multi-Select', '#form-multi-select'],
+              ['Checkbox', '#form-checkbox'],
+              ['Radio', '#form-radio'],
+              ['Switch', '#form-switch'],
+              ['File Upload', '#form-upload'],
+              ['Date Picker', '#form-date'],
+              ['Search Input', '#form-search'],
+              ['Slider', '#form-slider'],
+              ['Number Input', '#form-number'],
+              ['Password Input', '#form-password'],
+              ['Rating', '#form-rating'],
+              ['Autocomplete', '#form-autocomplete'],
+              ['OTP Input', '#form-otp'],
+              ['Color Picker', '#form-color-picker'],
+              ['Form Group', '#form-group']
+            ]
+          }
+        ];
+
+        return (
+          <main className="page-shell">
+            <header className="top-header">
+              <div className="header-row">
+                <div>
+                  <p className="eyebrow">Neo-Print Poster Grid</p>
+                  <h1 className="title">Components • Typography • Buttons • Forms</h1>
+                  <p className="subtitle">Live rendered specimen catalog with editorial rhythm and print-inspired structure.</p>
+                </div>
+                <button
+                  className="theme-toggle"
+                  onClick={() => setThemeMode((mode) => (mode === 'light' ? 'dark' : 'light'))}
+                  aria-label="Toggle theme"
+                >
+                  Theme: {themeMode === 'light' ? 'Light' : 'Dark'}
+                </button>
+              </div>
+            </header>
+
+            <nav className="toc-panel" aria-label="Table of contents">
+              <h2 className="toc-title">Table of Contents</h2>
+              <div className="toc-grid">
+                {tableOfContentsGroups.map((group) => (
+                  <div className="toc-group" key={group.title}>
+                    <h4>{group.title}</h4>
+                    {group.links.map(([label, href]) => (
+                      <a key={href} href={href}>{label}</a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </nav>
+
+            <TypographySection />
+            <ButtonsSection />
+            <FormsSection />
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import { GitBranch } from 'lucide-react';
+import { NeoPrintCard } from '../neo-print';
 
 interface TraceEvent {
   id: string;
@@ -14,7 +15,7 @@ interface TraceTimelineProps {
 
 export function TraceTimeline({ events }: TraceTimelineProps) {
   if (events.length === 0) {
-    return <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>No trace events found.</p>;
+    return <p style={{ color: 'var(--np-muted)', fontSize: 'var(--text-sm)' }}>No trace events found.</p>;
   }
 
   return (
@@ -41,32 +42,23 @@ export function TraceTimeline({ events }: TraceTimelineProps) {
                   top: 18,
                   bottom: -20,
                   width: 2,
-                  background: 'var(--border-primary)',
+                  background: 'var(--np-line)',
                 }}
                 aria-hidden="true"
               />
             )}
           </div>
-          <article
-            style={{
-              border: '1px solid var(--card-border)',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--card-bg)',
-              padding: 'var(--space-3)',
-              display: 'grid',
-              gap: 'var(--space-1)',
-            }}
-          >
-            <strong style={{ fontSize: 'var(--text-sm)', display: 'inline-flex', gap: 'var(--space-1)', alignItems: 'center' }}>
+          <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-1)' }}>
+            <strong style={{ fontFamily: 'var(--np-font-display)', fontSize: '1.1rem', display: 'inline-flex', gap: 'var(--space-1)', alignItems: 'center', color: 'var(--np-ink)' }}>
               <GitBranch size={12} aria-hidden="true" />
               {event.action}
             </strong>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Actor: {event.actorId}</span>
-            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Outcome: {event.outcome}</span>
-            <time className="font-mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--np-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Actor: {event.actorId}</span>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--np-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Outcome: {event.outcome}</span>
+            <time style={{ fontSize: 'var(--text-xs)', color: 'var(--np-muted)' }}>
               {new Date(event.timestamp).toLocaleString()}
             </time>
-          </article>
+          </NeoPrintCard>
         </li>
       ))}
     </ol>

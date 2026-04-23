@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Design Tokens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400&family=Libre+Bodoni:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #fffdf9;
+        --ink: #1f1a16;
+        --muted: #6b5d4d;
+        --accent: #ad3f14;
+        --line: #d9cec0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        transition: background 220ms ease, color 220ms ease;
+      }
+
+      .page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 34px 26px 72px;
+      }
+
+      .top {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+        margin-bottom: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .kicker {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Libre Bodoni", serif;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(33px, 5vw, 56px);
+        line-height: 0.94;
+      }
+
+      h2 {
+        font-size: 30px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .intro {
+        margin-top: 9px;
+        color: var(--muted);
+        max-width: 760px;
+        font-size: 14px;
+      }
+
+      .toggle {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 10px;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+
+      .links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .links a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--accent);
+      }
+
+      .section {
+        margin-top: 28px;
+      }
+
+      .swatch-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .swatch {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 8px;
+      }
+
+      .swatch-block {
+        height: 64px;
+        border: 1px solid var(--line);
+        margin-bottom: 8px;
+      }
+
+      .swatch-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .swatch-hex {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+
+      .swatch-var {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10px;
+        color: var(--accent);
+        margin-top: 3px;
+      }
+
+      .type-row {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 16px 18px;
+        margin-bottom: 8px;
+      }
+
+      .type-meta {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+      }
+
+      .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .spec-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 12px;
+      }
+
+      .spec-card h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+
+      .spec-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+
+      .spec-table th,
+      .spec-table td {
+        border: 1px solid var(--line);
+        padding: 6px 8px;
+        text-align: left;
+      }
+
+      .spec-table th {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        background: rgba(0, 0, 0, 0.03);
+      }
+
+      code {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+      }
+
+      .border-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .border-box {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .footer {
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 700px) {
+        .border-demo {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const palettes = {
+        light: [
+          { name: "Background", hex: "#f5f1ea", varName: "--bg" },
+          { name: "Panel", hex: "#fffdf9", varName: "--panel" },
+          { name: "Ink", hex: "#1f1a16", varName: "--ink" },
+          { name: "Muted", hex: "#6b5d4d", varName: "--muted" },
+          { name: "Accent", hex: "#ad3f14", varName: "--accent" },
+          { name: "Line", hex: "#d9cec0", varName: "--line" }
+        ],
+        dark: [
+          { name: "Background", hex: "#141311", varName: "--bg" },
+          { name: "Panel", hex: "#1d1a17", varName: "--panel" },
+          { name: "Ink", hex: "#f0e7d8", varName: "--ink" },
+          { name: "Muted", hex: "#baa98d", varName: "--muted" },
+          { name: "Accent", hex: "#c46a2d", varName: "--accent" },
+          { name: "Line", hex: "#473d32", varName: "--line" }
+        ]
+      };
+
+      const displaySizes = [
+        { size: 52, weight: 700, label: "Display Hero" },
+        { size: 34, weight: 700, label: "Section Heading" },
+        { size: 24, weight: 500, label: "Card Heading" },
+        { size: 18, weight: 500, label: "Subhead" }
+      ];
+
+      const bodySizes = [
+        { size: 15, weight: 400, label: "Body Copy" },
+        { size: 13, weight: 400, label: "Secondary / Meta" },
+        { size: 11, weight: 500, label: "Caption / Kicker" }
+      ];
+
+      function Swatch({ swatch, themeInk, themeLine }) {
+        return (
+          <div className="swatch">
+            <div className="swatch-block" style={{ background: swatch.hex, borderColor: themeLine }}></div>
+            <div className="swatch-label">{swatch.name}</div>
+            <div className="swatch-hex">{swatch.hex}</div>
+            <div className="swatch-var">{swatch.varName}</div>
+          </div>
+        );
+      }
+
+      function TokensApp() {
+        const [mode, setMode] = React.useState("light");
+
+        const themes = {
+          light: { bg: "#f5f1ea", panel: "#fffdf9", ink: "#1f1a16", muted: "#6b5d4d", accent: "#ad3f14", line: "#d9cec0" },
+          dark: { bg: "#141311", panel: "#1d1a17", ink: "#f0e7d8", muted: "#baa98d", accent: "#c46a2d", line: "#473d32" }
+        };
+
+        React.useEffect(() => {
+          const theme = themes[mode];
+          const root = document.documentElement;
+          Object.entries(theme).forEach(([key, value]) => {
+            root.style.setProperty(`--${key}`, value);
+          });
+        }, [mode]);
+
+        const currentTheme = themes[mode];
+        const swatches = palettes[mode];
+
+        return (
+          <div className="page">
+            <header className="top">
+              <div>
+                <div className="kicker">Neo-Print Prototype Showcase</div>
+                <h1>Design Tokens</h1>
+                <p className="intro">
+                  Complete token reference for the Neo-Print Poster Grid system: color palette, type scale, spacing primitives, and border conventions.
+                </p>
+                <div className="links">
+                  <a href="./component-catalog.html">Component Catalog</a>
+                  <a href="./page-gallery.html">Page Gallery</a>
+                  <a href="../index.html">Prototype Entry</a>
+                </div>
+              </div>
+              <button className="toggle" onClick={() => setMode(mode === "light" ? "dark" : "light")}>Toggle {mode === "light" ? "Dark" : "Light"} Theme</button>
+            </header>
+
+            <section className="section">
+              <h2>Color Palette &mdash; {mode === "light" ? "Light Theme" : "Dark Theme"}</h2>
+              <div className="swatch-grid">
+                {swatches.map((swatch) => (
+                  <Swatch key={swatch.varName} swatch={swatch} themeInk={currentTheme.ink} themeLine={currentTheme.line} />
+                ))}
+              </div>
+            </section>
+
+            <section className="section">
+              <h2>Typography &mdash; Display (Libre Bodoni)</h2>
+              {displaySizes.map((row) => (
+                <div className="type-row" key={row.label}>
+                  <div className="type-meta">{row.label} / {row.size}px / weight {row.weight}</div>
+                  <div style={{ fontFamily: "'Libre Bodoni', serif", fontSize: row.size, fontWeight: row.weight, lineHeight: 1.1 }}>
+                    Poster Grid Editorial
+                  </div>
+                </div>
+              ))}
+            </section>
+
+            <section className="section">
+              <h2>Typography &mdash; Body (IBM Plex Sans)</h2>
+              {bodySizes.map((row) => (
+                <div className="type-row" key={row.label}>
+                  <div className="type-meta">{row.label} / {row.size}px / weight {row.weight}</div>
+                  <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: row.size, fontWeight: row.weight, lineHeight: 1.55 }}>
+                    Campaign analytics, print diagnostics, operator logs, and queue metrics surface the production narrative.
+                  </div>
+                </div>
+              ))}
+
+              <div className="type-row" style={{ marginTop: 8 }}>
+                <div className="type-meta">Monospace Reference / IBM Plex Mono / 12px / weight 400</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, lineHeight: 1.6 }}>
+                  --bg: #f5f1ea; --accent: #ad3f14; font-size: 15px;
+                </div>
+              </div>
+
+              <div className="type-row" style={{ marginTop: 8 }}>
+                <div className="type-meta">Label Style / IBM Plex Sans / 10px uppercase / tracking 0.16em / muted color</div>
+                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.16em", color: currentTheme.muted }}>
+                  Neo-Print Prototype Showcase &middot; Route: /admin/dashboard
+                </div>
+              </div>
+            </section>
+
+            <section className="section">
+              <h2>Spacing &amp; Layout</h2>
+              <div className="spec-grid">
+                <div className="spec-card">
+                  <h3>Padding &amp; Gap</h3>
+                  <table className="spec-table">
+                    <thead>
+                      <tr>
+                        <th>Token</th>
+                        <th>Value</th>
+                        <th>Use</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><code>section-pad</code></td><td>34px 26px</td><td>Shell page padding</td></tr>
+                      <tr><td><code>card-pad</code></td><td>14-18px</td><td>Card inner content</td></tr>
+                      <tr><td><code>grid-gap</code></td><td>10-16px</td><td>Grid gutter between items</td></tr>
+                      <tr><td><code>micro-gap</code></td><td>4-8px</td><td>Compact inner stacking</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="spec-card">
+                  <h3>Grid Definitions</h3>
+                  <table className="spec-table">
+                    <thead>
+                      <tr>
+                        <th>Layout</th>
+                        <th>Columns</th>
+                        <th>Use</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Dashboard shell</td><td><code>280px 1fr</code></td><td>Sidebar + content</td></tr>
+                      <tr><td>Stat grid</td><td><code>repeat(4, minmax(0,1fr))</code></td><td>KPI card row</td></tr>
+                      <tr><td>Two-column</td><td><code>1.4fr 1fr</code></td><td>Primary / secondary split</td></tr>
+                      <tr><td>Gallery cards</td><td><code>repeat(2, minmax(0,1fr))</code></td><td>Page gallery grid</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="spec-card">
+                  <h3>Breakpoints</h3>
+                  <table className="spec-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                        <th>Behavior</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Desktop</td><td>&ge;1280px</td><td>Full sidebar + multi-col</td></tr>
+                      <tr><td>Tablet</td><td>980px</td><td>Collapse to single column</td></tr>
+                      <tr><td>Mobile</td><td>700px</td><td>Stack all content vertically</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section className="section">
+              <h2>Borders</h2>
+              <div className="border-demo">
+                <div className="border-box" style={{ border: `1px solid ${currentTheme.line}`, background: currentTheme.panel }}>
+                  Solid 1px &middot; var(--line) &middot; Panels, cards, tables
+                </div>
+                <div className="border-box" style={{ border: `1px dashed ${currentTheme.line}`, background: currentTheme.panel }}>
+                  Dashed 1px &middot; var(--line) &middot; Activity feed, usage notes
+                </div>
+              </div>
+            </section>
+
+            <div className="footer">Active token set: <strong>{mode}</strong>. Toggle between light and dark to verify token contrast and legibility in both rendering modes.</div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<TokensApp />);
+    </script>
+  </body>
+</html>

@@ -103,13 +103,13 @@
   --role-user: var(--gray-600);
   --role-locked: var(--red-500);
 
-  --card-bg: #ffffff;
-  --card-border: var(--gray-200);
-  --card-hover-bg: var(--gray-50);
-  --card-radius: var(--radius-xl);
+  --card-bg: var(--np-surface);
+  --card-border: var(--np-line);
+  --card-hover-bg: var(--np-surface-muted);
+  --card-radius: 0px;
 
   --table-header-bg: var(--gray-100);
-  --table-row-hover: #faf5ff;
+  --table-row-hover: rgba(173, 63, 20, 0.08);
   --table-border: var(--gray-200);
 
   --kpi-value-size: var(--text-3xl);
@@ -117,9 +117,9 @@
 
   --sidebar-width: 256px;
   --sidebar-collapsed: 72px;
-  --sidebar-bg: #ffffff;
-  --sidebar-item-hover: var(--gray-100);
-  --sidebar-item-active: linear-gradient(90deg, #7c3aed 0%, #6d28d9 100%);
+  --sidebar-bg: var(--np-surface);
+  --sidebar-item-hover: var(--np-surface-muted);
+  --sidebar-item-active: linear-gradient(90deg, rgba(173, 63, 20, 0.16) 0%, rgba(173, 63, 20, 0.06) 100%);
 
   --input-bg: var(--gray-50);
   --input-border: var(--gray-200);

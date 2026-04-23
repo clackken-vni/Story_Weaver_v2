@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryWeaver Admin v2 · Swiss Grid Precision</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body style="margin: 0">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const ROUTES = [
+        "index",
+        "users",
+        "projects",
+        "monitoring",
+        "audit",
+        "settings",
+        "ai",
+        "kb",
+        "tts",
+        "login",
+      ];
+
+      const routeContent = {
+        index: { title: "Control Grid", subtitle: "System-wide command metrics", accent: "R-01" },
+        users: { title: "User Registry", subtitle: "Identity lifecycle and trust score", accent: "R-02" },
+        projects: { title: "Project Matrix", subtitle: "Delivery pressure and throughput", accent: "R-03" },
+        monitoring: { title: "Live Monitoring", subtitle: "Latency, incidents, and runtime health", accent: "R-04" },
+        audit: { title: "Audit Ledger", subtitle: "Immutable trace of admin actions", accent: "R-05" },
+        settings: { title: "System Settings", subtitle: "Policy and environment controls", accent: "R-06" },
+        ai: { title: "AI Operations", subtitle: "Model quality and safety controls", accent: "R-07" },
+        kb: { title: "Knowledge Base", subtitle: "Content trust and retrieval quality", accent: "R-08" },
+        tts: { title: "Speech Engine", subtitle: "Voice pipeline stability", accent: "R-09" },
+        login: { title: "Authentication", subtitle: "Session policies and entry compliance", accent: "R-10" },
+      };
+
+      const baseStats = [
+        { label: "Uptime", value: "99.97%", delta: "+0.2" },
+        { label: "Critical Alerts", value: "03", delta: "-4" },
+        { label: "Active Editors", value: "148", delta: "+12" },
+        { label: "Deploy Velocity", value: "18/w", delta: "+1" },
+      ];
+
+      const users = [
+        { name: "Nguyen Minh", role: "Owner", status: "Verified", last: "2m ago" },
+        { name: "Linh Tran", role: "Ops", status: "Pending", last: "14m ago" },
+        { name: "Ari Koh", role: "Security", status: "Verified", last: "31m ago" },
+        { name: "Bao Le", role: "Editor", status: "Restricted", last: "1h ago" },
+      ];
+
+      const feed = [
+        "Policy update deployed to monitoring cluster.",
+        "2FA challenge failure threshold lowered to 4 attempts.",
+        "Project Falcon moved to safeguarded release lane.",
+        "Knowledge index rehydration completed in 43s.",
+      ];
+
+      function App() {
+        const [active, setActive] = React.useState("index");
+        const [dark, setDark] = React.useState(false);
+
+        // Palette (Swiss Grid Precision):
+        // Primary Red: #DA1E28, Black: #0D0D0D, White: #F7F7F7, Grid Gray: #C9C9C9
+        const palette = dark
+          ? { bg: "#101010", panel: "#181818", text: "#f5f5f5", muted: "#bababa", accent: "#ff4d57", border: "#3a3a3a" }
+          : { bg: "#f7f7f7", panel: "#ffffff", text: "#111111", muted: "#575757", accent: "#da1e28", border: "#c9c9c9" };
+
+        const shell = {
+          fontFamily: "Inter, Helvetica, Arial, sans-serif",
+          background: palette.bg,
+          color: palette.text,
+          minHeight: "100vh",
+          display: "grid",
+          gridTemplateColumns: "260px 1fr",
+        };
+
+        const panelBase = {
+          background: palette.panel,
+          border: `2px solid ${palette.border}`,
+          boxSizing: "border-box",
+        };
+
+        return (
+          <div style={shell}>
+            <aside style={{ ...panelBase, borderRight: `3px solid ${palette.text}`, padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ border: `2px solid ${palette.text}`, padding: 12 }}>
+                <div style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: palette.muted }}>StoryWeaver Admin v2</div>
+                <div style={{ fontSize: 26, fontWeight: 800, marginTop: 8 }}>GRID</div>
+              </div>
+              <button
+                onClick={() => setDark(!dark)}
+                style={{
+                  height: 44,
+                  background: dark ? palette.accent : palette.text,
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                }}
+              >
+                {dark ? "LIGHT MODE" : "DARK MODE"}
+              </button>
+              <div style={{ display: "grid", gap: 8 }}>
+                {ROUTES.map((route) => (
+                  <NavItem key={route} label={route} active={active === route} onClick={() => setActive(route)} palette={palette} />
+                ))}
+              </div>
+            </aside>
+
+            <main style={{ padding: 18, display: "grid", gap: 14 }}>
+              <section style={{ ...panelBase, padding: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: "-0.02em" }}>{routeContent[active].title}</div>
+                    <div style={{ color: palette.muted, marginTop: 6 }}>{routeContent[active].subtitle}</div>
+                  </div>
+                  <div style={{ border: `2px solid ${palette.accent}`, color: palette.accent, fontWeight: 700, padding: "10px 14px", minWidth: 88, textAlign: "center" }}>{routeContent[active].accent}</div>
+                </div>
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 12 }}>
+                {baseStats.map((stat) => (
+                  <article key={stat.label} style={{ ...panelBase, padding: 14, minHeight: 112 }}>
+                    <div style={{ fontSize: 12, letterSpacing: "0.09em", textTransform: "uppercase", color: palette.muted }}>{stat.label}</div>
+                    <div style={{ fontSize: 31, fontWeight: 800, marginTop: 10 }}>{stat.value}</div>
+                    <div style={{ marginTop: 8, color: stat.delta.startsWith("+") ? palette.accent : palette.muted, fontWeight: 600 }}>{stat.delta}</div>
+                  </article>
+                ))}
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }}>
+                <article style={{ ...panelBase, padding: 12 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 12 }}>User Table</div>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <TableRow header palette={palette} row={{ name: "Name", role: "Role", status: "Status", last: "Last Active" }} />
+                    {users.map((row) => (
+                      <TableRow key={row.name} palette={palette} row={row} />
+                    ))}
+                  </div>
+                </article>
+                <article style={{ ...panelBase, padding: 12 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 12 }}>Activity Feed</div>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {feed.map((item, idx) => (
+                      <div key={idx} style={{ borderLeft: `4px solid ${idx % 2 === 0 ? palette.accent : palette.border}`, paddingLeft: 10, lineHeight: 1.4 }}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </main>
+          </div>
+        );
+      }
+
+      function NavItem({ label, active, onClick, palette }) {
+        const [hover, setHover] = React.useState(false);
+        return (
+          <button
+            onClick={onClick}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              height: 44,
+              border: `2px solid ${active ? palette.accent : palette.border}`,
+              background: active ? (palette.text === "#111111" ? "#111111" : "#202020") : hover ? palette.panel : "transparent",
+              color: active ? "#fff" : palette.text,
+              textAlign: "left",
+              padding: "0 12px",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 180ms ease",
+            }}
+          >
+            {label}
+          </button>
+        );
+      }
+
+      function TableRow({ row, header, palette }) {
+        const [hover, setHover] = React.useState(false);
+        return (
+          <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.2fr 0.8fr 0.8fr 0.8fr",
+              padding: "10px 8px",
+              border: `1px solid ${palette.border}`,
+              background: header ? "transparent" : hover ? palette.bg : "transparent",
+              fontWeight: header ? 700 : 500,
+              fontSize: header ? 12 : 14,
+              textTransform: header ? "uppercase" : "none",
+              letterSpacing: header ? "0.06em" : "normal",
+              cursor: header ? "default" : "pointer",
+              transition: "background 180ms ease",
+            }}
+          >
+            <span>{row.name}</span>
+            <span>{row.role}</span>
+            <span>{row.status}</span>
+            <span>{row.last}</span>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver Admin - Retro Control Room 90s</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    @keyframes retroScanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+    @keyframes retroBlink {
+      0%,49% { opacity:1; }
+      50%,100% { opacity:0; }
+    }
+  </style>
+</head>
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const retroRoutes = ['index','users','projects','monitoring','audit','settings','ai','kb','tts','login'];
+
+    const retroRoutePayload = {
+      index:{panel:'MAIN CONTROL DECK',info:'All subsystems nominal.',stat:[['Nodes','64'],['Uptime','99.7%'],['Alerts','3'],['Temp','41C']]},
+      users:{panel:'PERSONNEL DATABASE',info:'Authorized operators on file.',stat:[['Operators','1,204'],['Clearance L3','89'],['Suspended','5'],['Pending','22']]},
+      projects:{panel:'PROJECT MANIFOLD',info:'Active production threads.',stat:[['Threads','187'],['Stalled','6'],['QA Pass','94%'],['ETA Slip','2']]},
+      monitoring:{panel:'SYSTEM TELEMETRY',info:'Real-time instrumentation feeds.',stat:[['CPU','58%'],['Mem','72%'],['Disk I/O','34MB/s'],['Net','12Gbps']]},
+      audit:{panel:'AUDIT TRACE LOG',info:'Compliance record buffer.',stat:[['Entries','84k'],['Violations','7'],['Cleared','82k'],['Pending','11']]},
+      settings:{panel:'CONFIGURATION BUS',info:'Toggle and threshold matrix.',stat:[['Flags','42'],['Overrides','3'],['Lock Level','2'],['Profile','PROD']]},
+      ai:{panel:'AI INFERENCE ENGINE',info:'Neural pathway status.',stat:[['Models','8'],['Tokens/s','14k'],['Fallback','0.6%'],['Cost/hr','$4.21']]},
+      kb:{panel:'KNOWLEDGE BASE ARRAY',info:'Document retrieval subsystem.',stat:[['Records','110k'],['Index Age','2h'],['Orphans','19'],['Hit Rate','93%']]},
+      tts:{panel:'VOICE SYNTH MODULE',info:'Audio generation pipeline.',stat:[['Channels','12'],['Queue','203'],['Render Avg','2.7s'],['Failures','1']]},
+      login:{panel:'ACCESS CONTROL GATE',info:'Authentication challenge results.',stat:[['Auth OK','99.1%'],['MFA','78%'],['Lockouts','8'],['Geo Block','14']]}
+    };
+
+    const retroUsers = [
+      ['OP-0041','Nguyen Tuan','SysOp','monitoring','ONLINE'],
+      ['OP-0087','Le Minh','DataEng','kb','STANDBY'],
+      ['OP-0102','Pham Dieu','SecOps','audit','ONLINE'],
+      ['OP-0119','Vo Phuc','AITrainer','ai','BUSY']
+    ];
+
+    const retroLog = [
+      '[14:32:07] WARN: Memory pressure approaching 80% threshold',
+      '[14:31:44] INFO: Project P-904 checkpoint saved to slot 3',
+      '[14:31:02] INFO: TTS voice "Echo" updated to v2.4 weights',
+      '[14:30:18] CRIT: Brief network partition detected in zone B2'
+    ];
+
+    function RetroControlDashboard() {
+      const [route, setRoute] = React.useState('index');
+      const data = retroRoutePayload[route];
+
+      const retroGreen = '#33ff33';
+      const retroAmber = '#ffbf00';
+      const retroDim = '#1a5c1a';
+      const retroBg = '#0a0a0a';
+      const retroPanelBg = '#0f1a0f';
+
+      return (
+        <div style={{
+          minHeight:'100vh', background:retroBg, color:retroGreen,
+          fontFamily:'Share Tech Mono, VT323, monospace', position:'relative', overflow:'hidden'
+        }}>
+          {/* Scanline overlay */}
+          <div style={{
+            position:'fixed', top:0, left:0, right:0, bottom:0,
+            background:'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)',
+            pointerEvents:'none', zIndex:10
+          }} />
+
+          <div style={{display:'grid', gridTemplateColumns:'240px 1fr', minHeight:'100vh'}}>
+            <aside style={{
+              borderRight:`2px solid ${retroDim}`, padding:'16px 14px',
+              background:'linear-gradient(180deg, #0d150d 0%, #060a06 100%)'
+            }}>
+              <div style={{
+                border:`2px solid ${retroGreen}`, padding:'10px 12px', marginBottom:16,
+                textAlign:'center', fontSize:14, textShadow:`0 0 8px ${retroGreen}`
+              }}>
+                <div style={{fontSize:18, fontFamily:'VT323, monospace'}}>STORYWEAVER</div>
+                <div style={{fontSize:11, color:retroAmber}}>CONTROL ROOM v2.0</div>
+              </div>
+
+              <div style={{fontSize:10, color:retroDim, marginBottom:10}}>SUBSYSTEMS</div>
+              {retroRoutes.map(r => (
+                <button key={r} onClick={() => setRoute(r)} style={{
+                  display:'block', width:'100%', textAlign:'left', marginBottom:5, padding:'8px 10px',
+                  border:`1px solid ${route===r ? retroGreen : retroDim}`,
+                  background: route===r ? 'rgba(51,255,51,0.12)' : 'transparent',
+                  color: route===r ? retroGreen : retroDim,
+                  cursor:'pointer', fontFamily:'inherit', textTransform:'uppercase',
+                  textShadow: route===r ? `0 0 6px ${retroGreen}` : 'none'
+                }}>
+                  {'>'} {r}
+                </button>
+              ))}
+
+              <div style={{
+                marginTop:16, border:`1px solid ${retroDim}`, padding:8, fontSize:10, color:retroAmber
+              }}>
+                <div>STATUS: NOMINAL</div>
+                <div>CLOCK: {new Date().toLocaleTimeString()}</div>
+                <div style={{animation:'retroBlink 1s step-end infinite', color:retroGreen}}>
+                  RECORDING...
+                </div>
+              </div>
+            </aside>
+
+            <main style={{padding:'18px 22px'}}>
+              <header style={{
+                border:`2px solid ${retroDim}`, padding:'14px 16px', marginBottom:14,
+                background:retroPanelBg
+              }}>
+                <div style={{fontSize:10, color:retroAmber}}>ACTIVE PANEL &gt; {route.toUpperCase()}</div>
+                <h1 style={{
+                  margin:'6px 0 4px', fontSize:28, fontFamily:'VT323, monospace',
+                  textShadow:`0 0 12px ${retroGreen}`
+                }}>
+                  {data.panel}
+                </h1>
+                <p style={{margin:0, fontSize:13, color:retroDim}}>{data.info}</p>
+              </header>
+
+              <section style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:10, marginBottom:14}}>
+                {data.stat.map(([label, value]) => (
+                  <div key={label} style={{
+                    border:`2px solid ${retroDim}`, background:retroPanelBg, padding:'10px 12px',
+                    borderTop:`3px solid ${retroGreen}`
+                  }}>
+                    <div style={{fontSize:10, color:retroAmber}}>{label}</div>
+                    <div style={{fontSize:26, fontFamily:'VT323, monospace', textShadow:`0 0 8px ${retroGreen}`}}>{value}</div>
+                  </div>
+                ))}
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:12}}>
+                <div style={{border:`2px solid ${retroDim}`, background:retroPanelBg, padding:12}}>
+                  <h3 style={{margin:'0 0 8px', fontSize:14, color:retroAmber}}>OPERATOR ROSTER</h3>
+                  <table style={{width:'100%', borderCollapse:'collapse', fontSize:12}}>
+                    <thead>
+                      <tr>{['CALL','NAME','ROLE','ZONE','SIG'].map(h => (
+                        <th key={h} style={{textAlign:'left', padding:'6px 4px', borderBottom:`1px solid ${retroDim}`, color:retroAmber}}>{h}</th>
+                      ))}</tr>
+                    </thead>
+                    <tbody>
+                      {retroUsers.map(row => (
+                        <tr key={row[0]}>
+                          {row.map((cell, idx) => (
+                            <td key={idx} style={{
+                              padding:'7px 4px', borderBottom:`1px dashed #1a3a1a`,
+                              color: idx===4 ? (cell==='ONLINE'?retroGreen:cell==='BUSY'?retroAmber:retroDim) : retroGreen
+                            }}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{border:`2px solid ${retroDim}`, background:retroPanelBg, padding:12}}>
+                  <h3 style={{margin:'0 0 8px', fontSize:14, color:retroAmber}}>SYSTEM LOG</h3>
+                  <div style={{display:'grid', gap:6}}>
+                    {retroLog.map(entry => {
+                      const isWarn = entry.includes('WARN');
+                      const isCrit = entry.includes('CRIT');
+                      return (
+                        <div key={entry} style={{
+                          padding:'7px 8px', fontSize:11,
+                          borderLeft:`3px solid ${isCrit?'#ff3333':isWarn?retroAmber:retroDim}`,
+                          background: isCrit ? 'rgba(255,50,50,0.08)' : 'transparent',
+                          color: isCrit ? '#ff6666' : isWarn ? retroAmber : retroGreen
+                        }}>{entry}</div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<RetroControlDashboard />);
+  </script>
+</body>
+</html>

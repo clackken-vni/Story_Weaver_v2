@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver Admin - Neo-Print Poster Grid</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@500;700&family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const neoPrintRoutes = ['index','users','projects','monitoring','audit','settings','ai','kb','tts','login'];
+    const PAGE_ROUTE = 'tts';
+
+    const neoPrintContent = {
+      index: {headline: 'Editorial Command Desk', sub: 'Front-page view of story operations.', stat: [['Narratives', '214'], ['Revisions', '1,042'], ['Approval Rate', '92%'], ['Backlog', '36']]},
+      users: {headline: 'People & Permissions Ledger', sub: 'Contributors, editors, and gatekeepers.', stat: [['Users', '9,102'], ['Contributors', '3,281'], ['Locked', '19'], ['New Invites', '77']]},
+      projects: {headline: 'Project Editions Board', sub: 'Issue planning across all production lanes.', stat: [['Active Editions', '188'], ['Delayed', '14'], ['In Review', '57'], ['Published', '31']]},
+      monitoring: {headline: 'Pressroom Instrument Panel', sub: 'System pressure and throughput.', stat: [['Req/min', '82k'], ['Error Ratio', '0.41%'], ['Queue', '389'], ['SLA', '99.3%']]},
+      audit: {headline: 'Compliance Daily', sub: 'Every action in a printable archive.', stat: [['Audit Trails', '71k'], ['Open Flags', '6'], ['Closed', '123'], ['Critical', '1']]},
+      settings: {headline: 'Policy Typesetting', sub: 'Feature toggles and publication controls.', stat: [['Feature Flags', '49'], ['Workspaces', '12'], ['Webhooks', '9'], ['Secrets', 'Healthy']]},
+      ai: {headline: 'Machine Edit Bureau', sub: 'Prompting, safety rails, and model flow.', stat: [['Inference/min', '4,901'], ['Average Cost', '$0.014'], ['Fallback', '1.2%'], ['Safe Blocks', '36']]},
+      kb: {headline: 'Knowledge Gazette', sub: 'Taxonomy and source truth quality.', stat: [['Indexed Docs', '102k'], ['Coverage', '94%'], ['Stale Nodes', '42'], ['Broken Ref', '21']]},
+      tts: {headline: 'Voice Syndication Deck', sub: 'Narration production and export stream.', stat: [['Voices', '26'], ['Daily Renders', '1,882'], ['Mean Runtime', '2.9s'], ['Retries', '9']]},
+      login: {headline: 'Access Noticeboard', sub: 'Entry attempts and trust score.', stat: [['Success', '98.9%'], ['Challenge Rate', '17%'], ['Blocked', '52'], ['Threats', '2']]}
+    };
+
+    const neoPrintUsers = [
+      ['ID-552', 'Thu Hang', 'Managing Editor', 'users', 'On duty'],
+      ['ID-667', 'Viet Hoang', 'Section Lead', 'projects', 'Review'],
+      ['ID-740', 'Bao Chau', 'Ops Analyst', 'monitoring', 'On duty'],
+      ['ID-811', 'Lam Anh', 'Policy Admin', 'audit', 'Escalated']
+    ];
+
+    const neoPrintEvents = [
+      '08:21 — Project P-702 moved from Draft to Review',
+      '08:16 — Compliance note appended to TTS export 1138',
+      '08:08 — AI channel switched to guarded profile B',
+      '07:59 — Region us-east queue cleared by autoscale burst'
+    ];
+
+    function routeToHref(routeKey) {
+      return routeKey === 'index' ? 'dashboard.html' : `${routeKey}.html`;
+    }
+
+    function NeoPrintDashboardPage() {
+      const [dark, setDark] = React.useState(false);
+      const route = PAGE_ROUTE;
+      const c = neoPrintContent[route];
+
+      const palette = dark
+        ? {bg:'#141311', panel:'#1d1a17', ink:'#f0e7d8', muted:'#baa98d', accent:'#c46a2d', line:'#473d32'}
+        : {bg:'#f5f1ea', panel:'#fffdf9', ink:'#1f1a16', muted:'#6b5d4d', accent:'#ad3f14', line:'#d9cec0'};
+
+      return (
+        <div style={{minHeight:'100vh', background:palette.bg, color:palette.ink, fontFamily:'IBM Plex Sans, sans-serif'}}>
+          <div style={{display:'grid', gridTemplateColumns:'280px 1fr', minHeight:'100vh'}}>
+            <aside style={{padding:'26px 20px', borderRight:`1px solid ${palette.line}`, background:palette.panel}}>
+              <div style={{fontFamily:'Libre Bodoni, serif', fontSize:28, lineHeight:1.05, marginBottom:18}}>
+                STORYWEAVER
+                <div style={{fontSize:13, letterSpacing:'0.2em', marginTop:6}}>ADMIN POSTER</div>
+              </div>
+              <button onClick={() => setDark(!dark)} style={{width:'100%', marginBottom:18, padding:'10px', border:`1px solid ${palette.line}`, background:'transparent', color:palette.ink, cursor:'pointer', fontFamily:'inherit'}}>
+                Theme: {dark ? 'Nocturne' : 'Paper'}
+              </button>
+              <div style={{display:'grid', gap:7}}>
+                {neoPrintRoutes.map((r, i) => (
+                  <a key={r} href={routeToHref(r)} style={{
+                    textAlign:'left', padding:'11px 12px', border:`1px solid ${route===r?palette.accent:palette.line}`,
+                    background: route===r ? `${palette.accent}16` : 'transparent', color:palette.ink,
+                    cursor:'pointer', display:'flex', justifyContent:'space-between', fontFamily:'inherit', textDecoration:'none'
+                  }}>
+                    <span style={{textTransform:'uppercase'}}>{r}</span>
+                    <span style={{color:palette.muted}}>{String(i+1).padStart(2,'0')}</span>
+                  </a>
+                ))}
+              </div>
+            </aside>
+
+            <main style={{padding:'24px 26px 28px'}}>
+              <section style={{display:'grid', gridTemplateColumns:'2fr 1fr', gap:16, marginBottom:16}}>
+                <div style={{border:`1px solid ${palette.line}`, padding:18, background:palette.panel}}>
+                  <div style={{fontSize:11, letterSpacing:'0.2em', color:palette.muted}}>EDITION · {route.toUpperCase()}</div>
+                  <h1 style={{fontFamily:'Libre Bodoni, serif', fontSize:52, lineHeight:0.95, margin:'8px 0 10px'}}>{c.headline}</h1>
+                  <p style={{margin:0, maxWidth:540, color:palette.muted}}>{c.sub}</p>
+                </div>
+                <div style={{border:`1px solid ${palette.line}`, padding:18, background:palette.panel, display:'grid', alignContent:'space-between'}}>
+                  <div style={{fontFamily:'Libre Bodoni, serif', fontSize:24}}>Lead Signal</div>
+                  <div style={{fontSize:54, fontWeight:700, color:palette.accent}}>+12.4%</div>
+                  <div style={{fontSize:12, color:palette.muted}}>Week-over-week editorial velocity</div>
+                </div>
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:14, marginBottom:16}}>
+                {c.stat.map(([k,v]) => (
+                  <div key={k} style={{border:`1px solid ${palette.line}`, background:palette.panel, padding:14}}>
+                    <div style={{fontSize:11, letterSpacing:'0.14em', color:palette.muted}}>{k}</div>
+                    <div style={{fontFamily:'Libre Bodoni, serif', fontSize:34, marginTop:4}}>{v}</div>
+                  </div>
+                ))}
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16}}>
+                <div style={{border:`1px solid ${palette.line}`, background:palette.panel, padding:14}}>
+                  <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>User Table Mock</h3>
+                  <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                    <thead>
+                      <tr>{['ID','Name','Role','Surface','Status'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                    </thead>
+                    <tbody>
+                      {neoPrintUsers.map(row => (
+                        <tr key={row[0]}>
+                          {row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`, color:idx===4?palette.accent:palette.ink}}>{cell}</td>)}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{border:`1px solid ${palette.line}`, background:palette.panel, padding:14}}>
+                  <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Activity Feed</h3>
+                  <div style={{display:'grid', gap:10}}>
+                    {neoPrintEvents.map(item => (
+                      <div key={item} style={{border:`1px solid ${palette.line}`, padding:'10px 11px', fontSize:13, background:`${palette.accent}0c`}}>{item}</div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<NeoPrintDashboardPage />);
+  </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import { useAudit } from '../hooks/useAudit';
 import { AuditEventRow } from './ui/AuditEventRow';
 import { TraceTimeline } from './ui/TraceTimeline';
 import { SkeletonLoader } from './ui/SkeletonLoader';
+import { NeoPrintButton, NeoPrintCard, NeoPrintTag } from './neo-print';
 
 interface AuditEvent {
   id: string;
@@ -26,44 +27,66 @@ export function AuditPanel() {
   const traceEvents = (traceChain?.data as { events?: AuditEvent[] } | undefined)?.events ?? [];
 
   const handleTraceSearch = () => {
-    if (!traceInput.trim()) return;
+    if (!traceInput.trim()) {
+      return;
+    }
+
     void searchTrace(traceInput.trim());
   };
 
   return (
     <ModuleShell title="Audit & Compliance" subtitle="Event timeline, trace explorer, export" loading={false} error={error}>
       <section style={{ display: 'grid', gap: 'var(--space-5)' }}>
-        {/* Search + trace */}
-        <div className="audit-search-bar">
-          <label htmlFor="trace-search" className="sr-only">Search by trace id</label>
-          <div className="audit-search-wrap">
-            <Search size={14} className="audit-search-icon" />
-            <input
-              id="trace-search"
-              type="text"
-              value={traceInput}
-              onChange={(e) => setTraceInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleTraceSearch()}
-              placeholder="Search by traceId..."
-              className="audit-search-input"
-            />
+        <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-4)' }}>
+          <div className="audit-heading-row">
+            <div>
+              <p className="audit-kicker">Trace explorer</p>
+              <h3 className="audit-title">Search the chain of record</h3>
+            </div>
+            <NeoPrintTag tone={traceEvents.length > 0 ? 'accent' : 'default'}>
+              {traceEvents.length > 0 ? `${traceEvents.length} linked events` : 'Idle'}
+            </NeoPrintTag>
           </div>
-          <button type="button" onClick={handleTraceSearch} className="audit-search-btn">
-            <Search size={14} aria-hidden="true" />
-            Search
-          </button>
-        </div>
+          <div className="audit-search-bar">
+            <label htmlFor="trace-search" className="sr-only">Search by trace id</label>
+            <div className="audit-search-wrap">
+              <Search size={14} className="audit-search-icon" />
+              <input
+                id="trace-search"
+                type="text"
+                value={traceInput}
+                onChange={(e) => setTraceInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleTraceSearch()}
+                placeholder="Search by traceId..."
+                className="audit-search-input"
+              />
+            </div>
+            <NeoPrintButton type="button" variant="secondary" onClick={handleTraceSearch}>
+              <Search size={14} aria-hidden="true" />
+              Search
+            </NeoPrintButton>
+          </div>
+        </NeoPrintCard>
 
-        {/* Event list — real data */}
         {loading ? (
           <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
-            <SkeletonLoader variant="row" /><SkeletonLoader variant="row" /><SkeletonLoader variant="row" />
+            <SkeletonLoader variant="row" />
+            <SkeletonLoader variant="row" />
+            <SkeletonLoader variant="row" />
           </div>
         ) : eventList.length === 0 ? (
-          <div className="audit-empty">No audit events found.</div>
+          <NeoPrintCard>
+            <p className="audit-copy">No audit events found.</p>
+          </NeoPrintCard>
         ) : (
           <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
-            <h3 className="audit-section-title">Event list</h3>
+            <div className="audit-heading-row">
+              <div>
+                <p className="audit-kicker">Event wire</p>
+                <h3 className="audit-title">Event list</h3>
+              </div>
+              <NeoPrintTag tone="default">{eventList.length} entries</NeoPrintTag>
+            </div>
             {eventList.map((event) => (
               <AuditEventRow
                 key={event.id}
@@ -81,10 +104,15 @@ export function AuditPanel() {
           </section>
         )}
 
-        {/* Trace timeline — real data */}
-        {traceEvents.length > 0 && (
+        {traceEvents.length > 0 ? (
           <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
-            <h3 className="audit-section-title">Trace timeline</h3>
+            <div className="audit-heading-row">
+              <div>
+                <p className="audit-kicker">Chain view</p>
+                <h3 className="audit-title">Trace timeline</h3>
+              </div>
+              <NeoPrintTag tone="accent">Trace result</NeoPrintTag>
+            </div>
             <TraceTimeline
               events={traceEvents.map((event) => ({
                 id: event.id,
@@ -95,31 +123,74 @@ export function AuditPanel() {
               }))}
             />
           </section>
-        )}
+        ) : null}
       </section>
 
       <style jsx>{`
-        .audit-search-bar { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-        .audit-search-wrap { position: relative; flex: 1; min-width: 240px; }
-        .audit-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); pointer-events: none; }
+        .audit-heading-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          gap: var(--space-3);
+          flex-wrap: wrap;
+        }
+
+        .audit-kicker {
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--np-muted);
+        }
+
+        .audit-title {
+          margin-top: 6px;
+          font-family: var(--np-font-display);
+          font-size: clamp(1.6rem, 1.35rem + 0.45vw, 2rem);
+          line-height: 0.95;
+          color: var(--np-ink);
+        }
+
+        .audit-copy {
+          font-size: var(--text-sm);
+          line-height: 1.6;
+          color: var(--np-muted);
+        }
+
+        .audit-search-bar {
+          display: flex;
+          gap: var(--space-2);
+          flex-wrap: wrap;
+        }
+
+        .audit-search-wrap {
+          position: relative;
+          flex: 1;
+          min-width: 240px;
+        }
+
+        .audit-search-icon {
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--np-muted);
+          pointer-events: none;
+        }
+
         .audit-search-input {
-          width: 100%; padding: 10px 12px 10px 34px; font-size: var(--text-sm);
-          background: var(--input-bg); border: 1px solid var(--input-border); border-radius: var(--radius-lg);
-          color: var(--text-primary); outline: none; transition: border-color 0.15s;
+          width: 100%;
+          min-height: 38px;
+          padding: 10px 12px 10px 34px;
+          font-size: var(--text-sm);
+          background: var(--np-surface);
+          border: 1px solid var(--np-line);
+          color: var(--np-ink);
+          outline: none;
         }
-        .audit-search-input:focus { border-color: var(--primary-500); }
-        .audit-search-btn {
-          display: inline-flex; align-items: center; gap: var(--space-1);
-          padding: 10px 14px; font-size: var(--text-sm); font-weight: var(--weight-medium);
-          background: var(--primary-600); color: #fff; border: 1px solid var(--primary-600);
-          border-radius: var(--radius-lg); cursor: pointer; transition: background 0.15s;
-        }
-        .audit-search-btn:hover { background: var(--primary-700); }
-        .audit-section-title { font-size: var(--text-base); font-weight: var(--weight-semibold); color: var(--text-primary); }
-        .audit-empty {
-          border: 1px dashed var(--border-primary); border-radius: var(--radius-xl);
-          background: var(--surface-secondary); color: var(--text-tertiary);
-          font-size: var(--text-sm); padding: var(--space-8); text-align: center;
+
+        .audit-search-input:focus {
+          border-color: var(--np-accent);
+          box-shadow: inset 0 0 0 1px var(--np-accent);
         }
       `}</style>
     </ModuleShell>

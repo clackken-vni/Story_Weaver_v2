@@ -1,0 +1,198 @@
+/* ──────────────────────────────────────────────────────────────
+   Neo-Print Poster Grid — Base Stylesheet
+   Editorial / magazine-inspired admin dashboard
+   ────────────────────────────────────────────────────────────── */
+
+/* ── Font imports ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* ── Light palette (default) ─────────────────────────────── */
+:root {
+  --np-bg:      #f5f1ea;
+  --np-panel:   #fffdf9;
+  --np-ink:     #1f1a16;
+  --np-muted:   #6b5d4d;
+  --np-accent:  #ad3f14;
+  --np-line:    #d9cec0;
+
+  --np-accent-faint: rgba(173, 63, 20, 0.06);
+  --np-accent-glow:  rgba(173, 63, 20, 0.12);
+
+  --np-font-display: 'Libre Bodoni', 'Georgia', serif;
+  --np-font-body:    'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+
+  --np-radius-sm:  2px;
+  --np-radius-md:  4px;
+
+  --np-space-xs:   4px;
+  --np-space-sm:   8px;
+  --np-space-md:   14px;
+  --np-space-lg:   20px;
+  --np-space-xl:   28px;
+  --np-space-2xl:  40px;
+
+  --np-transition: 220ms ease;
+}
+
+/* ── Dark palette ────────────────────────────────────────── */
+[data-theme="dark"] {
+  --np-bg:      #141311;
+  --np-panel:   #1d1a17;
+  --np-ink:     #f0e7d8;
+  --np-muted:   #baa98d;
+  --np-accent:  #c46a2d;
+  --np-line:    #473d32;
+
+  --np-accent-faint: rgba(196, 106, 45, 0.08);
+  --np-accent-glow:  rgba(196, 106, 45, 0.15);
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--np-font-body);
+  background: var(--np-bg);
+  color: var(--np-ink);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--np-line);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--np-muted);
+}
+
+/* ── Typography utilities ────────────────────────────────── */
+.np-display {
+  font-family: var(--np-font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+.np-display-sm {
+  font-family: var(--np-font-display);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.np-body {
+  font-family: var(--np-font-body);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.np-label {
+  font-family: var(--np-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--np-muted);
+}
+
+.np-mono {
+  font-family: var(--np-font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Surface utilities ───────────────────────────────────── */
+.np-panel {
+  background: var(--np-panel);
+  border: 1px solid var(--np-line);
+}
+
+.np-panel-accent {
+  background: var(--np-accent-faint);
+  border: 1px solid var(--np-line);
+}
+
+/* ── Layout utilities ────────────────────────────────────── */
+.np-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--np-space-md);
+}
+
+.np-grid-2 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--np-space-md);
+}
+
+.np-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.np-row {
+  display: flex;
+  align-items: center;
+}
+
+/* ── Transition utility ──────────────────────────────────── */
+.np-transition {
+  transition:
+    background-color var(--np-transition),
+    border-color var(--np-transition),
+    color var(--np-transition),
+    opacity var(--np-transition);
+}
+
+/* ── Selection ───────────────────────────────────────────── */
+::selection {
+  background: var(--np-accent);
+  color: var(--np-panel);
+}
+
+/* ── Focus visible ───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--np-accent);
+  outline-offset: 2px;
+}

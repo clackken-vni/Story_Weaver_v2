@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver Admin - Neo-Print Poster Grid</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@500;700&family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const ROUTES = ['index','users','projects','monitoring','audit','settings','ai','kb','tts','login'];
+
+    const ROUTE_CONTENT = {
+      index: {
+        headline: 'Editorial Command Desk',
+        sub: 'Front-page view of story operations.',
+        stat: [['Open Incidents', '5'], ['Degraded Services', '2'], ['Active Alerts', '4'], ['Uptime', '99.97%']]
+      },
+      users: {
+        headline: 'People & Permissions Ledger',
+        sub: 'Contributors, editors, and gatekeepers.',
+        stat: [['Total Users', '9,102'], ['Admin Write', '148'], ['Suspended', '17'], ['New Invites', '77']]
+      },
+      projects: {
+        headline: 'Project Editions Board',
+        sub: 'Issue planning across all production lanes.',
+        stat: [['Running Boards', '188'], ['Delayed', '14'], ['In Review', '57'], ['Publish Today', '31']]
+      },
+      monitoring: {
+        headline: 'Pressroom Instrument Panel',
+        sub: 'System pressure and throughput.',
+        stat: [['Req/min', '82k'], ['Error Ratio', '0.41%'], ['Queue', '389'], ['SLA', '99.3%']]
+      },
+      audit: {
+        headline: 'Compliance Daily',
+        sub: 'Every action in a printable archive.',
+        stat: [['Audit Trails', '71k'], ['Open Flags', '6'], ['Closed', '123'], ['Critical', '1']]
+      },
+      settings: {
+        headline: 'Policy Typesetting',
+        sub: 'Feature toggles and publication controls.',
+        stat: [['Feature Flags', '49'], ['Workspace Keys', '12'], ['Webhooks', '9'], ['Secrets', 'Healthy']]
+      },
+      ai: {
+        headline: 'Machine Edit Bureau',
+        sub: 'Prompting, safety rails, and model flow.',
+        stat: [['Inference/min', '4,901'], ['Average Cost', '$0.014'], ['Fallback', '1.2%'], ['Safe Blocks', '36']]
+      },
+      kb: {
+        headline: 'Knowledge Gazette',
+        sub: 'Taxonomy and source truth quality.',
+        stat: [['Indexed Docs', '102k'], ['Coverage', '94%'], ['Stale Nodes', '42'], ['Broken Ref', '21']]
+      },
+      tts: {
+        headline: 'Voice Syndication Deck',
+        sub: 'Narration production and export stream.',
+        stat: [['Voices', '26'], ['Daily Renders', '1,882'], ['Mean Runtime', '2.9s'], ['Retries', '9']]
+      },
+      login: {
+        headline: 'Access Noticeboard',
+        sub: 'Entry attempts and trust score.',
+        stat: [['Success', '98.9%'], ['Challenge Rate', '17%'], ['Blocked', '52'], ['Threats', '2']]
+      }
+    };
+
+    const USERS = [
+      ['ID-552', 'Thu Hang', 'Managing Editor', 'users', 'On duty'],
+      ['ID-667', 'Viet Hoang', 'Section Lead', 'projects', 'Review'],
+      ['ID-740', 'Bao Chau', 'Ops Analyst', 'monitoring', 'On duty'],
+      ['ID-811', 'Lam Anh', 'Policy Admin', 'audit', 'Escalated']
+    ];
+
+    const EVENTS = [
+      '08:21 — Project P-702 moved from Draft to Review',
+      '08:16 — Compliance note appended to TTS export 1138',
+      '08:08 — AI channel switched to guarded profile B',
+      '07:59 — Region us-east queue cleared by autoscale burst'
+    ];
+
+    const MON_SERVICES = [
+      ['api-gateway', 'healthy', '45ms', '0.09%'],
+      ['auth-service', 'degraded', '212ms', '0.74%'],
+      ['ai-service', 'healthy', '134ms', '0.18%'],
+      ['kb-service', 'critical', '662ms', '2.91%']
+    ];
+
+    const AUDIT_ROWS = [
+      ['AU-009822', 'admin.write.users', 'actor_172', 'trace_aa91', 'resolved'],
+      ['AU-009821', 'admin.read.monitoring', 'actor_026', 'trace_aa88', 'ok'],
+      ['AU-009820', 'admin.write.settings', 'actor_172', 'trace_aa82', 'investigating'],
+      ['AU-009819', 'admin.read.audit', 'actor_044', 'trace_aa79', 'ok']
+    ];
+
+    function NeoPrintDashboard() {
+      const [route, setRoute] = React.useState('index');
+      const [dark, setDark] = React.useState(false);
+      const c = ROUTE_CONTENT[route];
+
+      const palette = dark
+        ? {bg:'#141311', panel:'#1d1a17', ink:'#f0e7d8', muted:'#baa98d', accent:'#c46a2d', line:'#473d32'}
+        : {bg:'#f5f1ea', panel:'#fffdf9', ink:'#1f1a16', muted:'#6b5d4d', accent:'#ad3f14', line:'#d9cec0'};
+
+      const cardStyle = { border:`1px solid ${palette.line}`, background:palette.panel, padding:14 };
+
+      const renderRouteBody = () => {
+        if (route === 'users') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Users & Access</h3>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                  <thead>
+                    <tr>{['ID','Name','Role','Surface','Status'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {USERS.map(row => (
+                      <tr key={row[0]}>
+                        {row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`, color:idx===4?palette.accent:palette.ink}}>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Role Distribution</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {[['Owner','14'],['Admin','148'],['Editor','3,281'],['Viewer','5,659']].map(([name,val]) => (
+                    <div key={name} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13, display:'flex', justifyContent:'space-between'}}>
+                      <span>{name}</span><span style={{color:palette.muted}}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'projects') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.1fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Edition Boards</h3>
+                <div style={{display:'grid', gap:10}}>
+                  {[
+                    ['P-702 · Brand Narrative Revamp','In Review','Owner: Thu Hang'],
+                    ['P-688 · TTS Script Pack','Draft','Owner: Lam Anh'],
+                    ['P-673 · AI Prompt Safety Matrix','Delayed','Owner: Bao Chau'],
+                  ].map(([title,status,owner]) => (
+                    <div key={title} style={{border:`1px solid ${palette.line}`, padding:'10px 11px'}}>
+                      <div style={{fontSize:14, marginBottom:4}}>{title}</div>
+                      <div style={{fontSize:12, color:palette.muted}}>{owner} · {status}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Publishing Timeline</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['09:00 Editorial handoff','11:30 Compliance review','14:00 Asset lock','16:45 Final publish window'].map(item => (
+                    <div key={item} style={{borderLeft:`2px solid ${palette.accent}`, padding:'6px 10px', fontSize:13}}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'monitoring') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Service Matrix</h3>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                  <thead>
+                    <tr>{['Service','Status','P95','Error Rate'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {MON_SERVICES.map(([svc,status,p95,err]) => (
+                      <tr key={svc}>
+                        <td style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`}}>{svc}</td>
+                        <td style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`, color: status === 'critical' ? palette.accent : palette.ink}}>{status}</td>
+                        <td style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`}}>{p95}</td>
+                        <td style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`}}>{err}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Active Incidents</h3>
+                <div style={{display:'grid', gap:10}}>
+                  {['INC-901 auth-service degraded','INC-894 kb-service timeout burst','INC-883 queue saturation warning'].map(item => (
+                    <div key={item} style={{border:`1px solid ${palette.line}`, padding:'10px 11px', fontSize:13, background:`${palette.accent}0c`}}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'audit') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Event List</h3>
+                <div style={{display:'flex', gap:8, marginBottom:10}}>
+                  <input placeholder="Search by traceId..." style={{flex:1, border:`1px solid ${palette.line}`, background:'transparent', color:palette.ink, padding:'8px 10px'}} />
+                  <button style={{border:`1px solid ${palette.line}`, background:palette.panel, color:palette.ink, padding:'8px 10px'}}>Search</button>
+                </div>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                  <thead>
+                    <tr>{['ID','Action','Actor','Trace','Outcome'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {AUDIT_ROWS.map(row => (
+                      <tr key={row[0]}>
+                        {row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`, color:idx===4 && cell!=='ok' ? palette.accent : palette.ink}}>{cell}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Trace Timeline</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['08:22 policy write','08:24 trace fork','08:25 rollback queued','08:27 audit resolved'].map(item => (
+                    <div key={item} style={{borderLeft:`2px solid ${palette.accent}`, padding:'6px 10px', fontSize:13}}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'settings') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.2fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Configuration Groups</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['Authentication','API Gateway','AI Providers','TTS Providers','Knowledge Base','Infrastructure','Feature Flags','Security'].map(g => (
+                    <div key={g} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13}}>{g}</div>
+                  ))}
+                </div>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Secrets Health</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['jwt_secret · rotated 12d ago','redis_url · active','nats_url · active','webhook_signing_key · pending rotation'].map(s => (
+                    <div key={s} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13, color:s.includes('pending')?palette.accent:palette.ink}}>{s}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'ai') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Model Routing</h3>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                  <thead>
+                    <tr>{['Route','Primary','Fallback','Guardrail'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ['chat.generate','claude-sonnet-4-6','claude-haiku-4-5','strict'],
+                      ['summary.batch','claude-opus-4-7','claude-sonnet-4-6','standard'],
+                      ['safety.check','claude-haiku-4-5','claude-haiku-4-5','strict']
+                    ].map(row => (
+                      <tr key={row[0]}>{row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`}}>{cell}</td>)}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Guardrail Status</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['Prompt injection filter · active','PII redaction · active','Toxicity gate · active','Policy override · none'].map(item => (
+                    <div key={item} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13}}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'kb') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Document Index</h3>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                  <thead>
+                    <tr>{['Doc ID','Title','Coverage','Freshness'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ['KB-9812','Auth Policy Handbook','98%','today'],
+                      ['KB-9101','Incident Playbook','92%','2d'],
+                      ['KB-8830','Model Routing Spec','94%','today'],
+                    ].map(row => (
+                      <tr key={row[0]}>{row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`}}>{cell}</td>)}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Taxonomy Tree</h3>
+                <div style={{fontSize:13, lineHeight:1.6}}>
+                  <div>• Policies</div>
+                  <div style={{paddingLeft:16}}>• Authentication</div>
+                  <div style={{paddingLeft:16}}>• Authorization</div>
+                  <div>• Operations</div>
+                  <div style={{paddingLeft:16}}>• Incident Response</div>
+                  <div style={{paddingLeft:16}}>• Monitoring</div>
+                  <div>• AI Governance</div>
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'tts') {
+          return (
+            <section style={{display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:16}}>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Voice Catalog</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {[
+                    ['SW-Voice-01','vi-VN','Premium'],
+                    ['SW-Voice-07','en-US','Standard'],
+                    ['SW-Voice-11','ja-JP','Experimental']
+                  ].map(([name,lang,tier]) => (
+                    <div key={name} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13, display:'flex', justifyContent:'space-between'}}>
+                      <span>{name} · {lang}</span><span style={{color:palette.muted}}>{tier}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={cardStyle}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Render Queue</h3>
+                <div style={{display:'grid', gap:8}}>
+                  {['JOB-4438 · queued','JOB-4436 · rendering','JOB-4431 · retrying'].map(item => (
+                    <div key={item} style={{border:`1px solid ${palette.line}`, padding:'9px 10px', fontSize:13}}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (route === 'login') {
+          return (
+            <section style={{display:'grid', placeItems:'center', minHeight:420}}>
+              <div style={{...cardStyle, width:420, padding:22}}>
+                <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:36, margin:'0 0 12px'}}>Access Noticeboard</h3>
+                <input placeholder='admin@storyweaver.io' style={{width:'100%', border:`1px solid ${palette.line}`, background:'transparent', color:palette.ink, padding:'10px', marginBottom:10}} />
+                <input type='password' placeholder='••••••••' style={{width:'100%', border:`1px solid ${palette.line}`, background:'transparent', color:palette.ink, padding:'10px', marginBottom:12}} />
+                <button style={{width:'100%', border:`1px solid ${palette.accent}`, background:palette.accent, color:palette.panel, padding:'10px', textTransform:'uppercase', fontSize:12, letterSpacing:'0.14em'}}>Authenticate</button>
+              </div>
+            </section>
+          );
+        }
+
+        return (
+          <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16}}>
+            <div style={cardStyle}>
+              <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>User Table Mock</h3>
+              <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                <thead>
+                  <tr>{['ID','Name','Role','Surface','Status'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${palette.line}`, padding:'8px 6px', color:palette.muted}}>{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {USERS.map(row => (
+                    <tr key={row[0]}>
+                      {row.map((cell, idx) => <td key={idx} style={{padding:'9px 6px', borderBottom:`1px dashed ${palette.line}`, color:idx===4?palette.accent:palette.ink}}>{cell}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div style={cardStyle}>
+              <h3 style={{fontFamily:'Libre Bodoni, serif', fontSize:28, margin:'0 0 10px'}}>Activity Feed</h3>
+              <div style={{display:'grid', gap:10}}>
+                {EVENTS.map(item => (
+                  <div key={item} style={{border:`1px solid ${palette.line}`, padding:'10px 11px', fontSize:13, background:`${palette.accent}0c`}}>{item}</div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      return (
+        <div style={{minHeight:'100vh', background:palette.bg, color:palette.ink, fontFamily:'IBM Plex Sans, sans-serif'}}>
+          <div style={{display:'grid', gridTemplateColumns:'280px 1fr', minHeight:'100vh'}}>
+            <aside style={{padding:'26px 20px', borderRight:`1px solid ${palette.line}`, background:palette.panel}}>
+              <div style={{fontFamily:'Libre Bodoni, serif', fontSize:28, lineHeight:1.05, marginBottom:18}}>
+                STORYWEAVER
+                <div style={{fontSize:13, letterSpacing:'0.2em', marginTop:6}}>ADMIN POSTER</div>
+              </div>
+              <button onClick={() => setDark(!dark)} style={{width:'100%', marginBottom:12, padding:'10px', border:`1px solid ${palette.line}`, background:'transparent', color:palette.ink, cursor:'pointer', fontFamily:'inherit'}}>
+                Theme: {dark ? 'Nocturne' : 'Paper'}
+              </button>
+              <div style={{display:'grid', gap:7, marginBottom:14}}>
+                {ROUTES.map((r, i) => (
+                  <button key={r} onClick={() => setRoute(r)} style={{
+                    textAlign:'left', padding:'11px 12px', border:`1px solid ${route===r?palette.accent:palette.line}`,
+                    background: route===r ? `${palette.accent}16` : 'transparent', color:palette.ink,
+                    cursor:'pointer', display:'flex', justifyContent:'space-between', fontFamily:'inherit'
+                  }}>
+                    <span style={{textTransform:'uppercase'}}>{r}</span>
+                    <span style={{color:palette.muted}}>{String(i+1).padStart(2,'0')}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div style={{border:`1px solid ${palette.line}`, padding:10, display:'grid', gap:6}}>
+                <div style={{fontSize:11, letterSpacing:'0.14em', color:palette.muted, padding:'2px 0'}}>REFERENCE</div>
+                <a href="./showcase/components-index.html" style={{fontSize:12, color:palette.ink, textDecoration:'none', border:`1px solid ${palette.line}`, padding:'7px 8px'}}>All Components (110+)</a>
+                <a href="./showcase/components-typography-buttons-forms.html" style={{fontSize:12, color:palette.muted, textDecoration:'none', padding:'4px 8px'}}>Typography + Buttons + Forms</a>
+                <a href="./showcase/components-navigation-data-feedback.html" style={{fontSize:12, color:palette.muted, textDecoration:'none', padding:'4px 8px'}}>Navigation + Data + Feedback</a>
+                <a href="./showcase/components-layout-media-specialized.html" style={{fontSize:12, color:palette.muted, textDecoration:'none', padding:'4px 8px'}}>Layout + Media + Specialized</a>
+                <a href="./showcase/component-catalog.html" style={{fontSize:12, color:palette.muted, textDecoration:'none', padding:'4px 8px'}}>Base Components</a>
+                <div style={{borderTop:`1px solid ${palette.line}`, marginTop:4, paddingTop:6, display:'grid', gap:6}}>
+                  <a href="./showcase/page-gallery.html" style={{fontSize:12, color:palette.ink, textDecoration:'none', border:`1px solid ${palette.line}`, padding:'7px 8px'}}>Prototypes Gallery</a>
+                  <a href="./showcase/design-tokens.html" style={{fontSize:12, color:palette.ink, textDecoration:'none', border:`1px solid ${palette.line}`, padding:'7px 8px'}}>Design Tokens</a>
+                </div>
+              </div>
+            </aside>
+
+            <main style={{padding:'24px 26px 28px'}}>
+              <section style={{display:'grid', gridTemplateColumns:'2fr 1fr', gap:16, marginBottom:16}}>
+                <div style={{border:`1px solid ${palette.line}`, padding:18, background:palette.panel}}>
+                  <div style={{fontSize:11, letterSpacing:'0.2em', color:palette.muted}}>EDITION · {route.toUpperCase()}</div>
+                  <h1 style={{fontFamily:'Libre Bodoni, serif', fontSize:52, lineHeight:0.95, margin:'8px 0 10px'}}>{c.headline}</h1>
+                  <p style={{margin:0, maxWidth:540, color:palette.muted}}>{c.sub}</p>
+                </div>
+                <div style={{border:`1px solid ${palette.line}`, padding:18, background:palette.panel, display:'grid', alignContent:'space-between'}}>
+                  <div style={{fontFamily:'Libre Bodoni, serif', fontSize:24}}>Lead Signal</div>
+                  <div style={{fontSize:54, fontWeight:700, color:palette.accent}}>{route === 'monitoring' ? '2 Degraded' : '+12.4%'}</div>
+                  <div style={{fontSize:12, color:palette.muted}}>{route === 'monitoring' ? 'Service pressure detected' : 'Week-over-week editorial velocity'}</div>
+                </div>
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:14, marginBottom:16}}>
+                {c.stat.map(([k,v]) => (
+                  <div key={k} style={{border:`1px solid ${palette.line}`, background:palette.panel, padding:14}}>
+                    <div style={{fontSize:11, letterSpacing:'0.14em', color:palette.muted}}>{k}</div>
+                    <div style={{fontFamily:'Libre Bodoni, serif', fontSize:34, marginTop:4}}>{v}</div>
+                  </div>
+                ))}
+              </section>
+
+              {renderRouteBody()}
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<NeoPrintDashboard />);
+  </script>
+</body>
+</html>

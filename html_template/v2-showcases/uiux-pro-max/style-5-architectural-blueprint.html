@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryWeaver Admin v2 · Architectural Blueprint</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body style="margin:0">
+    <div id="root"></div>
+    <script type="text/babel">
+      const ROUTES = ["index", "users", "projects", "monitoring", "audit", "settings", "ai", "kb", "tts", "login"];
+      const specs = {
+        index: { title: "Main Plan", note: "Primary structural overview" },
+        users: { title: "Identity Wing", note: "Access architecture and occupancy" },
+        projects: { title: "Project Atrium", note: "Delivery span and support beams" },
+        monitoring: { title: "Monitoring Tower", note: "Load distribution in real time" },
+        audit: { title: "Audit Vault", note: "Record retention and verification" },
+        settings: { title: "Config Studio", note: "System blueprint parameters" },
+        ai: { title: "AI Chamber", note: "Model behavior calibration" },
+        kb: { title: "Knowledge Archives", note: "Reference integrity and indexing" },
+        tts: { title: "Voice Fabrication", note: "Waveform and render assembly" },
+        login: { title: "Entry Port", note: "Credential gateways and controls" },
+      };
+
+      const users = [
+        { unit: "A-101", name: "Le Pham", role: "Owner", status: "Approved" },
+        { unit: "B-203", name: "Tram Do", role: "Ops", status: "Review" },
+        { unit: "C-140", name: "Jin Park", role: "Audit", status: "Approved" },
+        { unit: "D-087", name: "Nhi Vu", role: "Editor", status: "Limited" },
+      ];
+
+      const feed = [
+        "Structural check: monitoring frame passed tolerance tests.",
+        "Authentication gate reinforced after failed probe sequence.",
+        "Knowledge corridor expanded with 37 new indexed units.",
+        "AI chamber calibration lowered variance by 0.14.",
+      ];
+
+      function App() {
+        const [active, setActive] = React.useState("index");
+        const [invert, setInvert] = React.useState(false);
+
+        // Palette (Architectural Blueprint):
+        // Blueprint Blue: #0C3A66, Draft Blue: #1E5D94, White Ink: #EAF4FF, Grid Cyan: #6BB8FF, Slate: #12314F
+        const palette = invert
+          ? { bg: "#eaf4ff", panel: "#f7fbff", text: "#12314f", line: "#5d90b8", accent: "#1e5d94", strong: "#0c3a66" }
+          : { bg: "#0c3a66", panel: "#123f70", text: "#eaf4ff", line: "#6bb8ff", accent: "#8fd2ff", strong: "#eaf4ff" };
+
+        const gridBackground = {
+          backgroundColor: palette.bg,
+          backgroundImage: `linear-gradient(${palette.line}22 1px, transparent 1px), linear-gradient(90deg, ${palette.line}22 1px, transparent 1px)`,
+          backgroundSize: "26px 26px",
+        };
+
+        return (
+          <div style={{ ...gridBackground, minHeight: "100vh", color: palette.text, fontFamily: "IBM Plex Mono, monospace", display: "grid", gridTemplateColumns: "250px 1fr" }}>
+            <aside style={{ borderRight: `1px solid ${palette.line}`, padding: 14, display: "grid", gap: 10, alignContent: "start", background: `${palette.panel}` }}>
+              <div style={{ border: `1px solid ${palette.line}`, padding: 12 }}>
+                <div style={{ fontFamily: "Chakra Petch, sans-serif", fontSize: 24, fontWeight: 700 }}>Blueprint</div>
+                <div style={{ marginTop: 4, fontSize: 12, opacity: 0.86 }}>StoryWeaver Admin v2</div>
+              </div>
+              <button
+                onClick={() => setInvert(!invert)}
+                style={{
+                  height: 44,
+                  border: `1px solid ${palette.line}`,
+                  background: "transparent",
+                  color: palette.text,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 180ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = palette.line;
+                  e.currentTarget.style.color = invert ? "#fff" : "#0c3a66";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = palette.text;
+                }}
+              >
+                {invert ? "Draft Mode" : "Ink Mode"}
+              </button>
+
+              {ROUTES.map((route) => (
+                <button
+                  key={route}
+                  onClick={() => setActive(route)}
+                  style={{
+                    height: 39,
+                    border: `1px solid ${active === route ? palette.strong : palette.line}`,
+                    background: active === route ? `${palette.accent}33` : "transparent",
+                    color: palette.text,
+                    textAlign: "left",
+                    padding: "0 10px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 180ms ease",
+                  }}
+                >
+                  {route}
+                </button>
+              ))}
+            </aside>
+
+            <main style={{ padding: 16, display: "grid", gap: 12 }}>
+              <section style={{ border: `1px solid ${palette.line}`, background: `${palette.panel}`, padding: 16 }}>
+                <div style={{ fontFamily: "Chakra Petch, sans-serif", fontSize: 34, fontWeight: 700, textTransform: "uppercase" }}>{specs[active].title}</div>
+                <div style={{ marginTop: 6, opacity: 0.9 }}>{specs[active].note}</div>
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 10 }}>
+                <SpecCard palette={palette} label="Span Coverage" value="82m" />
+                <SpecCard palette={palette} label="Stress Alerts" value="04" />
+                <SpecCard palette={palette} label="Load Balance" value="97%" />
+                <SpecCard palette={palette} label="Integrity" value="A+" />
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 10 }}>
+                <article style={{ border: `1px solid ${palette.line}`, background: palette.panel, padding: 12 }}>
+                  <div style={{ fontFamily: "Chakra Petch, sans-serif", fontSize: 20, marginBottom: 10 }}>User Table</div>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <BlueprintRow header palette={palette} row={{ unit: "Unit", name: "Name", role: "Role", status: "Status" }} />
+                    {users.map((u) => (
+                      <BlueprintRow key={u.unit} palette={palette} row={u} />
+                    ))}
+                  </div>
+                </article>
+                <article style={{ border: `1px solid ${palette.line}`, background: palette.panel, padding: 12 }}>
+                  <div style={{ fontFamily: "Chakra Petch, sans-serif", fontSize: 20, marginBottom: 10 }}>Activity Feed</div>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {feed.map((item, idx) => (
+                      <div key={idx} style={{ borderLeft: `3px solid ${idx % 2 ? palette.line : palette.strong}`, paddingLeft: 9, lineHeight: 1.45 }}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </main>
+          </div>
+        );
+      }
+
+      function SpecCard({ label, value, palette }) {
+        return (
+          <article style={{ border: `1px solid ${palette.line}`, background: palette.panel, padding: 12 }}>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.86 }}>{label}</div>
+            <div style={{ marginTop: 10, fontFamily: "Chakra Petch, sans-serif", fontSize: 31, fontWeight: 700 }}>{value}</div>
+          </article>
+        );
+      }
+
+      function BlueprintRow({ row, header, palette }) {
+        const [hover, setHover] = React.useState(false);
+        return (
+          <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              display: "grid",
+              gridTemplateColumns: ".8fr 1.2fr .9fr .9fr",
+              padding: "10px 8px",
+              border: `1px dashed ${palette.line}`,
+              background: header ? "transparent" : hover ? `${palette.accent}1f` : "transparent",
+              fontWeight: header ? 700 : 500,
+              fontSize: header ? 12 : 14,
+              textTransform: header ? "uppercase" : "none",
+              letterSpacing: header ? "0.05em" : "normal",
+              transition: "background 180ms ease",
+              cursor: header ? "default" : "pointer",
+            }}
+          >
+            <span>{row.unit}</span>
+            <span>{row.name}</span>
+            <span>{row.role}</span>
+            <span>{row.status}</span>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

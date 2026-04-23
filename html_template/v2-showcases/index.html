@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver v2 - Compare Huashu vs UI/UX Pro Max</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: #0a0f1f;
+      color: #eaf0ff;
+      min-height: 100vh;
+      padding: 28px;
+    }
+    .container { max-width: 1600px; margin: 0 auto; display: grid; gap: 18px; }
+    h1 { font-size: 34px; letter-spacing: -0.5px; }
+    .sub { color: #9bb0d8; font-size: 15px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card {
+      border: 1px solid #263b69;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      overflow: hidden;
+    }
+    .head { padding: 14px 14px 8px; border-bottom: 1px solid #263b69; }
+    .head h2 { font-size: 22px; margin-bottom: 5px; }
+    .head p { color: #9bb0d8; font-size: 13px; }
+    .body { padding: 12px; display: grid; gap: 10px; }
+    iframe { width: 100%; height: 460px; border: 0; border-radius: 10px; background: #101b32; }
+    .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    a.btn {
+      text-decoration: none;
+      font-size: 13px;
+      color: white;
+      font-weight: 600;
+      padding: 8px 11px;
+      border-radius: 9px;
+      border: 1px solid #3f57a7;
+      background: linear-gradient(135deg, #4f79ff, #6a57e8);
+    }
+    .list { display: grid; gap: 6px; color: #c9d6f2; font-size: 13px; }
+    .list code { background: #152545; padding: 1px 6px; border-radius: 6px; color: #bed1f6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>StoryWeaver Admin v2 — So sánh 2 skill design</h1>
+      <p class="sub">Mỗi bên tạo 5 mẫu độc lập để bạn so sánh trực tiếp. Mở gallery riêng hoặc mở từng mẫu đầy đủ.</p>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <div class="head">
+          <h2>Huashu-Design (5 mẫu)</h2>
+          <p>Brutalist Terminal · Neo-Print · Retro Control Room · Soft Cyber · Monastic Data Chapel</p>
+        </div>
+        <div class="body">
+          <iframe src="./huashu/index.html"></iframe>
+          <div class="links">
+            <a class="btn" href="./huashu/index.html" target="_blank">Mở gallery Huashu</a>
+          </div>
+          <div class="list">
+            <div><code>huashu/style-1-brutalist-terminal.html</code></div>
+            <div><code>huashu/style-2-neo-print-poster.html</code></div>
+            <div><code>huashu/style-3-retro-control-room.html</code></div>
+            <div><code>huashu/style-4-soft-cyber.html</code></div>
+            <div><code>huashu/style-5-monastic-data-chapel.html</code></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="head">
+          <h2>UI/UX Pro Max (5 mẫu)</h2>
+          <p>Swiss Grid · Warm Analog · Tokyo Neon · Scandinavian Craft · Architectural Blueprint</p>
+        </div>
+        <div class="body">
+          <iframe src="./uiux-pro-max/index.html"></iframe>
+          <div class="links">
+            <a class="btn" href="./uiux-pro-max/index.html" target="_blank">Mở gallery UI/UX Pro Max</a>
+          </div>
+          <div class="list">
+            <div><code>uiux-pro-max/style-1-swiss-grid.html</code></div>
+            <div><code>uiux-pro-max/style-2-warm-analog.html</code></div>
+            <div><code>uiux-pro-max/style-3-tokyo-neon.html</code></div>
+            <div><code>uiux-pro-max/style-4-scandinavian-craft.html</code></div>
+            <div><code>uiux-pro-max/style-5-architectural-blueprint.html</code></div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

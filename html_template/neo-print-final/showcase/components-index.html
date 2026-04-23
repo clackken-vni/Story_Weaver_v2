@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Showcase Index</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400&family=Libre+Bodoni:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cix-bg: #f5f1ea;
+        --cix-panel: #fffdf9;
+        --cix-ink: #1f1a16;
+        --cix-muted: #6b5d4d;
+        --cix-accent: #ad3f14;
+        --cix-line: #d9cec0;
+      }
+
+      :root[data-theme='dark'] {
+        --cix-bg: #141311;
+        --cix-panel: #1d1a17;
+        --cix-ink: #f0e7d8;
+        --cix-muted: #baa98d;
+        --cix-accent: #c46a2d;
+        --cix-line: #473d32;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'IBM Plex Sans', sans-serif;
+        background: var(--cix-bg);
+        color: var(--cix-ink);
+        background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--cix-line) 65%, transparent) 1px, transparent 0);
+        background-size: 18px 18px;
+      }
+
+      .cix-shell {
+        width: min(1220px, 94vw);
+        margin: 34px auto 60px;
+      }
+
+      .cix-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        border: 1px solid var(--cix-line);
+        background: var(--cix-panel);
+        padding: 18px;
+        box-shadow: 8px 8px 0 color-mix(in srgb, var(--cix-accent) 22%, transparent);
+      }
+
+      .cix-kicker {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 10px;
+        color: var(--cix-muted);
+        margin-bottom: 9px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: 'Libre Bodoni', serif;
+      }
+
+      h1 {
+        font-size: clamp(30px, 4.8vw, 54px);
+        line-height: 0.94;
+      }
+
+      .cix-lead {
+        margin: 10px 0 0;
+        max-width: 760px;
+        color: var(--cix-muted);
+        font-size: 14px;
+      }
+
+      .cix-toggle {
+        border: 1px solid var(--cix-ink);
+        background: var(--cix-panel);
+        color: var(--cix-ink);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .cix-grid {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+
+      .cix-card {
+        border: 1px solid var(--cix-line);
+        background: var(--cix-panel);
+        padding: 14px;
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .cix-badge {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 11px;
+        color: var(--cix-accent);
+        margin-bottom: 8px;
+      }
+
+      .cix-card h3 {
+        font-size: 22px;
+        margin-bottom: 8px;
+      }
+
+      .cix-desc {
+        font-size: 13px;
+        color: var(--cix-muted);
+        line-height: 1.45;
+        margin-bottom: 12px;
+      }
+
+      .cix-link {
+        margin-top: auto;
+        display: inline-block;
+        width: fit-content;
+        color: var(--cix-accent);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--cix-accent);
+        font-size: 13px;
+      }
+
+      .cix-aux {
+        margin-top: 24px;
+        border: 1px solid var(--cix-line);
+        background: var(--cix-panel);
+        padding: 14px;
+      }
+
+      .cix-aux h2 {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+
+      .cix-aux-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 10px;
+      }
+
+      .cix-aux-item {
+        border: 1px dashed var(--cix-line);
+        padding: 10px;
+      }
+
+      .cix-aux-item strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+      }
+
+      .cix-aux-item p {
+        margin: 0 0 8px;
+        font-size: 12px;
+        color: var(--cix-muted);
+      }
+
+      .cix-footer {
+        margin-top: 14px;
+        font-size: 12px;
+        color: var(--cix-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="cix-shell">
+      <header class="cix-top">
+        <div>
+          <div class="cix-kicker">Neo-Print Poster Grid · Showcase Directory</div>
+          <h1>Components Index</h1>
+          <p class="cix-lead">
+            Central navigation for all component catalogs and supporting reference pages. Each catalog is rendered live and organized by surface area to support systematic design and implementation workflows.
+          </p>
+        </div>
+        <button id="theme-toggle" class="cix-toggle">Toggle Dark Theme</button>
+      </header>
+
+      <section class="cix-grid">
+        <article class="cix-card">
+          <div class="cix-badge">Category Count · 27 components</div>
+          <h3>Typography + Buttons + Forms</h3>
+          <p class="cix-desc">Text hierarchy, interactive controls, and input patterns. This catalog defines the core editorial voice and interaction grammar.</p>
+          <a class="cix-link" href="./components-typography-buttons-forms.html">Open catalog</a>
+        </article>
+
+        <article class="cix-card">
+          <div class="cix-badge">Category Count · 26 components</div>
+          <h3>Navigation + Data Display + Feedback</h3>
+          <p class="cix-desc">Route controls, tabular and visualized information blocks, and system feedback primitives for status, alerts, and progress.</p>
+          <a class="cix-link" href="./components-navigation-data-feedback.html">Open catalog</a>
+        </article>
+
+        <article class="cix-card">
+          <div class="cix-badge">Category Count · 35 components</div>
+          <h3>Layout + Media + Specialized</h3>
+          <p class="cix-desc">Structural composition systems, media modules, and product-level specialized components for marketing, collaboration, and operations.</p>
+          <a class="cix-link" href="./components-layout-media-specialized.html">Open catalog</a>
+        </article>
+
+        <article class="cix-card">
+          <div class="cix-badge">Legacy Reference · Base set</div>
+          <h3>Original Component Catalog</h3>
+          <p class="cix-desc">Baseline catalog used during earlier route migration work. Keep as historical reference while validating compatibility.</p>
+          <a class="cix-link" href="./component-catalog.html">Open original catalog</a>
+        </article>
+      </section>
+
+      <section class="cix-aux">
+        <h2>Supporting Pages</h2>
+        <div class="cix-aux-list">
+          <div class="cix-aux-item">
+            <strong>Page Gallery</strong>
+            <p>Route-level mockups for major surfaces and end-to-end visual walkthroughs.</p>
+            <a class="cix-link" href="./page-gallery.html">Open page-gallery.html</a>
+          </div>
+          <div class="cix-aux-item">
+            <strong>Design Tokens</strong>
+            <p>Palette, typography, spacing, and border specification used across all Neo-Print pages.</p>
+            <a class="cix-link" href="./design-tokens.html">Open design-tokens.html</a>
+          </div>
+          <div class="cix-aux-item">
+            <strong>Main App Entry</strong>
+            <p>Return to the broader prototype application shell and route switcher.</p>
+            <a class="cix-link" href="../index.html">Back to ../index.html</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="cix-footer">Neo-Print editorial index · versioned catalog navigation for component discovery.</div>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      const button = document.getElementById('theme-toggle');
+      button.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        button.textContent = next === 'light' ? 'Toggle Dark Theme' : 'Toggle Light Theme';
+      });
+    </script>
+  </body>
+</html>

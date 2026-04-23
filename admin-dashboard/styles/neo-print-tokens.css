@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --np-bg: #f2ede3;
+  --np-surface: #fbf6ec;
+  --np-surface-muted: #efe6d8;
+  --np-ink: #1e1915;
+  --np-muted: #6f6258;
+  --np-line: #2f2923;
+  --np-accent: #ad3f14;
+  --np-accent-soft: rgba(173, 63, 20, 0.08);
+  --np-shadow: 8px 8px 0 rgba(47, 41, 35, 0.12);
+  --np-font-display: 'Libre Bodoni', 'Times New Roman', serif;
+  --np-font-body: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+}
+
+:root.dark {
+  --np-bg: #121111;
+  --np-surface: #1a1716;
+  --np-surface-muted: #221d1b;
+  --np-ink: #f5eee4;
+  --np-muted: #bcae9b;
+  --np-line: #d8c7b0;
+  --np-accent: #c46a2d;
+  --np-accent-soft: rgba(196, 106, 45, 0.12);
+  --np-shadow: 8px 8px 0 rgba(0, 0, 0, 0.35);
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver Admin - Soft Cyber Dashboard</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const cyberRoutes = ['index','users','projects','monitoring','audit','settings','ai','kb','tts','login'];
+
+    const cyberData = {
+      index:{title:'Orbit Overview', subtitle:'A soft-control layer for every narrative stream.', stats:[['Live Rooms','67'],['Flow Health','96%'],['Pending','44'],['Satisfaction','4.8/5']]},
+      users:{title:'Human Mesh', subtitle:'People graph, roles, and adaptive access.', stats:[['Total Accounts','9,611'],['Active Today','4,204'],['Contributors','3,588'],['Blocked','17']]},
+      projects:{title:'Project Nebula', subtitle:'Creative pipelines crossing delivery lanes.', stats:[['Projects','231'],['On Track','202'],['At Risk','18'],['Blocked','11']]},
+      monitoring:{title:'Pulse Monitoring', subtitle:'Service vitality and anomaly awareness.', stats:[['Latency','96ms'],['Error Rate','0.33%'],['CPU','61%'],['Autoscale','Enabled']]},
+      audit:{title:'Trust Ledger', subtitle:'Explainable and traceable event accounting.', stats:[['Events','88k'],['Critical','3'],['Investigating','9'],['Closed','251']]},
+      settings:{title:'Control Weave', subtitle:'Feature, policy, and environment profile mesh.', stats:[['Flags','63'],['Envs','5'],['Hooks','18'],['Secrets','Green']]},
+      ai:{title:'Model Constellation', subtitle:'Inference orchestration and guardrails.', stats:[['Models','14'],['Req/s','421'],['Safe Rejections','54'],['Cost/Day','$183']]},
+      kb:{title:'Knowledge Nebula', subtitle:'Semantic references and retrieval quality.', stats:[['Records','128k'],['Freshness','95.7%'],['Coverage','93%'],['Broken','13']]},
+      tts:{title:'Voice Cloud', subtitle:'Synthetic speech throughput and quality.', stats:[['Voices','31'],['Render Queue','241'],['Avg Duration','2.4s'],['Failed','4']]},
+      login:{title:'Identity Gateway', subtitle:'Frictionless but secure entrance layer.', stats:[['Success','99.2%'],['MFA Adoption','84%'],['Risk Alerts','4'],['Lockouts','6']]}
+    };
+
+    const cyberUsers = [
+      ['ID-9012','Ngoc Anh','Knowledge Curator','kb','Synced'],
+      ['ID-9019','Duy Khang','AI Operator','ai','Syncing'],
+      ['ID-9031','Mai Chi','Safety Reviewer','audit','Synced'],
+      ['ID-9040','Thanh Son','Ops Architect','monitoring','Watch']
+    ];
+
+    const cyberFeed = [
+      '10:04 · AI fallback lane shifted to profile C with lower latency',
+      '09:58 · Project ORBIT-219 published summary to knowledge vault',
+      '09:43 · User role elevation approved for regional editor group',
+      '09:29 · Voice queue rebalanced after burst in APAC cluster'
+    ];
+
+    function SoftCyberDashboard() {
+      const [route, setRoute] = React.useState('index');
+      const [dark, setDark] = React.useState(true);
+      const current = cyberData[route];
+
+      const theme = dark
+        ? {
+            bg:'#090d19', bg2:'#111a30', panel:'rgba(18,30,54,0.72)', text:'#eaf0ff', sub:'#96a5c7',
+            neon:'#35ffe0', neonSoft:'rgba(53,255,224,0.2)', line:'rgba(110,145,220,0.25)'
+          }
+        : {
+            bg:'#f3f8ff', bg2:'#dfeaff', panel:'rgba(255,255,255,0.78)', text:'#15203b', sub:'#5d6f95',
+            neon:'#008a86', neonSoft:'rgba(0,138,134,0.15)', line:'rgba(70,100,160,0.18)'
+          };
+
+      return (
+        <div style={{
+          minHeight:'100vh',
+          background:`radial-gradient(circle at 15% 10%, ${theme.bg2} 0%, ${theme.bg} 58%, ${dark?'#05070f':'#edf4ff'} 100%)`,
+          color:theme.text, fontFamily:'Manrope, sans-serif', position:'relative', overflow:'hidden'
+        }}>
+          <div style={{
+            position:'absolute', width:540, height:540, borderRadius:'50%', top:-180, right:-100,
+            background:theme.neonSoft, filter:'blur(36px)', pointerEvents:'none'
+          }} />
+          <div style={{
+            position:'absolute', width:380, height:380, borderRadius:'50%', bottom:-120, left:-100,
+            background:dark?'rgba(80,120,255,0.18)':'rgba(126,170,255,0.2)', filter:'blur(28px)', pointerEvents:'none'
+          }} />
+
+          <div style={{display:'grid', gridTemplateColumns:'260px 1fr', minHeight:'100vh', position:'relative', zIndex:1}}>
+            <aside style={{
+              padding:20, borderRight:`1px solid ${theme.line}`,
+              backdropFilter:'blur(12px)', background:'rgba(8,12,22,0.26)'
+            }}>
+              <div style={{fontFamily:'Syne, sans-serif', fontSize:28, lineHeight:1, marginBottom:16}}>
+                StoryWeaver
+                <div style={{fontSize:12, color:theme.sub, marginTop:8, letterSpacing:'0.18em'}}>SOFT CYBER OPS</div>
+              </div>
+
+              <button onClick={() => setDark(!dark)} style={{
+                width:'100%', marginBottom:16, padding:'10px 12px', borderRadius:14,
+                border:`1px solid ${theme.line}`, background:theme.panel, color:theme.text,
+                cursor:'pointer', fontFamily:'inherit'
+              }}>
+                {dark ? 'Switch to Aurora Light' : 'Switch to Deep Cyber'}
+              </button>
+
+              <div style={{display:'grid', gap:8}}>
+                {cyberRoutes.map(r => (
+                  <button key={r} onClick={() => setRoute(r)} style={{
+                    border:'none', borderRadius:12, textAlign:'left', padding:'11px 12px',
+                    background: route===r ? theme.neonSoft : 'rgba(255,255,255,0.04)',
+                    boxShadow: route===r ? `inset 0 0 0 1px ${theme.neon}` : `inset 0 0 0 1px ${theme.line}`,
+                    color:route===r ? theme.neon : theme.text, textTransform:'capitalize',
+                    cursor:'pointer', fontFamily:'inherit'
+                  }}>{r}</button>
+                ))}
+              </div>
+            </aside>
+
+            <main style={{padding:'22px 24px 24px'}}>
+              <header style={{
+                borderRadius:26, padding:'18px 20px', marginBottom:14, background:theme.panel,
+                boxShadow:`inset 0 0 0 1px ${theme.line}`, backdropFilter:'blur(12px)'
+              }}>
+                <div style={{fontSize:12, color:theme.sub, letterSpacing:'0.13em'}}>{route.toUpperCase()} // ACTIVE SURFACE</div>
+                <h1 style={{fontFamily:'Syne, sans-serif', margin:'8px 0 6px', fontSize:40, fontWeight:700}}>{current.title}</h1>
+                <p style={{margin:0, color:theme.sub, maxWidth:680}}>{current.subtitle}</p>
+              </header>
+
+              <section style={{display:'grid', gridTemplateColumns:'repeat(4, minmax(120px,1fr))', gap:12, marginBottom:14}}>
+                {current.stats.map(([k,v]) => (
+                  <div key={k} style={{
+                    borderRadius:18, padding:'13px 14px', background:theme.panel,
+                    boxShadow:`inset 0 0 0 1px ${theme.line}`
+                  }}>
+                    <div style={{fontSize:11, color:theme.sub}}>{k}</div>
+                    <div style={{fontSize:31, marginTop:4, fontWeight:700, color:theme.neon}}>{v}</div>
+                  </div>
+                ))}
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:12}}>
+                <div style={{
+                  borderRadius:22, padding:14, background:theme.panel,
+                  boxShadow:`inset 0 0 0 1px ${theme.line}`
+                }}>
+                  <h3 style={{fontFamily:'Syne, sans-serif', margin:'2px 0 10px', fontSize:23}}>User Grid</h3>
+                  <table style={{width:'100%', borderCollapse:'collapse', fontSize:13}}>
+                    <thead><tr>{['ID','Name','Role','Cluster','State'].map(h => <th key={h} style={{textAlign:'left', borderBottom:`1px solid ${theme.line}`, padding:'8px 6px', color:theme.sub}}>{h}</th>)}</tr></thead>
+                    <tbody>
+                      {cyberUsers.map(row => (
+                        <tr key={row[0]}>{row.map((cell, i) => <td key={i} style={{padding:'9px 6px', borderBottom:`1px solid ${theme.line}`, color:i===4?theme.neon:theme.text}}>{cell}</td>)}</tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{
+                  borderRadius:22, padding:14, background:theme.panel,
+                  boxShadow:`inset 0 0 0 1px ${theme.line}`
+                }}>
+                  <h3 style={{fontFamily:'Syne, sans-serif', margin:'2px 0 10px', fontSize:23}}>Activity Feed</h3>
+                  <div style={{display:'grid', gap:9}}>
+                    {cyberFeed.map(item => (
+                      <div key={item} style={{
+                        borderRadius:12, padding:'10px 11px', background:'rgba(255,255,255,0.04)',
+                        boxShadow:`inset 0 0 0 1px ${theme.line}`, fontSize:13
+                      }}>{item}</div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<SoftCyberDashboard />);
+  </script>
+</body>
+</html>

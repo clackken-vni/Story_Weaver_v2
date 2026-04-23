@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Page Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=Libre+Bodoni:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #fffdf9;
+        --ink: #1f1a16;
+        --muted: #6b5d4d;
+        --accent: #ad3f14;
+        --line: #d9cec0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        transition: background 220ms ease, color 220ms ease;
+      }
+
+      .page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 34px 26px 72px;
+      }
+
+      .top {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+        margin-bottom: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .kicker {
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Libre Bodoni", serif;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(33px, 5vw, 56px);
+        line-height: 0.94;
+      }
+
+      .intro {
+        margin-top: 9px;
+        color: var(--muted);
+        max-width: 760px;
+        font-size: 14px;
+      }
+
+      .toggle {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 10px;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+
+      .links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .links a,
+      .open-link {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--accent);
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .card-head {
+        border-bottom: 1px solid var(--line);
+        padding: 14px;
+      }
+
+      .route {
+        margin-top: 4px;
+        font-size: 11px;
+        color: var(--accent);
+        letter-spacing: 0.06em;
+      }
+
+      .card-body {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 14px;
+        padding: 14px;
+      }
+
+      .desc {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .preview {
+        border: 1px dashed var(--line);
+        background: var(--bg);
+        min-height: 150px;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: 30% 1fr;
+        gap: 6px;
+      }
+
+      .preview-sidebar {
+        border: 1px solid var(--line);
+        padding: 4px;
+        display: grid;
+        gap: 4px;
+        align-content: start;
+      }
+
+      .preview-sidebar div {
+        height: 8px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .preview-main {
+        display: grid;
+        gap: 6px;
+      }
+
+      .mock-row {
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .mock-hero {
+        height: 26px;
+      }
+
+      .mock-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+        height: 24px;
+      }
+
+      .mock-stats span {
+        border: 1px solid var(--line);
+        background: var(--bg);
+      }
+
+      .mock-two-col {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 4px;
+        height: 48px;
+      }
+
+      .mock-two-col span {
+        border: 1px solid var(--line);
+        background: var(--bg);
+      }
+
+      .footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 1060px) {
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .card-body {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const themes = {
+        light: {
+          bg: "#f5f1ea",
+          panel: "#fffdf9",
+          ink: "#1f1a16",
+          muted: "#6b5d4d",
+          accent: "#ad3f14",
+          line: "#d9cec0"
+        },
+        dark: {
+          bg: "#141311",
+          panel: "#1d1a17",
+          ink: "#f0e7d8",
+          muted: "#baa98d",
+          accent: "#c46a2d",
+          line: "#473d32"
+        }
+      };
+
+      const pages = [
+        {
+          title: "Editorial Command Desk",
+          route: "/admin/dashboard",
+          file: "../pages/dashboard.html",
+          description: "Primary operations view combining route headline, KPI grid, and an editorial two-column planning canvas.",
+          sketch: "dashboard"
+        },
+        {
+          title: "Order Ledger",
+          route: "/admin/orders",
+          file: "../pages/orders.html",
+          description: "Chronological list of poster orders with sorting rails, status markers, and print pipeline checkpoints.",
+          sketch: "table"
+        },
+        {
+          title: "Production Queue",
+          route: "/admin/queue",
+          file: "../pages/queue.html",
+          description: "Queue-first view for operators to balance print batches by urgency, paper constraints, and machine allocation.",
+          sketch: "queue"
+        },
+        {
+          title: "Campaign Studio",
+          route: "/admin/campaigns",
+          file: "../pages/campaigns.html",
+          description: "Campaign management layer joining launch windows, seasonal grids, and headline treatment controls.",
+          sketch: "editorial"
+        },
+        {
+          title: "Asset Library",
+          route: "/admin/assets",
+          file: "../pages/assets.html",
+          description: "Visual archive for poster masters, variants, and source imagery with editorial taxonomy.",
+          sketch: "gallery"
+        },
+        {
+          title: "Typography Lab",
+          route: "/admin/typography",
+          file: "../pages/typography.html",
+          description: "Type-scale tuning page for mastheads, labels, and print-safe hierarchy checks.",
+          sketch: "typography"
+        },
+        {
+          title: "Color Calibration",
+          route: "/admin/color-calibration",
+          file: "../pages/color-calibration.html",
+          description: "Calibration references for light and dark print themes with contrast and profile diagnostics.",
+          sketch: "swatches"
+        },
+        {
+          title: "Activity Wire",
+          route: "/admin/activity",
+          file: "../pages/activity.html",
+          description: "Event stream for approvals, run-state changes, and exception handling across editorial lanes.",
+          sketch: "feed"
+        },
+        {
+          title: "Team Rosters",
+          route: "/admin/team",
+          file: "../pages/team.html",
+          description: "Operator and editor assignment matrix with shift spans, workload tags, and escalation points.",
+          sketch: "roster"
+        },
+        {
+          title: "System Preferences",
+          route: "/admin/settings",
+          file: "../pages/settings.html",
+          description: "Administrative controls for theme defaults, notification routing, and print stack integrations.",
+          sketch: "settings"
+        }
+      ];
+
+      function Preview({ theme, kind }) {
+        const commonLine = { borderColor: theme.line };
+
+        return (
+          <div className="preview" style={{ background: theme.bg, color: theme.ink, borderColor: theme.line }}>
+            <div className="preview-sidebar" style={commonLine}>
+              <div style={commonLine}></div>
+              <div style={commonLine}></div>
+              <div style={commonLine}></div>
+              <div style={commonLine}></div>
+              <div style={commonLine}></div>
+            </div>
+            <div className="preview-main">
+              <div className="mock-row mock-hero" style={commonLine}></div>
+
+              {(kind === "dashboard" || kind === "queue" || kind === "editorial") && (
+                <div className="mock-stats">
+                  <span style={commonLine}></span>
+                  <span style={commonLine}></span>
+                  <span style={commonLine}></span>
+                  <span style={commonLine}></span>
+                </div>
+              )}
+
+              {(kind === "table" || kind === "queue") && <div className="mock-row" style={{ ...commonLine, height: 44 }}></div>}
+
+              {(kind === "dashboard" || kind === "editorial" || kind === "feed") && (
+                <div className="mock-two-col">
+                  <span style={commonLine}></span>
+                  <span style={commonLine}></span>
+                </div>
+              )}
+
+              {(kind === "gallery" || kind === "swatches") && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 4, height: 48 }}>
+                  <span style={{ ...commonLine, border: `1px solid ${theme.line}`, background: theme.panel }}></span>
+                  <span style={{ ...commonLine, border: `1px solid ${theme.line}`, background: theme.bg }}></span>
+                  <span style={{ ...commonLine, border: `1px solid ${theme.line}`, background: theme.panel }}></span>
+                </div>
+              )}
+
+              {(kind === "typography" || kind === "roster" || kind === "settings") && (
+                <div style={{ display: "grid", gap: 4 }}>
+                  <div className="mock-row" style={{ ...commonLine, height: 10 }}></div>
+                  <div className="mock-row" style={{ ...commonLine, height: 10 }}></div>
+                  <div className="mock-row" style={{ ...commonLine, height: 10 }}></div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function GalleryApp() {
+        const [mode, setMode] = React.useState("light");
+
+        React.useEffect(() => {
+          const theme = themes[mode];
+          const root = document.documentElement;
+          root.style.setProperty("--bg", theme.bg);
+          root.style.setProperty("--panel", theme.panel);
+          root.style.setProperty("--ink", theme.ink);
+          root.style.setProperty("--muted", theme.muted);
+          root.style.setProperty("--accent", theme.accent);
+          root.style.setProperty("--line", theme.line);
+        }, [mode]);
+
+        return (
+          <div className="page">
+            <header className="top">
+              <div>
+                <div className="kicker">Neo-Print Prototype Showcase</div>
+                <h1>Page Gallery</h1>
+                <p className="intro">
+                  Visual index of all ten admin routes. Each card includes route metadata, narrative intent, and a lightweight structural mockup.
+                </p>
+                <div className="links">
+                  <a href="./component-catalog.html">Component Catalog</a>
+                  <a href="./design-tokens.html">Design Tokens</a>
+                  <a href="../index.html">Prototype Entry</a>
+                </div>
+              </div>
+              <button className="toggle" onClick={() => setMode(mode === "light" ? "dark" : "light")}>Toggle {mode === "light" ? "Dark" : "Light"} Theme</button>
+            </header>
+
+            <section className="gallery-grid">
+              {pages.map((page) => (
+                <article key={page.route} className="card">
+                  <div className="card-head">
+                    <h2>{page.title}</h2>
+                    <div className="route">{page.route}</div>
+                  </div>
+                  <div className="card-body">
+                    <div>
+                      <p className="desc">{page.description}</p>
+                      <a className="open-link" href={page.file}>Open standalone page</a>
+                    </div>
+                    <Preview theme={themes[mode]} kind={page.sketch} />
+                  </div>
+                </article>
+              ))}
+            </section>
+
+            <div className="footer">Active gallery theme: <strong>{mode}</strong>. Mockups are CSS sketches, designed to preview layout architecture without iframe overhead.</div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<GalleryApp />);
+    </script>
+  </body>
+</html>

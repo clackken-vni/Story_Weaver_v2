@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - heading "StoryWeaver" [level=1] [ref=e9]
+      - paragraph [ref=e10]: Admin Dashboard
+    - generic [ref=e11]:
+      - heading "Sign in to your account" [level=2] [ref=e12]
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: Email address
+          - textbox "Email address" [ref=e16]:
+            - /placeholder: admin@storyweaver.ai
+        - generic [ref=e17]:
+          - generic [ref=e18]: Password
+          - generic [ref=e19]
+        - generic [ref=e25]:
+          - generic [ref=e26] [cursor=pointer]
+          - link "Forgot password?" [ref=e29] [cursor=pointer]:
+            - /url: "#"
+        - button "Sign in" [ref=e30] [cursor=pointer]
+      - generic [ref=e33]: Or continue with
+      - generic [ref=e35]:
+        - button "Google" [ref=e36] [cursor=pointer]:
+          - img [ref=e37]
+          - text: Google
+        - button "GitHub" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]
+          - text: GitHub
+    - paragraph [ref=e45]: Protected by StoryWeaver Security
+  - alert [ref=e46]

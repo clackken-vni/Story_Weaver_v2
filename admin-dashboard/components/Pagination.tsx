@@ -21,7 +21,7 @@ export function Pagination({
 }: PaginationProps) {
   if (totalPages <= 1 && totalCount <= pageSize) {
     return (
-      <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>
+      <div style={{ color: 'var(--np-muted)', fontSize: 'var(--text-sm)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         Showing {totalCount} of {totalCount}
       </div>
     );
@@ -47,15 +47,15 @@ export function Pagination({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 'var(--space-3)',
-        borderTop: '1px solid var(--table-border)',
+        borderTop: '1px solid var(--np-line)',
         paddingTop: 'var(--space-3)',
       }}
     >
-      <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>
+      <p style={{ color: 'var(--np-muted)', fontSize: 'var(--text-sm)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         Showing {start}-{end} of {totalCount}
       </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
         <label style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
           <span className="sr-only">Page size</span>
           <select
@@ -63,10 +63,9 @@ export function Pagination({
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
             style={{
               appearance: 'none',
-              background: 'var(--surface-secondary)',
-              border: '1px solid var(--border-primary)',
-              color: 'var(--text-primary)',
-              borderRadius: 'var(--radius-md)',
+              background: 'var(--np-surface)',
+              border: '1px solid var(--np-line)',
+              color: 'var(--np-ink)',
               padding: '6px 28px 6px 10px',
               fontSize: 'var(--text-sm)',
             }}
@@ -93,7 +92,7 @@ export function Pagination({
 
           {pages.map((page, index) =>
             page === 'ellipsis' ? (
-              <span key={`ellipsis-${index}`} style={{ padding: '0 var(--space-2)', color: 'var(--text-tertiary)' }}>
+              <span key={`ellipsis-${index}`} style={{ padding: '0 var(--space-2)', color: 'var(--np-muted)' }}>
                 ...
               </span>
             ) : (
@@ -131,13 +130,13 @@ function buttonStyle(disabled: boolean, active: boolean = false) {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 'var(--radius-md)',
-    border: `1px solid ${active ? 'var(--accent-primary)' : 'var(--border-primary)'}`,
-    background: active ? 'var(--accent-primary)' : 'var(--surface-secondary)',
-    color: active ? 'var(--text-primary)' : disabled ? 'var(--text-muted)' : 'var(--text-secondary)',
+    borderRadius: 0,
+    border: `1px solid ${active ? 'var(--np-accent)' : 'var(--np-line)'}`,
+    background: active ? 'var(--np-accent)' : 'var(--np-surface)',
+    color: active ? '#f5f1ea' : disabled ? 'var(--np-muted)' : 'var(--np-ink)',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
     fontSize: 'var(--text-sm)',
-    fontWeight: 'var(--weight-medium)' as unknown as number,
+    fontWeight: 500,
   } as const;
 }

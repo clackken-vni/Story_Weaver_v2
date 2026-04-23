@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryWeaver Admin v2 · Tokyo Neon Night</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body style="margin: 0">
+    <div id="root"></div>
+    <script type="text/babel">
+      const ROUTES = ["index", "users", "projects", "monitoring", "audit", "settings", "ai", "kb", "tts", "login"];
+      const routeData = {
+        index: ["Main signal corridor online", "Ops density: high"],
+        users: ["Identity vectors tracked", "Role drift risk: medium"],
+        projects: ["Delivery pulse map updated", "Blockers: 4"],
+        monitoring: ["Stream health synchronized", "Packet delay anomaly x2"],
+        audit: ["Signed events archived", "Integrity checksum verified"],
+        settings: ["Runtime matrix adjusted", "Feature flags shifted"],
+        ai: ["Inference lanes throttled", "Guardrails state stable"],
+        kb: ["Semantic index refreshed", "Stale segment purged"],
+        tts: ["Voice packet engine primed", "Latency budget under cap"],
+        login: ["Session gateway hardened", "Failed attempts falling"],
+      };
+
+      const users = [
+        { id: "SW-101", name: "Akira Mori", role: "SecOps", status: "online", ping: "11ms" },
+        { id: "SW-227", name: "Quynh Le", role: "Admin", status: "review", ping: "23ms" },
+        { id: "SW-304", name: "Minh Do", role: "Editor", status: "online", ping: "19ms" },
+        { id: "SW-418", name: "Riko Tan", role: "Audit", status: "limited", ping: "41ms" },
+      ];
+
+      const events = [
+        "[23:14] Monitoring lane 4 recovered from timeout.",
+        "[23:11] AI moderation threshold moved from 0.71 to 0.76.",
+        "[23:05] Knowledge bridge re-indexed shard C.",
+        "[22:58] Access policy hotfix deployed to login route.",
+      ];
+
+      function App() {
+        const [active, setActive] = React.useState("index");
+        const [altMode, setAltMode] = React.useState(false);
+
+        // Palette (Tokyo Neon Night):
+        // Ink: #05070F, Neon Cyan: #00F0FF, Neon Magenta: #FF2AA1, Electric Lime: #B7FF3C, Violet Shadow: #20153D
+        const palette = altMode
+          ? { bg: "#07111f", panel: "#0f1930", text: "#d7e7ff", dim: "#88a2c8", cyan: "#4cf2ff", magenta: "#ff69c2", lime: "#ccff61", border: "#29508e" }
+          : { bg: "#05070f", panel: "#0a0f1d", text: "#e8f0ff", dim: "#7e8da9", cyan: "#00f0ff", magenta: "#ff2aa1", lime: "#b7ff3c", border: "#26324d" };
+
+        const rootStyle = {
+          minHeight: "100vh",
+          background: `radial-gradient(circle at 78% 6%, #1d1040 0%, ${palette.bg} 45%)`,
+          color: palette.text,
+          fontFamily: "Noto Sans JP, system-ui, sans-serif",
+          display: "grid",
+          gridTemplateColumns: "250px 1fr",
+        };
+
+        return (
+          <div style={rootStyle}>
+            <aside style={{ padding: 14, borderRight: `1px solid ${palette.border}`, display: "grid", gap: 9, alignContent: "start", background: "rgba(7,9,18,0.74)", backdropFilter: "blur(4px)" }}>
+              <div style={{ border: `1px solid ${palette.cyan}`, boxShadow: `0 0 16px ${palette.cyan}40`, padding: 12 }}>
+                <div style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.08em", fontWeight: 700 }}>TOKYO NEON</div>
+                <div style={{ marginTop: 6, color: palette.dim, fontSize: 12 }}>StoryWeaver v2 / OPS GRID</div>
+              </div>
+              <button
+                onClick={() => setAltMode(!altMode)}
+                style={{
+                  height: 44,
+                  border: `1px solid ${palette.magenta}`,
+                  background: "transparent",
+                  color: palette.magenta,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 180ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = palette.magenta;
+                  e.currentTarget.style.color = "#051022";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = palette.magenta;
+                }}
+              >
+                {altMode ? "NIGHT CORE" : "AURORA MODE"}
+              </button>
+              {ROUTES.map((route) => (
+                <RouteButton key={route} route={route} active={active === route} onClick={() => setActive(route)} palette={palette} />
+              ))}
+            </aside>
+
+            <main style={{ padding: 16, display: "grid", gap: 12 }}>
+              <section style={{ border: `1px solid ${palette.border}`, background: `linear-gradient(90deg, ${palette.panel}, #0b1429)`, padding: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontFamily: "Orbitron, sans-serif", fontSize: 30, letterSpacing: "0.04em", color: palette.cyan }}>{active.toUpperCase()} NODE</div>
+                    <div style={{ marginTop: 6, color: palette.dim }}>{routeData[active][0]}</div>
+                  </div>
+                  <div style={{ color: palette.lime, border: `1px solid ${palette.lime}`, padding: "8px 12px", fontWeight: 700, minWidth: 160, textAlign: "center" }}>{routeData[active][1]}</div>
+                </div>
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 10 }}>
+                <NeonStat label="Request Flux" value="128k" hue="cyan" palette={palette} />
+                <NeonStat label="Anomaly Rate" value="0.18%" hue="magenta" palette={palette} />
+                <NeonStat label="Auth Success" value="99.2%" hue="lime" palette={palette} />
+                <NeonStat label="Model Drift" value="1.9σ" hue="cyan" palette={palette} />
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "1.38fr 1fr", gap: 10 }}>
+                <article style={{ border: `1px solid ${palette.border}`, background: palette.panel, padding: 12 }}>
+                  <div style={{ fontFamily: "Orbitron, sans-serif", color: palette.cyan, marginBottom: 10 }}>User Table</div>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <UserRow header palette={palette} row={{ id: "ID", name: "Name", role: "Role", status: "Status", ping: "Ping" }} />
+                    {users.map((u) => (
+                      <UserRow key={u.id} palette={palette} row={u} />
+                    ))}
+                  </div>
+                </article>
+
+                <article style={{ border: `1px solid ${palette.border}`, background: palette.panel, padding: 12 }}>
+                  <div style={{ fontFamily: "Orbitron, sans-serif", color: palette.magenta, marginBottom: 10 }}>Activity Feed</div>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {events.map((event, idx) => (
+                      <div key={idx} style={{ borderLeft: `3px solid ${idx % 2 ? palette.magenta : palette.cyan}`, paddingLeft: 10, color: "#d0dcf7", lineHeight: 1.45 }}>
+                        {event}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </main>
+          </div>
+        );
+      }
+
+      function RouteButton({ route, active, onClick, palette }) {
+        return (
+          <button
+            onClick={onClick}
+            style={{
+              height: 40,
+              textAlign: "left",
+              padding: "0 10px",
+              border: `1px solid ${active ? palette.cyan : palette.border}`,
+              background: active ? `${palette.cyan}22` : "transparent",
+              color: active ? palette.cyan : palette.text,
+              fontFamily: "Orbitron, sans-serif",
+              fontSize: 12,
+              letterSpacing: "0.05em",
+              cursor: "pointer",
+              transition: "all 180ms ease",
+              textTransform: "uppercase",
+            }}
+          >
+            {route}
+          </button>
+        );
+      }
+
+      function NeonStat({ label, value, hue, palette }) {
+        const color = hue === "magenta" ? palette.magenta : hue === "lime" ? palette.lime : palette.cyan;
+        return (
+          <div style={{ border: `1px solid ${palette.border}`, background: palette.panel, boxShadow: `inset 0 0 24px ${color}22`, padding: 12 }}>
+            <div style={{ fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: palette.dim }}>{label}</div>
+            <div style={{ marginTop: 10, fontFamily: "Orbitron, sans-serif", fontSize: 29, color }}>{value}</div>
+          </div>
+        );
+      }
+
+      function UserRow({ row, header, palette }) {
+        const [hover, setHover] = React.useState(false);
+        return (
+          <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              display: "grid",
+              gridTemplateColumns: ".7fr 1.2fr .9fr .8fr .6fr",
+              gap: 8,
+              padding: "10px 8px",
+              border: `1px solid ${palette.border}`,
+              background: header ? "transparent" : hover ? `${palette.cyan}12` : "transparent",
+              fontSize: header ? 12 : 13,
+              fontWeight: header ? 700 : 500,
+              color: header ? palette.dim : palette.text,
+              textTransform: header ? "uppercase" : "none",
+              letterSpacing: header ? "0.05em" : "normal",
+              cursor: header ? "default" : "pointer",
+              transition: "background 180ms ease",
+            }}
+          >
+            <span>{row.id}</span>
+            <span>{row.name}</span>
+            <span>{row.role}</span>
+            <span style={{ color: row.status === "online" ? palette.lime : row.status === "review" ? palette.magenta : palette.dim }}>{row.status}</span>
+            <span>{row.ping}</span>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

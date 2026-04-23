@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StoryWeaver Admin - Monastic Data Chapel</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const chapelRoutes = ['index','users','projects','monitoring','audit','settings','ai','kb','tts','login'];
+
+    const chapelData = {
+      index:{title:'Canonical Overview', prose:'A quiet frame for operational truth.', stats:[['Daily Throughput','4,821'],['Integrity','99.8%'],['Open Threads','39'],['Focus Time','71%']]},
+      users:{title:'Custodian Register', prose:'The people stewarding narrative systems.', stats:[['Contributors','3,930'],['Reviewers','1,124'],['Admins','88'],['Inactive','42']]},
+      projects:{title:'Project Scriptorium', prose:'Works in progress, curated with discipline.', stats:[['Manuscripts','209'],['In Review','58'],['Approved','127'],['Deferred','24']]},
+      monitoring:{title:'Observatory of Signals', prose:'Telemetry read as liturgical intervals.', stats:[['Latency','102ms'],['Availability','99.4%'],['Error Ratio','0.27%'],['Queue','178']]},
+      audit:{title:'Book of Trace', prose:'Every act documented for accountability.', stats:[['Entries','92k'],['Open Findings','5'],['Resolved','248'],['Critical','1']]},
+      settings:{title:'Rule Configuration', prose:'Policies and constraints, deliberately sparse.', stats:[['Rules','64'],['Overrides','2'],['Profiles','4'],['Secrets','Valid']]},
+      ai:{title:'Inference Cloister', prose:'Model mediation under careful governance.', stats:[['Model Calls','18k'],['Guard Hits','41'],['Fallback','0.8%'],['Cost','151/day']]},
+      kb:{title:'Library of Sources', prose:'References indexed as durable memory.', stats:[['Documents','141k'],['Freshness','96%'],['Coverage','94%'],['Broken','11']]},
+      tts:{title:'Voice Scriptorium', prose:'Spoken output rendered with measured cadence.', stats:[['Voices','23'],['Queued','132'],['Avg Render','2.6s'],['Failed','3']]},
+      login:{title:'Threshold Gate', prose:'Entry trust and authentication posture.', stats:[['Success','99.0%'],['MFA','86%'],['Challenges','14%'],['Incidents','2']]}
+    };
+
+    const chapelUsers = [
+      ['RW-11','Hai Yen','Archivist','kb','Present'],
+      ['RW-16','Thanh Vy','Moderator','users','Present'],
+      ['RW-22','Minh Quan','Operator','monitoring','Review'],
+      ['RW-31','Ngoc Tram','Steward','audit','Present']
+    ];
+
+    const chapelFeed = [
+      '06:14 — Audit annotation added to policy exception #448',
+      '06:02 — User role transfer accepted by two-step approval',
+      '05:47 — Project folio 908 archived after publication',
+      '05:26 — Knowledge entry coherence score recalculated'
+    ];
+
+    function DataChapelDashboard() {
+      const [route, setRoute] = React.useState('index');
+      const [dark, setDark] = React.useState(false);
+      const content = chapelData[route];
+
+      const accent = '#8f3d2e';
+      const palette = dark
+        ? {bg:'#11100e', panel:'#171512', text:'#efe9e0', sub:'#bdb2a6', line:'#2e2a24'}
+        : {bg:'#f8f5f0', panel:'#fcfaf6', text:'#231f1a', sub:'#73695e', line:'#ddd3c6'};
+
+      return (
+        <div style={{minHeight:'100vh', background:palette.bg, color:palette.text, fontFamily:'Source Sans 3, sans-serif'}}>
+          <div style={{display:'grid', gridTemplateColumns:'250px 1fr', minHeight:'100vh'}}>
+            <aside style={{padding:'32px 22px', borderRight:`1px solid ${palette.line}`, background:palette.panel}}>
+              <div style={{fontFamily:'Fraunces, serif', fontSize:30, lineHeight:1.1, marginBottom:20}}>
+                StoryWeaver
+                <div style={{fontSize:12, marginTop:8, color:palette.sub, letterSpacing:'0.18em'}}>DATA CHAPEL</div>
+              </div>
+
+              <button onClick={() => setDark(!dark)} style={{
+                width:'100%', marginBottom:18, border:`1px solid ${palette.line}`, background:'transparent',
+                color:palette.text, padding:'9px 10px', cursor:'pointer', fontFamily:'inherit'
+              }}>
+                {dark ? 'Switch to Parchment' : 'Switch to Ink'}
+              </button>
+
+              <div style={{display:'grid', gap:6}}>
+                {chapelRoutes.map(r => (
+                  <button key={r} onClick={() => setRoute(r)} style={{
+                    textAlign:'left', padding:'10px 8px', border:'none', borderBottom:`1px solid ${palette.line}`,
+                    background:'transparent', color:route===r?accent:palette.text, cursor:'pointer',
+                    fontFamily:'Fraunces, serif', fontSize:18
+                  }}>{r}</button>
+                ))}
+              </div>
+            </aside>
+
+            <main style={{padding:'40px 54px'}}>
+              <header style={{marginBottom:30, maxWidth:820}}>
+                <div style={{fontSize:12, letterSpacing:'0.18em', color:palette.sub}}>{route.toUpperCase()} · ACTIVE FOLIO</div>
+                <h1 style={{fontFamily:'Fraunces, serif', fontSize:58, lineHeight:1.02, margin:'10px 0 12px'}}>{content.title}</h1>
+                <p style={{fontSize:20, lineHeight:1.6, margin:0, color:palette.sub, maxWidth:680}}>{content.prose}</p>
+              </header>
+
+              <section style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:22, marginBottom:34}}>
+                {content.stats.map(([label,value]) => (
+                  <div key={label} style={{paddingBottom:10, borderBottom:`2px solid ${accent}`}}>
+                    <div style={{fontSize:12, color:palette.sub, marginBottom:8}}>{label}</div>
+                    <div style={{fontFamily:'Fraunces, serif', fontSize:39}}>{value}</div>
+                  </div>
+                ))}
+              </section>
+
+              <section style={{display:'grid', gridTemplateColumns:'1.5fr 1fr', gap:34}}>
+                <div>
+                  <h3 style={{fontFamily:'Fraunces, serif', fontSize:29, margin:'0 0 12px'}}>User Table</h3>
+                  <table style={{width:'100%', borderCollapse:'collapse', fontSize:15}}>
+                    <thead>
+                      <tr>{['Code','Name','Role','Sphere','State'].map(h => <th key={h} style={{textAlign:'left', padding:'8px 4px', borderBottom:`1px solid ${palette.line}`, color:palette.sub, fontWeight:500}}>{h}</th>)}</tr>
+                    </thead>
+                    <tbody>
+                      {chapelUsers.map(row => (
+                        <tr key={row[0]}>{row.map((cell, i) => <td key={i} style={{padding:'11px 4px', borderBottom:`1px solid ${palette.line}`, color:i===4?accent:palette.text}}>{cell}</td>)}</tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div>
+                  <h3 style={{fontFamily:'Fraunces, serif', fontSize:29, margin:'0 0 12px'}}>Activity Feed</h3>
+                  <div style={{display:'grid', gap:13}}>
+                    {chapelFeed.map(item => (
+                      <div key={item} style={{paddingLeft:14, borderLeft:`2px solid ${accent}`, color:palette.text, fontSize:15, lineHeight:1.55}}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<DataChapelDashboard />);
+  </script>
+</body>
+</html>

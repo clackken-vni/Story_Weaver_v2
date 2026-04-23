@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Catalog • Navigation + Data Display + Feedback</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Libre+Bodoni:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --npfd-bg: #f5f1ea;
+        --npfd-panel: #fffdf9;
+        --npfd-ink: #1f1a16;
+        --npfd-muted: #6b5d4d;
+        --npfd-accent: #ad3f14;
+        --npfd-line: #d9cec0;
+        --npfd-success: #2f7a4d;
+        --npfd-warning: #a86b00;
+        --npfd-danger: #8d2f2f;
+        --npfd-shadow: 0 10px 28px rgba(36, 24, 15, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        background: var(--npfd-bg);
+        color: var(--npfd-ink);
+      }
+
+      .npfd-app {
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, color-mix(in srgb, var(--npfd-line) 28%, transparent) 1px, transparent 1px) 0 0 / 16px 16px,
+          linear-gradient(0deg, color-mix(in srgb, var(--npfd-line) 28%, transparent) 1px, transparent 1px) 0 0 / 16px 16px,
+          var(--npfd-bg);
+        color: var(--npfd-ink);
+        transition: background 240ms ease, color 240ms ease;
+      }
+
+      .npfd-shell {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 28px 22px 70px;
+      }
+
+      .npfd-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(8px);
+        background: color-mix(in srgb, var(--npfd-bg) 90%, transparent);
+        border: 1px solid var(--npfd-line);
+        box-shadow: var(--npfd-shadow);
+        padding: 16px 18px;
+        margin-bottom: 18px;
+      }
+
+      .npfd-kicker {
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 10px;
+        color: var(--npfd-muted);
+      }
+
+      .npfd-title-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        margin-top: 8px;
+      }
+
+      .npfd-title {
+        margin: 0;
+        font-family: "Libre Bodoni", serif;
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 0.95;
+      }
+
+      .npfd-subtitle {
+        margin: 8px 0 0;
+        color: var(--npfd-muted);
+        max-width: 780px;
+        font-size: 14px;
+      }
+
+      .npfd-toggle {
+        border: 1px solid var(--npfd-line);
+        background: var(--npfd-panel);
+        color: var(--npfd-ink);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 11px;
+        padding: 10px 14px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .npfd-toc {
+        border: 1px solid var(--npfd-line);
+        background: var(--npfd-panel);
+        padding: 14px;
+        margin-bottom: 18px;
+      }
+
+      .npfd-toc h2 {
+        margin: 0 0 10px;
+        font-family: "Libre Bodoni", serif;
+        font-size: 26px;
+      }
+
+      .npfd-toc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 8px 16px;
+        font-size: 13px;
+      }
+
+      .npfd-toc-grid a,
+      .npfd-jump-link {
+        color: var(--npfd-accent);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--npfd-accent);
+      }
+
+      .npfd-section {
+        margin-top: 26px;
+      }
+
+      .npfd-section-head {
+        margin: 0 0 12px;
+        font-family: "Libre Bodoni", serif;
+        font-size: 34px;
+        border-bottom: 1px solid var(--npfd-line);
+        padding-bottom: 8px;
+      }
+
+      .npfd-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 14px;
+      }
+
+      .npfd-card {
+        border: 1px solid var(--npfd-line);
+        background: var(--npfd-panel);
+        box-shadow: var(--npfd-shadow);
+      }
+
+      .npfd-card-head {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--npfd-line);
+      }
+
+      .npfd-card-head h3 {
+        margin: 0;
+        font-size: 18px;
+        font-family: "Libre Bodoni", serif;
+      }
+
+      .npfd-card-head p {
+        margin: 5px 0 0;
+        color: var(--npfd-muted);
+        font-size: 12px;
+      }
+
+      .npfd-card-body {
+        padding: 12px;
+        min-height: 168px;
+        position: relative;
+      }
+
+      .npfd-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .npfd-btn {
+        border: 1px solid var(--npfd-line);
+        background: var(--npfd-panel);
+        color: var(--npfd-ink);
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .npfd-btn[data-tone="accent"] {
+        border-color: var(--npfd-accent);
+        color: var(--npfd-accent);
+      }
+
+      .npfd-btn[data-tone="danger"] {
+        border-color: var(--npfd-danger);
+        color: var(--npfd-danger);
+      }
+
+      .npfd-note {
+        font-size: 11px;
+        color: var(--npfd-muted);
+      }
+
+      .npfd-pulse {
+        animation: npfdPulse 1.2s ease-in-out infinite;
+      }
+
+      @keyframes npfdPulse {
+        0%,
+        100% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+
+      @keyframes npfdShift {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(220%);
+        }
+      }
+
+      .npfd-footer {
+        margin-top: 26px;
+        color: var(--npfd-muted);
+        font-size: 12px;
+        border-top: 1px solid var(--npfd-line);
+        padding-top: 14px;
+      }
+
+      @media (max-width: 900px) {
+        .npfd-title-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useMemo, useState, useEffect } = React;
+
+      const npfdThemes = {
+        light: {
+          bg: "#f5f1ea",
+          panel: "#fffdf9",
+          ink: "#1f1a16",
+          muted: "#6b5d4d",
+          accent: "#ad3f14",
+          line: "#d9cec0"
+        },
+        dark: {
+          bg: "#141311",
+          panel: "#1d1a17",
+          ink: "#f0e7d8",
+          muted: "#baa98d",
+          accent: "#c46a2d",
+          line: "#473d32"
+        }
+      };
+
+      function npfdApplyTheme(mode) {
+        const theme = npfdThemes[mode];
+        const root = document.documentElement;
+        root.style.setProperty("--npfd-bg", theme.bg);
+        root.style.setProperty("--npfd-panel", theme.panel);
+        root.style.setProperty("--npfd-ink", theme.ink);
+        root.style.setProperty("--npfd-muted", theme.muted);
+        root.style.setProperty("--npfd-accent", theme.accent);
+        root.style.setProperty("--npfd-line", theme.line);
+      }
+
+      function NpfdCard({ id, title, meta, children }) {
+        return (
+          <article className="npfd-card" id={id}>
+            <header className="npfd-card-head">
+              <h3>{title}</h3>
+              <p>{meta}</p>
+            </header>
+            <div className="npfd-card-body">{children}</div>
+          </article>
+        );
+      }
+
+      function NpfdNavbarDemo() {
+        return (
+          <div style={{ border: "1px solid var(--npfd-line)", minHeight: 120, position: "relative" }}>
+            <div style={{ position: "sticky", top: 0, borderBottom: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: "8px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <strong style={{ letterSpacing: "0.08em", fontSize: 12 }}>NEO-PRINT</strong>
+              <nav className="npfd-row" style={{ gap: 14, fontSize: 12 }}>
+                <span>Catalog</span><span>Runs</span><span>Queue</span><span>Billing</span>
+              </nav>
+            </div>
+            <div style={{ padding: 10, fontSize: 12, color: "var(--npfd-muted)" }}>Fixed header behavior preview.</div>
+          </div>
+        );
+      }
+
+      function NpfdSidebarDemo() {
+        const [collapsed, setCollapsed] = useState(false);
+        const [open, setOpen] = useState(true);
+        const icon = (label) => <span style={{ fontSize: 10, border: "1px solid var(--npfd-line)", padding: "1px 4px" }}>{label}</span>;
+        return (
+          <div className="npfd-row" style={{ alignItems: "flex-start" }}>
+            <aside style={{ width: collapsed ? 70 : 220, border: "1px solid var(--npfd-line)", padding: 8, transition: "width 180ms ease" }}>
+              <button className="npfd-btn" onClick={() => setCollapsed((v) => !v)}>{collapsed ? "Expand" : "Collapse"}</button>
+              <div style={{ marginTop: 10, display: "grid", gap: 6, fontSize: 12 }}>
+                <div className="npfd-row">{icon("H")} {!collapsed && <span>Home</span>}</div>
+                <div className="npfd-row" onClick={() => setOpen((v) => !v)} style={{ cursor: "pointer" }}>{icon("P")} {!collapsed && <span>Projects ▾</span>}</div>
+                {!collapsed && open && <div style={{ marginLeft: 24, display: "grid", gap: 4, color: "var(--npfd-muted)" }}><span>Print Ops</span><span>Campaigns</span></div>}
+                <div className="npfd-row">{icon("S")} {!collapsed && <span>Settings</span>}</div>
+              </div>
+            </aside>
+          </div>
+        );
+      }
+
+      function NpfdBreadcrumbsDemo() {
+        return (
+          <div className="npfd-row" style={{ fontSize: 12 }}>
+            <span>Home</span><span style={{ color: "var(--npfd-muted)" }}>/</span>
+            <span>Catalog</span><span style={{ color: "var(--npfd-muted)" }}>/</span>
+            <span>Components</span><span style={{ color: "var(--npfd-muted)" }}>/</span>
+            <strong>Data Feedback</strong>
+          </div>
+        );
+      }
+
+      function NpfdTabsDemo() {
+        const [tab, setTab] = useState("Pills");
+        const tabs = ["Pills", "Underlined", "Compact"];
+        return (
+          <div style={{ display: "grid", gap: 8 }}>
+            <div className="npfd-row">
+              {tabs.map((name) => (
+                <button key={name} className="npfd-btn" data-tone={tab === name ? "accent" : undefined} style={{ borderRadius: 999 }} onClick={() => setTab(name)}>{name}</button>
+              ))}
+            </div>
+            <div style={{ borderBottom: "1px solid var(--npfd-line)", display: "flex", gap: 14, paddingBottom: 5, fontSize: 12 }}>
+              {tabs.map((name) => (
+                <span key={name} onClick={() => setTab(name)} style={{ cursor: "pointer", borderBottom: tab === name ? "2px solid var(--npfd-accent)" : "2px solid transparent", paddingBottom: 4 }}>{name}</span>
+              ))}
+            </div>
+            <div className="npfd-note">Active: {tab}</div>
+          </div>
+        );
+      }
+
+      function NpfdPaginationDemo() {
+        const [page, setPage] = useState(3);
+        const [size, setSize] = useState(20);
+        return (
+          <div style={{ display: "grid", gap: 10 }}>
+            <div className="npfd-row">
+              <button className="npfd-btn" onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button key={n} className="npfd-btn" data-tone={n === page ? "accent" : undefined} onClick={() => setPage(n)}>{n}</button>
+              ))}
+              <button className="npfd-btn" onClick={() => setPage((p) => Math.min(5, p + 1))}>Next</button>
+            </div>
+            <label className="npfd-row npfd-note">
+              Page size
+              <select value={size} onChange={(e) => setSize(Number(e.target.value))}>
+                <option>10</option><option>20</option><option>50</option>
+              </select>
+            </label>
+          </div>
+        );
+      }
+
+      function NpfdStepperDemo() {
+        const [step, setStep] = useState(2);
+        const names = ["Brief", "Design", "Proof", "Ship"];
+        return (
+          <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
+              {names.map((name, i) => {
+                const index = i + 1;
+                const active = index === step;
+                const done = index < step;
+                return (
+                  <div key={name} onClick={() => setStep(index)} style={{ border: `1px solid ${active ? "var(--npfd-accent)" : "var(--npfd-line)"}`, padding: 8, cursor: "pointer", fontSize: 12 }}>
+                    <strong>{done ? "✓" : index}</strong> {name}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="npfd-note">Current step: {step}</div>
+          </div>
+        );
+      }
+
+      function NpfdDropdownDemo() {
+        const [open, setOpen] = useState(false);
+        const [sub, setSub] = useState(false);
+        return (
+          <div style={{ position: "relative" }}>
+            <button className="npfd-btn" data-tone="accent" onClick={() => setOpen((v) => !v)}>☰ Actions</button>
+            {open && (
+              <div style={{ position: "absolute", top: 36, left: 0, border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", minWidth: 180, zIndex: 4 }}>
+                <div style={{ padding: 8, borderBottom: "1px solid var(--npfd-line)" }}>Run print</div>
+                <div style={{ padding: 8, borderBottom: "1px solid var(--npfd-line)", cursor: "pointer" }} onClick={() => setSub((v) => !v)}>Settings ▸</div>
+                {sub && <div style={{ marginLeft: 14, borderLeft: "1px dashed var(--npfd-line)" }}><div style={{ padding: 8 }}>Color profile</div><div style={{ padding: 8 }}>Paper stock</div></div>}
+                <div style={{ padding: 8 }}>Export</div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function NpfdBottomNavDemo() {
+        const [active, setActive] = useState("Home");
+        const items = ["Home", "Search", "Queue", "Alerts", "Account"];
+        return (
+          <div style={{ border: "1px solid var(--npfd-line)", width: 260, margin: "0 auto", borderRadius: 18, overflow: "hidden" }}>
+            <div style={{ height: 86, padding: 8, fontSize: 12, color: "var(--npfd-muted)" }}>Mobile preview</div>
+            <nav style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", borderTop: "1px solid var(--npfd-line)" }}>
+              {items.map((item) => (
+                <button key={item} onClick={() => setActive(item)} style={{ border: 0, borderRight: "1px solid var(--npfd-line)", background: active === item ? "color-mix(in srgb, var(--npfd-accent) 16%, transparent)" : "var(--npfd-panel)", padding: "8px 4px", fontSize: 10 }}>{item}</button>
+              ))}
+            </nav>
+          </div>
+        );
+      }
+
+      function NpfdMegaMenuDemo() {
+        const [open, setOpen] = useState(false);
+        return (
+          <div style={{ position: "relative" }}>
+            <button className="npfd-btn" data-tone="accent" onClick={() => setOpen((v) => !v)}>Open Mega Menu</button>
+            {open && (
+              <div style={{ position: "absolute", top: 36, left: 0, width: "min(560px, 95vw)", border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: 10, display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, zIndex: 4 }}>
+                {[
+                  ["Navigation", "Navbar", "Sidebar", "Breadcrumbs"],
+                  ["Data", "Table", "Timeline", "Tree View"],
+                  ["Feedback", "Alert", "Modal", "Snackbar"]
+                ].map((col) => (
+                  <div key={col[0]}>
+                    <strong style={{ fontSize: 12 }}>{col[0]}</strong>
+                    <div style={{ marginTop: 6, display: "grid", gap: 4, fontSize: 12, color: "var(--npfd-muted)" }}>{col.slice(1).map((item) => <span key={item}>{item}</span>)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function NpfdCommandPaletteDemo() {
+        const [q, setQ] = useState("");
+        const commands = ["Open queue", "Open tokens", "Create campaign", "Invite editor", "Switch theme", "Export report"];
+        const filtered = commands.filter((item) => item.toLowerCase().includes(q.toLowerCase()));
+        return (
+          <div style={{ border: "1px solid var(--npfd-line)", padding: 8 }}>
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Type command..." style={{ width: "100%", border: "1px solid var(--npfd-line)", padding: "7px 9px", background: "transparent", color: "var(--npfd-ink)" }} />
+            <div style={{ marginTop: 8, display: "grid", gap: 4 }}>
+              {filtered.map((item) => <div key={item} style={{ border: "1px dashed var(--npfd-line)", padding: "6px 8px", fontSize: 12 }}>{item}</div>)}
+              {!filtered.length && <div className="npfd-note">No command matches this query.</div>}
+            </div>
+          </div>
+        );
+      }
+
+      function NpfdTableDemo() {
+        const [sortAsc, setSortAsc] = useState(true);
+        const [selected, setSelected] = useState([]);
+        const rows = useMemo(() => {
+          const base = [
+            { id: "NP-110", name: "Editorial A2", status: "Proof" },
+            { id: "NP-111", name: "Campaign Fold", status: "Print" },
+            { id: "NP-112", name: "Poster XL", status: "Pack" }
+          ];
+          return [...base].sort((a, b) => sortAsc ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id));
+        }, [sortAsc]);
+        const toggle = (id) => setSelected((prev) => prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]);
+        return (
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid var(--npfd-line)", width: 36 }}></th>
+                  <th style={{ border: "1px solid var(--npfd-line)", cursor: "pointer" }} onClick={() => setSortAsc((v) => !v)}>Order {sortAsc ? "↑" : "↓"}</th>
+                  <th style={{ border: "1px solid var(--npfd-line)" }}>Name</th>
+                  <th style={{ border: "1px solid var(--npfd-line)" }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.id}>
+                    <td style={{ border: "1px solid var(--npfd-line)", textAlign: "center" }}><input type="checkbox" checked={selected.includes(r.id)} onChange={() => toggle(r.id)} /></td>
+                    <td style={{ border: "1px solid var(--npfd-line)", padding: 4 }}>{r.id}</td>
+                    <td style={{ border: "1px solid var(--npfd-line)", padding: 4 }}>{r.name}</td>
+                    <td style={{ border: "1px solid var(--npfd-line)", padding: 4 }}>{r.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="npfd-note" style={{ marginTop: 6 }}>Selected: {selected.join(", ") || "none"}</div>
+          </div>
+        );
+      }
+
+      function NpfdDataGridDemo() {
+        const [cell, setCell] = useState({ row: 0, field: "qty" });
+        const [data, setData] = useState([
+          { sku: "A2-EDITORIAL", qty: 420, owner: "Lina" },
+          { sku: "XL-GRID", qty: 180, owner: "Mika" }
+        ]);
+        const update = (index, field, value) => setData((rows) => rows.map((r, i) => i === index ? { ...r, [field]: value } : r));
+        return (
+          <div style={{ display: "grid", gap: 6 }}>
+            {data.map((row, i) => (
+              <div key={row.sku} style={{ display: "grid", gridTemplateColumns: "1.4fr .6fr .8fr", gap: 6 }}>
+                {Object.entries(row).map(([k, v]) => {
+                  const editing = cell.row === i && cell.field === k;
+                  return (
+                    <div key={k} onClick={() => setCell({ row: i, field: k })} style={{ border: "1px solid var(--npfd-line)", padding: 6, fontSize: 12, cursor: "pointer" }}>
+                      {editing ? <input value={v} onChange={(e) => update(i, k, e.target.value)} style={{ width: "100%" }} /> : <span><strong>{k}: </strong>{String(v)}</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+            <div className="npfd-note">Inline editing mock on click.</div>
+          </div>
+        );
+      }
+
+      function NpfdListDemo() {
+        return (
+          <div style={{ display: "grid", gap: 8 }}>
+            <div style={{ border: "1px solid var(--npfd-line)", padding: 7, fontSize: 12 }}>Simple list: Editorial, Campaign, Archive</div>
+            <div style={{ border: "1px solid var(--npfd-line)", padding: 7, fontSize: 12 }}>
+              <span style={{ borderRadius: "50%", border: "1px solid var(--npfd-line)", width: 20, height: 20, display: "inline-grid", placeItems: "center", marginRight: 6 }}>LN</span>
+              Avatar list item with owner metadata
+            </div>
+            <div style={{ border: "1px solid var(--npfd-line)", padding: 7, display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+              <span>Actionable row</span><button className="npfd-btn">Open</button>
+            </div>
+          </div>
+        );
+      }
+
+      function NpfdCardDemo() {
+        return (
+          <div style={{ display: "grid", gap: 10 }}>
+            <article style={{ border: "1px solid var(--npfd-line)", overflow: "hidden" }}>
+              <div style={{ height: 62, background: "linear-gradient(120deg, var(--npfd-accent), transparent)", borderBottom: "1px solid var(--npfd-line)" }}></div>
+              <div style={{ padding: 8 }}><strong>Image header card</strong><div className="npfd-note">Footer actions and metadata.</div></div>
+            </article>
+            <article style={{ border: "1px solid var(--npfd-line)", display: "grid", gridTemplateColumns: "80px 1fr" }}>
+              <div style={{ background: "color-mix(in srgb, var(--npfd-accent) 24%, transparent)", borderRight: "1px solid var(--npfd-line)" }}></div>
+              <div style={{ padding: 8, fontSize: 12 }}><strong>Horizontal card</strong><div className="npfd-note">Compact layout for dense lists.</div></div>
+            </article>
+          </div>
+        );
+      }
+
+      function NpfdStatCardDemo() {
+        return (
+          <div style={{ border: "1px solid var(--npfd-line)", padding: 8 }}>
+            <div className="npfd-note">Output Volume</div>
+            <div style={{ fontFamily: "'Libre Bodoni', serif", fontSize: 32 }}>12.8k</div>
+            <div style={{ color: "var(--npfd-success)", fontSize: 12 }}>+6.7% this week</div>
+            <svg width="100%" height="36" viewBox="0 0 220 36" style={{ marginTop: 6 }}>
+              <polyline fill="none" stroke="var(--npfd-accent)" strokeWidth="2" points="0,26 20,22 40,24 60,18 80,20 100,16 120,18 140,12 160,16 180,9 200,12 220,8" />
+            </svg>
+          </div>
+        );
+      }
+
+      function NpfdAvatarDemo() {
+        return (
+          <div style={{ display: "grid", gap: 8 }}>
+            <div className="npfd-row">
+              <span style={{ width: 30, height: 30, borderRadius: "50%", border: "1px solid var(--npfd-line)", display: "grid", placeItems: "center" }}>AL</span>
+              <span style={{ width: 30, height: 30, borderRadius: 6, border: "1px solid var(--npfd-line)", display: "grid", placeItems: "center" }}>SQ</span>
+              <span style={{ width: 30, height: 30, borderRadius: "50%", background: "color-mix(in srgb, var(--npfd-accent) 16%, transparent)", border: "1px solid var(--npfd-line)", display: "grid", placeItems: "center" }}>IN</span>
+            </div>
+            <div className="npfd-row">
+              {["LN", "MK", "TR", "+2"].map((a, i) => (
+                <span key={a} style={{ marginLeft: i === 0 ? 0 : -8, width: 28, height: 28, borderRadius: "50%", border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", display: "grid", placeItems: "center", fontSize: 10 }}>{a}</span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function NpfdBadgeDemo() {
+        return (
+          <div className="npfd-row">
+            <span style={{ border: "1px solid var(--npfd-line)", padding: "4px 8px", fontSize: 12 }}><span style={{ width: 7, height: 7, borderRadius: "50%", display: "inline-block", background: "var(--npfd-success)", marginRight: 6 }}></span>Online</span>
+            <span style={{ border: "1px solid var(--npfd-line)", padding: "4px 8px", fontSize: 12 }}>Alerts <strong>3</strong></span>
+            <span style={{ border: "1px solid var(--npfd-line)", padding: "4px 8px", fontSize: 12 }}>Printing</span>
+          </div>
+        );
+      }
+
+      function NpfdTagDemo() {
+        const [tags, setTags] = useState(["Urgent", "Editorial", "A2"]);
+        const colors = ["var(--npfd-danger)", "var(--npfd-accent)", "var(--npfd-success)"];
+        return (
+          <div className="npfd-row">
+            {tags.map((tag, i) => (
+              <button key={tag} onClick={() => setTags((prev) => prev.filter((t) => t !== tag))} style={{ border: `1px solid ${colors[i % colors.length]}`, color: colors[i % colors.length], background: "transparent", padding: "4px 8px", fontSize: 12, cursor: "pointer" }}>{tag} ×</button>
+            ))}
+            {!tags.length && <button className="npfd-btn" onClick={() => setTags(["Urgent", "Editorial", "A2"])}>Reset tags</button>}
+          </div>
+        );
+      }
+
+      function NpfdTooltipDemo() {
+        const tip = (label, pos) => (
+          <span key={pos} style={{ position: "relative", border: "1px solid var(--npfd-line)", padding: "6px 9px", fontSize: 12 }}>
+            {label}
+            <span style={{ position: "absolute", [pos === "top" ? "bottom" : pos === "bottom" ? "top" : pos === "left" ? "right" : "left"]: "105%", left: pos === "top" || pos === "bottom" ? "50%" : "auto", transform: pos === "top" || pos === "bottom" ? "translateX(-50%)" : "none", whiteSpace: "nowrap", border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: "2px 6px", fontSize: 10 }}>
+              {pos} tooltip
+            </span>
+          </span>
+        );
+        return <div className="npfd-row" style={{ paddingTop: 18 }}>{[tip("Top", "top"), tip("Bottom", "bottom"), tip("Left", "left"), tip("Right", "right")]}</div>;
+      }
+
+      function NpfdProgressDemo() {
+        const [val, setVal] = useState(62);
+        return (
+          <div style={{ display: "grid", gap: 8 }}>
+            <input type="range" min="0" max="100" value={val} onChange={(e) => setVal(Number(e.target.value))} />
+            <div style={{ border: "1px solid var(--npfd-line)", height: 12, position: "relative" }}><div style={{ width: `${val}%`, height: "100%", background: "var(--npfd-accent)" }}></div></div>
+            <div style={{ border: "1px solid var(--npfd-line)", height: 10, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent, color-mix(in srgb, var(--npfd-accent) 70%, transparent), transparent)", animation: "npfdShift 1.3s linear infinite" }}></div></div>
+            <div style={{ width: 42, height: 42, borderRadius: "50%", border: "1px solid var(--npfd-line)", background: `conic-gradient(var(--npfd-accent) ${val * 3.6}deg, transparent 0)` }}></div>
+          </div>
+        );
+      }
+
+      function NpfdTimelineDemo() {
+        const items = ["Brief approved", "Design completed", "Proof shipped", "Client sign-off"];
+        return (
+          <div style={{ borderLeft: "2px solid var(--npfd-line)", paddingLeft: 10, display: "grid", gap: 9 }}>
+            {items.map((it, i) => <div key={it} style={{ fontSize: 12 }}><strong>{i + 1}.</strong> {it}</div>)}
+          </div>
+        );
+      }
+
+      function NpfdTreeViewDemo() {
+        const [open, setOpen] = useState({ a: true, b: false });
+        return (
+          <div style={{ fontSize: 12, display: "grid", gap: 6 }}>
+            <div onClick={() => setOpen((s) => ({ ...s, a: !s.a }))} style={{ cursor: "pointer" }}>{open.a ? "▾" : "▸"} Campaigns</div>
+            {open.a && <div style={{ marginLeft: 16, display: "grid", gap: 4 }}><span>Spring Drop</span><span>Editorial Set</span></div>}
+            <div onClick={() => setOpen((s) => ({ ...s, b: !s.b }))} style={{ cursor: "pointer" }}>{open.b ? "▾" : "▸"} Archives</div>
+            {open.b && <div style={{ marginLeft: 16 }}><span>2025 Collection</span></div>}
+          </div>
+        );
+      }
+
+      function NpfdShortcutsDemo() {
+        const shortcut = (k) => <kbd style={{ border: "1px solid var(--npfd-line)", padding: "2px 6px", fontFamily: "inherit", fontSize: 11 }}>{k}</kbd>;
+        return (
+          <div style={{ display: "grid", gap: 8, fontSize: 12 }}>
+            <div className="npfd-row">Quick open: {shortcut("⌘")} + {shortcut("K")}</div>
+            <div className="npfd-row">Save: {shortcut("⌘")} + {shortcut("S")}</div>
+            <div className="npfd-row">Search table: {shortcut("/")}</div>
+          </div>
+        );
+      }
+
+      function NpfdCarouselIndicatorsDemo() {
+        const [idx, setIdx] = useState(1);
+        return (
+          <div style={{ display: "grid", gap: 8, justifyItems: "start" }}>
+            <div className="npfd-row">{[0,1,2,3,4].map((d) => <button key={d} onClick={() => setIdx(d)} style={{ width: d === idx ? 22 : 10, height: 10, borderRadius: 999, border: "1px solid var(--npfd-line)", background: d === idx ? "var(--npfd-accent)" : "transparent" }}></button>)}</div>
+            <div className="npfd-note">Slide {idx + 1} / 5</div>
+          </div>
+        );
+      }
+
+      function NpfdAlertDemo() {
+        const tones = [
+          ["Info", "var(--npfd-accent)"],
+          ["Success", "var(--npfd-success)"],
+          ["Warning", "var(--npfd-warning)"],
+          ["Error", "var(--npfd-danger)"]
+        ];
+        return (
+          <div style={{ display: "grid", gap: 6 }}>
+            {tones.map(([name, color]) => <div key={name} style={{ border: `1px solid ${color}`, padding: "6px 8px", fontSize: 12 }}>{name}: system message in {name.toLowerCase()} tone.</div>)}
+          </div>
+        );
+      }
+
+      function NpfdToastDemo() {
+        const [toasts, setToasts] = useState([]);
+        const spawn = () => {
+          const id = Date.now();
+          setToasts((prev) => [...prev, { id, text: "Poster export complete" }]);
+          setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 2500);
+        };
+        return (
+          <div style={{ position: "relative", minHeight: 120 }}>
+            <button className="npfd-btn" data-tone="accent" onClick={spawn}>Launch toast</button>
+            <div style={{ position: "absolute", right: 0, top: 0, display: "grid", gap: 6 }}>
+              {toasts.map((t) => <div key={t.id} style={{ border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: "6px 8px", fontSize: 12 }}>{t.text} <button className="npfd-btn">Undo</button></div>)}
+            </div>
+          </div>
+        );
+      }
+
+      function NpfdModalDemo() {
+        const [size, setSize] = useState(null);
+        const widths = { sm: 220, md: 300, lg: 380 };
+        return (
+          <div>
+            <div className="npfd-row">
+              <button className="npfd-btn" onClick={() => setSize("sm")}>Small</button>
+              <button className="npfd-btn" onClick={() => setSize("md")}>Medium</button>
+              <button className="npfd-btn" onClick={() => setSize("lg")}>Large</button>
+            </div>
+            {size && (
+              <div style={{ position: "absolute", inset: 12, background: "color-mix(in srgb, var(--npfd-ink) 18%, transparent)", display: "grid", placeItems: "center" }}>
+                <div style={{ width: widths[size], maxWidth: "92%", border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: 10 }}>
+                  <strong>{size.toUpperCase()} dialog</strong>
+                  <p className="npfd-note">Modal body content.</p>
+                  <button className="npfd-btn" onClick={() => setSize(null)}>Close</button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function NpfdDrawerDemo() {
+        const [side, setSide] = useState(null);
+        const styleBy = {
+          left: { left: 0, top: 0, bottom: 0, width: 180 },
+          right: { right: 0, top: 0, bottom: 0, width: 180 },
+          bottom: { left: 0, right: 0, bottom: 0, height: 86 }
+        };
+        return (
+          <div style={{ position: "relative", minHeight: 126, border: "1px dashed var(--npfd-line)" }}>
+            <div className="npfd-row" style={{ padding: 6 }}>
+              <button className="npfd-btn" onClick={() => setSide("left")}>Left</button>
+              <button className="npfd-btn" onClick={() => setSide("right")}>Right</button>
+              <button className="npfd-btn" onClick={() => setSide("bottom")}>Bottom</button>
+            </div>
+            {side && <div style={{ position: "absolute", ...styleBy[side], border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: 8 }}>Drawer {side} <button className="npfd-btn" onClick={() => setSide(null)}>×</button></div>}
+          </div>
+        );
+      }
+
+      function NpfdPopoverDemo() {
+        const [open, setOpen] = useState(false);
+        return (
+          <div style={{ position: "relative" }}>
+            <button className="npfd-btn" data-tone="accent" onClick={() => setOpen((v) => !v)}>Toggle popover</button>
+            {open && <div style={{ position: "absolute", top: 36, left: 0, border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: 8, width: 190, fontSize: 12 }}>Popover body with contextual controls.</div>}
+          </div>
+        );
+      }
+
+      function NpfdSkeletonDemo() {
+        return (
+          <div style={{ display: "grid", gap: 8 }}>
+            <div className="npfd-pulse" style={{ height: 8, width: "66%", background: "var(--npfd-line)" }}></div>
+            <div className="npfd-pulse" style={{ border: "1px solid var(--npfd-line)", padding: 8, display: "grid", gap: 6 }}>
+              <div style={{ height: 8, background: "var(--npfd-line)", width: "80%" }}></div>
+              <div style={{ height: 8, background: "var(--npfd-line)", width: "58%" }}></div>
+            </div>
+            <div className="npfd-pulse" style={{ height: 22, background: "var(--npfd-line)" }}></div>
+          </div>
+        );
+      }
+
+      function NpfdSpinnerDemo() {
+        return (
+          <div className="npfd-row" style={{ gap: 16 }}>
+            <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid var(--npfd-line)", borderTopColor: "var(--npfd-accent)", animation: "spin 1s linear infinite" }}></div>
+            <div className="npfd-row">{[0,1,2].map((d) => <span key={d} className="npfd-pulse" style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--npfd-accent)", animationDelay: `${d * 0.2}s` }}></span>)}</div>
+            <style>{"@keyframes spin{to{transform:rotate(360deg)}}"}</style>
+          </div>
+        );
+      }
+
+      function NpfdEmptyStateDemo() {
+        return (
+          <div style={{ border: "1px solid var(--npfd-line)", padding: 10, textAlign: "center" }}>
+            <div style={{ width: 90, height: 58, margin: "0 auto 8px", border: "1px dashed var(--npfd-line)", display: "grid", placeItems: "center", color: "var(--npfd-muted)" }}>Illustration</div>
+            <strong>No campaigns yet</strong>
+            <div className="npfd-note" style={{ marginTop: 4 }}>Create your first poster run.</div>
+            <button className="npfd-btn" data-tone="accent" style={{ marginTop: 8 }}>New Campaign</button>
+          </div>
+        );
+      }
+
+      function NpfdErrorStateDemo() {
+        const [kind, setKind] = useState("404");
+        return (
+          <div style={{ border: "1px solid var(--npfd-danger)", padding: 8 }}>
+            <div className="npfd-row">
+              <button className="npfd-btn" data-tone={kind === "404" ? "danger" : undefined} onClick={() => setKind("404")}>404</button>
+              <button className="npfd-btn" data-tone={kind === "network" ? "danger" : undefined} onClick={() => setKind("network")}>Network</button>
+            </div>
+            <div style={{ marginTop: 8, fontSize: 12 }}>{kind === "404" ? "404: This route does not exist." : "Network error: reconnect and retry."}</div>
+          </div>
+        );
+      }
+
+      function NpfdSnackbarDemo() {
+        const [show, setShow] = useState(false);
+        return (
+          <div style={{ position: "relative", minHeight: 100 }}>
+            <button className="npfd-btn" onClick={() => setShow(true)}>Show snackbar</button>
+            {show && (
+              <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: "7px 8px", display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+                <span>Changes saved.</span>
+                <span><button className="npfd-btn">Undo</button> <button className="npfd-btn" onClick={() => setShow(false)}>Dismiss</button></span>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function NpfdBannerDemo() {
+        const [visible, setVisible] = useState(true);
+        return visible ? (
+          <div style={{ border: "1px solid var(--npfd-accent)", background: "color-mix(in srgb, var(--npfd-accent) 12%, transparent)", padding: "8px 10px", fontSize: 12, display: "flex", justifyContent: "space-between" }}>
+            <span>Scheduled maintenance at 02:00 UTC.</span>
+            <button className="npfd-btn" onClick={() => setVisible(false)}>Dismiss</button>
+          </div>
+        ) : <button className="npfd-btn" onClick={() => setVisible(true)}>Restore banner</button>;
+      }
+
+      function NpfdConfirmDialogDemo() {
+        const [open, setOpen] = useState(false);
+        const [status, setStatus] = useState("Idle");
+        return (
+          <div>
+            <button className="npfd-btn" data-tone="danger" onClick={() => setOpen(true)}>Delete run</button>
+            <div className="npfd-note" style={{ marginTop: 6 }}>Status: {status}</div>
+            {open && (
+              <div style={{ position: "absolute", inset: 10, background: "color-mix(in srgb, var(--npfd-ink) 20%, transparent)", display: "grid", placeItems: "center" }}>
+                <div style={{ border: "1px solid var(--npfd-line)", background: "var(--npfd-panel)", padding: 10, width: 280 }}>
+                  <strong>Confirm destructive action</strong>
+                  <p className="npfd-note">This cannot be undone.</p>
+                  <div className="npfd-row">
+                    <button className="npfd-btn" onClick={() => { setStatus("Canceled"); setOpen(false); }}>Cancel</button>
+                    <button className="npfd-btn" data-tone="danger" onClick={() => { setStatus("Deleted"); setOpen(false); }}>Delete</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      const npfdCatalog = [
+        {
+          id: "navigation",
+          title: "Navigation",
+          items: [
+            ["Navbar/Header", "Fixed top bar with logo + nav items", NpfdNavbarDemo],
+            ["Sidebar", "Collapsible rail with icons and nested nodes", NpfdSidebarDemo],
+            ["Breadcrumbs", "Path hierarchy with separators", NpfdBreadcrumbsDemo],
+            ["Tabs", "Horizontal tabs with pills and underlined modes", NpfdTabsDemo],
+            ["Pagination", "Numbered pager with page-size selector", NpfdPaginationDemo],
+            ["Stepper/Wizard", "Horizontal numbered progression", NpfdStepperDemo],
+            ["Dropdown Menu", "Action menu with nested settings", NpfdDropdownDemo],
+            ["Bottom Navigation", "Mobile-style tab rail", NpfdBottomNavDemo],
+            ["Mega Menu", "Multi-column navigation panel", NpfdMegaMenuDemo],
+            ["Command Palette", "Search-driven command launcher", NpfdCommandPaletteDemo]
+          ]
+        },
+        {
+          id: "data-display",
+          title: "Data Display",
+          items: [
+            ["Table", "Sortable rows with selection", NpfdTableDemo],
+            ["Data Grid", "Inline editing mock", NpfdDataGridDemo],
+            ["List", "Simple, avatar, and action variants", NpfdListDemo],
+            ["Card", "Image/header/footer and horizontal cards", NpfdCardDemo],
+            ["Stat/KPI Card", "Trend metric with sparkline", NpfdStatCardDemo],
+            ["Avatar", "Circular, square, initials, group stack", NpfdAvatarDemo],
+            ["Badge", "Dot, numeric, and icon badges", NpfdBadgeDemo],
+            ["Tag/Chip", "Removable clickable color-coded tags", NpfdTagDemo],
+            ["Tooltip", "Top/bottom/left/right placements", NpfdTooltipDemo],
+            ["Progress Bar", "Determinate, indeterminate, circular", NpfdProgressDemo],
+            ["Timeline", "Vertical activity sequence", NpfdTimelineDemo],
+            ["Tree View", "Expandable hierarchical nodes", NpfdTreeViewDemo],
+            ["Keyboard Shortcut", "Key combination display", NpfdShortcutsDemo],
+            ["Carousel Indicators", "Dot pagination states", NpfdCarouselIndicatorsDemo]
+          ]
+        },
+        {
+          id: "feedback",
+          title: "Feedback",
+          items: [
+            ["Alert", "Info, success, warning, error variants", NpfdAlertDemo],
+            ["Toast", "Actionable auto-dismiss notifications", NpfdToastDemo],
+            ["Modal/Dialog", "Small, medium, large overlays", NpfdModalDemo],
+            ["Drawer/Sheet", "Left, right, and bottom drawers", NpfdDrawerDemo],
+            ["Popover", "Click-triggered floating panel", NpfdPopoverDemo],
+            ["Skeleton Loader", "Text, card, and row placeholders", NpfdSkeletonDemo],
+            ["Spinner", "Circular and dots loading states", NpfdSpinnerDemo],
+            ["Empty State", "Illustration placeholder with CTA", NpfdEmptyStateDemo],
+            ["Error State", "404 and network error surfaces", NpfdErrorStateDemo],
+            ["Snackbar", "Bottom inline confirmation with action", NpfdSnackbarDemo],
+            ["Banner", "Full-width dismissible notice", NpfdBannerDemo],
+            ["Confirmation Dialog", "Destructive confirmation pattern", NpfdConfirmDialogDemo]
+          ]
+        }
+      ];
+
+      function NpfdApp() {
+        const [mode, setMode] = useState("light");
+
+        useEffect(() => {
+          npfdApplyTheme(mode);
+        }, [mode]);
+
+        const tocItems = npfdCatalog.flatMap((section) =>
+          section.items.map(([name]) => ({
+            id: `${section.id}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+            label: `${name} (${section.title})`
+          }))
+        );
+
+        return (
+          <div className="npfd-app">
+            <div className="npfd-shell">
+              <header className="npfd-header">
+                <div className="npfd-kicker">Neo-Print Poster Grid • Live Component Catalog</div>
+                <div className="npfd-title-row">
+                  <div>
+                    <h1 className="npfd-title">Navigation, Data Display, Feedback</h1>
+                    <p className="npfd-subtitle">
+                      Self-contained React 18 catalog with live rendered examples. This page follows the Neo-Print palette and typography, while presenting interaction patterns in a poster-grid editorial frame.
+                    </p>
+                  </div>
+                  <button className="npfd-toggle" onClick={() => setMode((m) => m === "light" ? "dark" : "light")}>
+                    Toggle {mode === "light" ? "Dark" : "Light"} Theme
+                  </button>
+                </div>
+              </header>
+
+              <section className="npfd-toc">
+                <h2>Table of Contents</h2>
+                <div className="npfd-toc-grid">
+                  {tocItems.map((item) => <a key={item.id} href={`#${item.id}`}>{item.label}</a>)}
+                </div>
+              </section>
+
+              {npfdCatalog.map((section) => (
+                <section key={section.id} id={section.id} className="npfd-section">
+                  <h2 className="npfd-section-head">{section.title}</h2>
+                  <div className="npfd-grid">
+                    {section.items.map(([name, meta, Comp]) => {
+                      const cardId = `${section.id}-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+                      return (
+                        <NpfdCard key={cardId} id={cardId} title={name} meta={meta}>
+                          <Comp />
+                        </NpfdCard>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+
+              <footer className="npfd-footer">
+                Render mode: <strong>{mode}</strong>. <a className="npfd-jump-link" href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Back to top</a>
+              </footer>
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<NpfdApp />);
+    </script>
+  </body>
+</html>

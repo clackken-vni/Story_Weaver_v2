@@ -6,6 +6,7 @@ import { InfraStrip } from './ui/InfraStrip';
 import { IncidentRow } from './ui/IncidentRow';
 import { SkeletonLoader } from './ui/SkeletonLoader';
 import { adminApi } from '../lib/api';
+import { NeoPrintButton, NeoPrintCard, NeoPrintStatGrid, NeoPrintTable, NeoPrintTag } from './neo-print';
 
 interface MonitoringService {
   service: string;
@@ -56,89 +57,140 @@ export function MonitoringPanel() {
     <ModuleShell title="Monitoring" subtitle="System performance and metrics" loading={false} error={error}>
       {loading ? (
         <section style={{ display: 'grid', gap: 'var(--space-4)' }} aria-label="Loading monitoring panel">
-          <div className="mon-service-grid">
-            <SkeletonLoader variant="card" /><SkeletonLoader variant="card" /><SkeletonLoader variant="card" />
-          </div>
+          <NeoPrintStatGrid>
+            <SkeletonLoader variant="card" />
+            <SkeletonLoader variant="card" />
+            <SkeletonLoader variant="card" />
+          </NeoPrintStatGrid>
           <SkeletonLoader variant="text" lines={3} />
-          <SkeletonLoader variant="row" /><SkeletonLoader variant="row" />
+          <SkeletonLoader variant="row" />
+          <SkeletonLoader variant="row" />
         </section>
       ) : (
         <section style={{ display: 'grid', gap: 'var(--space-6)' }}>
-          {/* Time Range Selector */}
           <div className="mon-toolbar">
-            <div className="mon-time-range">
+            <div className="mon-time-range" role="tablist" aria-label="Monitoring time range">
               {TIME_RANGES.map((range) => (
-                <button key={range} type="button"
+                <button
+                  key={range}
+                  type="button"
                   className={`mon-time-btn ${timeRange === range ? 'mon-time-btn--active' : ''}`}
-                  onClick={() => setTimeRange(range)}>{range}</button>
+                  onClick={() => setTimeRange(range)}
+                >
+                  {range}
+                </button>
               ))}
             </div>
-            <button className="mon-export-btn">
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              Export
-            </button>
+            <NeoPrintButton type="button" variant="secondary">Export</NeoPrintButton>
           </div>
 
-          {/* Service matrix — real data */}
           <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
-            <h3 className="mon-section-title">Service matrix</h3>
-            {serviceList.length === 0 ? (
-              <p className="mon-hint">No services reporting yet. Data will appear when monitoring endpoints are connected.</p>
-            ) : (
-              <div className="mon-service-grid">
-                {serviceList.map((service) => (
-                  <ServiceCard key={service.service} name={service.service} status={service.status}
-                    p95LatencyMs={service.p95_latency_ms} errorRate={service.error_rate} />
-                ))}
+            <div className="mon-heading-row">
+              <div>
+                <p className="mon-kicker">Operations board</p>
+                <h3 className="mon-title">Service matrix</h3>
               </div>
+              <NeoPrintTag tone={serviceList.some((service) => service.status !== 'healthy') ? 'degraded' : 'healthy'}>
+                {serviceList.length} services
+              </NeoPrintTag>
+            </div>
+            {serviceList.length === 0 ? (
+              <NeoPrintCard>
+                <p className="mon-copy">No services reporting yet. Data will appear when monitoring endpoints are connected.</p>
+              </NeoPrintCard>
+            ) : (
+              <NeoPrintStatGrid>
+                {serviceList.map((service) => (
+                  <ServiceCard
+                    key={service.service}
+                    name={service.service}
+                    status={service.status}
+                    p95LatencyMs={service.p95_latency_ms}
+                    errorRate={service.error_rate}
+                  />
+                ))}
+              </NeoPrintStatGrid>
             )}
           </section>
 
-          {/* Infrastructure — real data */}
-          {infraList.length > 0 && <InfraStrip items={infraList} />}
+          {infraList.length > 0 ? <InfraStrip items={infraList} /> : null}
 
-          {/* Error Rate table — real data */}
-          {serviceList.length > 0 && (
-            <div className="mon-card">
-              <div className="mon-card-header">
-                <h3 className="mon-card-title">Error Rate</h3>
+          {serviceList.length > 0 ? (
+            <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
+              <div>
+                <p className="mon-kicker">Rate table</p>
+                <h3 className="mon-title">Error ledger</h3>
               </div>
-              <div style={{ overflowX: 'auto' }}>
-                <table className="mon-table">
-                  <thead><tr><th>Service</th><th>Error Rate</th><th>Errors/min</th><th>Status</th></tr></thead>
-                  <tbody>
-                    {serviceList.map((svc) => {
-                      const errPct = (svc.error_rate * 100).toFixed(2);
-                      const isCritical = svc.error_rate > 0.02;
-                      return (
-                        <tr key={svc.service}>
-                          <td style={{ fontWeight: 'var(--weight-medium)' as unknown as number, color: 'var(--text-primary)' }}>{svc.service}</td>
-                          <td style={{ color: isCritical ? 'var(--status-critical)' : 'var(--text-secondary)' }}>{errPct}%</td>
-                          <td style={{ color: isCritical ? 'var(--status-critical)' : 'var(--text-secondary)' }}>{(svc.error_rate * 650).toFixed(1)}</td>
-                          <td><span className={`mon-badge mon-badge--${isCritical ? 'red' : 'green'}`}>{isCritical ? 'Critical' : 'Healthy'}</span></td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+              <NeoPrintTable
+                data={serviceList}
+                rowKey={(service) => service.service}
+                columns={[
+                  {
+                    key: 'service',
+                    header: 'Service',
+                    render: (service) => <strong style={{ color: 'var(--np-ink)' }}>{service.service}</strong>,
+                  },
+                  {
+                    key: 'error-rate',
+                    header: 'Error Rate',
+                    align: 'right',
+                    render: (service) => `${(service.error_rate * 100).toFixed(2)}%`,
+                  },
+                  {
+                    key: 'errors-min',
+                    header: 'Errors/Min',
+                    align: 'right',
+                    render: (service) => (service.error_rate * 650).toFixed(1),
+                  },
+                  {
+                    key: 'status',
+                    header: 'Status',
+                    align: 'right',
+                    render: (service) => (
+                      <NeoPrintTag tone={service.error_rate > 0.02 ? 'critical' : 'healthy'}>
+                        {service.error_rate > 0.02 ? 'Critical' : 'Healthy'}
+                      </NeoPrintTag>
+                    ),
+                  },
+                ]}
+              />
+            </section>
+          ) : null}
 
-          {/* Active incidents — real data */}
           <section style={{ display: 'grid', gap: 'var(--space-3)' }}>
-            <h3 className="mon-section-title">Active incidents</h3>
-            {actionError && (
-              <div role="alert" style={{ color: 'var(--status-critical)', fontSize: 'var(--text-sm)' }}>{actionError}</div>
-            )}
+            <div className="mon-heading-row">
+              <div>
+                <p className="mon-kicker">Response queue</p>
+                <h3 className="mon-title">Active incidents</h3>
+              </div>
+              <NeoPrintTag tone={incidentList.length > 0 ? 'critical' : 'healthy'}>
+                {incidentList.length > 0 ? `${incidentList.length} open` : 'Clear'}
+              </NeoPrintTag>
+            </div>
+            {actionError ? (
+              <div role="alert">
+                <NeoPrintCard tone="danger">
+                  <p className="mon-copy" style={{ color: 'var(--status-critical)' }}>{actionError}</p>
+                </NeoPrintCard>
+              </div>
+            ) : null}
             {incidentList.length === 0 ? (
-              <p className="mon-hint">No active incidents.</p>
+              <NeoPrintCard>
+                <p className="mon-copy">No active incidents.</p>
+              </NeoPrintCard>
             ) : (
               <div style={{ display: 'grid', gap: 'var(--space-3)' }}>
                 {incidentList.map((incident) => (
-                  <IncidentRow key={incident.id} id={incident.id} title={incident.title}
-                    severity={incident.severity} status={incident.status} owner={incident.owner}
-                    createdAt={incident.created_at} onAcknowledge={handleAck} />
+                  <IncidentRow
+                    key={incident.id}
+                    id={incident.id}
+                    title={incident.title}
+                    severity={incident.severity}
+                    status={incident.status}
+                    owner={incident.owner}
+                    createdAt={incident.created_at}
+                    onAcknowledge={handleAck}
+                  />
                 ))}
               </div>
             )}
@@ -147,44 +199,66 @@ export function MonitoringPanel() {
       )}
 
       <style jsx>{`
-        .mon-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); }
+        .mon-toolbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: var(--space-3);
+        }
+
         .mon-time-range {
-          display: flex; gap: 2px; padding: 4px; border-radius: var(--radius-lg);
-          background: var(--card-bg); border: 1px solid var(--card-border);
+          display: flex;
+          gap: 2px;
+          padding: 4px;
+          border: 1px solid var(--np-line);
+          background: var(--np-surface);
         }
+
         .mon-time-btn {
-          padding: 6px 16px; font-size: var(--text-xs); font-weight: var(--weight-medium);
-          color: var(--text-tertiary); background: none; border: none;
-          border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s;
+          padding: 6px 14px;
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--np-muted);
+          background: transparent;
+          border: 0;
+          cursor: pointer;
         }
-        .mon-time-btn:hover { color: var(--text-primary); }
-        .mon-time-btn--active { background: var(--primary-600); color: #fff; box-shadow: 0 2px 8px rgba(124,58,237,0.25); }
-        .mon-export-btn {
-          display: flex; align-items: center; gap: 8px; padding: 8px 16px;
-          font-size: var(--text-sm); color: var(--text-secondary);
-          background: var(--card-bg); border: 1px solid var(--card-border);
-          border-radius: var(--radius-md); cursor: pointer; transition: background 0.15s;
+
+        .mon-time-btn--active {
+          background: var(--np-accent);
+          color: #f5f1ea;
         }
-        .mon-export-btn:hover { background: var(--surface-tertiary); }
-        .mon-service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
-        .mon-section-title { font-size: var(--text-base); font-weight: var(--weight-semibold); color: var(--text-primary); }
-        .mon-hint { font-size: var(--text-sm); color: var(--text-tertiary); }
-        .mon-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-xl); overflow: hidden; }
-        .mon-card-header {
-          padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border-primary);
-          display: flex; align-items: center; justify-content: space-between;
-          background: var(--surface-tertiary);
+
+        .mon-heading-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          gap: var(--space-3);
+          flex-wrap: wrap;
         }
-        .mon-card-title { font-weight: var(--weight-semibold); color: var(--text-primary); }
-        .mon-table { width: 100%; border-collapse: collapse; }
-        .mon-table thead { background: var(--surface-tertiary); }
-        .mon-table th { padding: 8px 16px; text-align: left; font-size: 10px; font-weight: var(--weight-semibold); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
-        .mon-table td { padding: 12px 16px; font-size: var(--text-sm); color: var(--text-secondary); border-bottom: 1px solid var(--border-primary); }
-        .mon-table tbody tr { transition: background 0.1s; }
-        .mon-table tbody tr:hover { background: var(--surface-tertiary); }
-        .mon-badge { display: inline-flex; padding: 4px 10px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: var(--weight-semibold); }
-        .mon-badge--green { background: rgba(34,197,94,0.12); color: var(--status-healthy); }
-        .mon-badge--red { background: rgba(239,68,68,0.12); color: var(--status-critical); }
+
+        .mon-kicker {
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--np-muted);
+        }
+
+        .mon-title {
+          margin-top: 6px;
+          font-family: var(--np-font-display);
+          font-size: clamp(1.7rem, 1.4rem + 0.5vw, 2.2rem);
+          line-height: 0.95;
+          color: var(--np-ink);
+        }
+
+        .mon-copy {
+          font-size: var(--text-sm);
+          line-height: 1.6;
+          color: var(--np-muted);
+        }
       `}</style>
     </ModuleShell>
   );

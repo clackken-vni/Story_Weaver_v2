@@ -2,7 +2,7 @@ import { AlertTriangle, Siren } from 'lucide-react';
 import { ModuleShell } from './ModuleShell';
 import { useCommandCenter } from '../hooks/useCommandCenter';
 import { KpiCard } from './ui/KpiCard';
-import { StatusBadge } from './ui/StatusBadge';
+import { NeoPrintCard, NeoPrintStatGrid, NeoPrintTag } from './neo-print';
 import { SkeletonLoader } from './ui/SkeletonLoader';
 
 export function CommandCenterPanel() {
@@ -19,99 +19,136 @@ export function CommandCenterPanel() {
     <ModuleShell title="Command Center" subtitle="Real-time system overview and analytics" loading={false} error={error}>
       {loading ? (
         <section style={{ display: 'grid', gap: 'var(--space-5)' }}>
-          <div className="cc-kpi-grid">
+          <NeoPrintStatGrid>
             <SkeletonLoader variant="card" />
             <SkeletonLoader variant="card" />
             <SkeletonLoader variant="card" />
-          </div>
+          </NeoPrintStatGrid>
           <SkeletonLoader variant="text" lines={5} />
         </section>
       ) : !data ? (
-        <section className="cc-empty">
-          <AlertTriangle size={24} style={{ color: 'var(--text-tertiary)' }} aria-hidden="true" />
-          <h3 className="cc-empty-title">No command center data</h3>
-          <p className="cc-empty-desc">Data source has not published metrics yet.</p>
-        </section>
+        <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-3)', justifyItems: 'center', textAlign: 'center' }}>
+          <AlertTriangle size={24} style={{ color: 'var(--np-muted)' }} aria-hidden="true" />
+          <h3 style={{ fontFamily: 'var(--np-font-display)', fontSize: '1.75rem', lineHeight: 0.95, color: 'var(--np-ink)' }}>
+            No command center data
+          </h3>
+          <p style={{ color: 'var(--np-muted)', fontSize: 'var(--text-sm)' }}>Data source has not published metrics yet.</p>
+        </NeoPrintCard>
       ) : (
         <section style={{ display: 'grid', gap: 'var(--space-6)' }}>
-          {/* KPI Cards — real data */}
-          <div className="cc-kpi-grid">
-            <KpiCard label="Open Incidents" value={openIncidents} severity={incidentSeverity}
-              trend={openIncidents > 0 ? 'up' : 'flat'} trendLabel={openIncidents > 0 ? 'Needs attention' : 'All clear'} />
-            <KpiCard label="Degraded Services" value={degradedServices} severity={serviceSeverity}
-              trend={degradedServices > 0 ? 'up' : 'flat'} trendLabel={degradedServices > 0 ? 'Performance drop' : 'All healthy'} />
-            <KpiCard label="Active Alerts" value={alerts.length} severity={alerts.length > 0 ? 'degraded' : 'healthy'}
-              trend={alerts.length > 0 ? 'up' : 'down'} trendLabel={alerts.length > 0 ? 'Escalate soon' : 'Quiet period'} />
-          </div>
+          <NeoPrintStatGrid>
+            <KpiCard
+              label="Open Incidents"
+              value={openIncidents}
+              severity={incidentSeverity}
+              trend={openIncidents > 0 ? 'up' : 'flat'}
+              trendLabel={openIncidents > 0 ? 'Needs attention' : 'All clear'}
+            />
+            <KpiCard
+              label="Degraded Services"
+              value={degradedServices}
+              severity={serviceSeverity}
+              trend={degradedServices > 0 ? 'up' : 'flat'}
+              trendLabel={degradedServices > 0 ? 'Performance drop' : 'All healthy'}
+            />
+            <KpiCard
+              label="Active Alerts"
+              value={alerts.length}
+              severity={alerts.length > 0 ? 'degraded' : 'healthy'}
+              trend={alerts.length > 0 ? 'up' : 'down'}
+              trendLabel={alerts.length > 0 ? 'Escalate soon' : 'Quiet period'}
+            />
+          </NeoPrintStatGrid>
 
-          {/* Two-column: Service Status + Quick Actions */}
           <div className="cc-lower-grid">
-            {/* Service Status */}
-            <div className="cc-card">
-              <div className="cc-card-header">
-                <h3 className="cc-card-title">Service Status</h3>
-                <StatusBadge status={degradedServices > 0 ? 'degraded' : 'healthy'} />
+            <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-3)', alignItems: 'start', flexWrap: 'wrap' }}>
+                <div>
+                  <p className="cc-kicker">Service brief</p>
+                  <h3 className="cc-title">Status ledger</h3>
+                </div>
+                <NeoPrintTag tone={degradedServices > 0 ? 'degraded' : 'healthy'}>
+                  {degradedServices > 0 ? 'Degraded' : 'Healthy'}
+                </NeoPrintTag>
               </div>
-              <div className="cc-card-body">
-                <p className="cc-hint">
-                  {degradedServices === 0
-                    ? 'All services operational. No degraded services detected.'
-                    : `${degradedServices} service(s) currently degraded. Check Monitoring module for details.`}
-                </p>
-              </div>
-            </div>
+              <p className="cc-copy">
+                {degradedServices === 0
+                  ? 'All services operational. No degraded services detected.'
+                  : `${degradedServices} service(s) currently degraded. Check Monitoring module for details.`}
+              </p>
+            </NeoPrintCard>
 
-            {/* Active Alerts */}
-            <div className="cc-card">
-              <div className="cc-card-header">
-                <h3 className="cc-card-title">Active Alerts</h3>
+            <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-4)' }}>
+              <div>
+                <p className="cc-kicker">Alert wire</p>
+                <h3 className="cc-title">Active alerts</h3>
               </div>
-              <div className="cc-card-body">
-                {alerts.length === 0 ? (
-                  <p className="cc-hint">No active alerts at this moment.</p>
-                ) : (
-                  <ul className="cc-alert-list">
-                    {alerts.map((alert, index) => (
-                      <li key={index} className="cc-alert-item">
-                        <Siren size={16} style={{ color: 'var(--status-critical)', marginTop: 2, flexShrink: 0 }} aria-hidden="true" />
-                        <span>{alert}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
+              {alerts.length === 0 ? (
+                <p className="cc-copy">No active alerts at this moment.</p>
+              ) : (
+                <ul className="cc-alert-list">
+                  {alerts.map((alert, index) => (
+                    <li key={index} className="cc-alert-item">
+                      <Siren size={16} style={{ color: 'var(--status-critical)', marginTop: 2, flexShrink: 0 }} aria-hidden="true" />
+                      <span>{alert}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </NeoPrintCard>
           </div>
         </section>
       )}
 
       <style jsx>{`
-        .cc-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-5); }
-        .cc-lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
-        @media (max-width: 900px) { .cc-lower-grid { grid-template-columns: 1fr; } }
-        .cc-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-xl); overflow: hidden; }
-        .cc-card-header {
-          padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border-primary);
-          display: flex; align-items: center; justify-content: space-between;
-          background: var(--surface-tertiary);
+        .cc-lower-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-4);
         }
-        .cc-card-title { font-weight: var(--weight-semibold); color: var(--text-primary); font-size: var(--text-base); }
-        .cc-card-body { padding: var(--space-5); }
-        .cc-hint { font-size: var(--text-sm); color: var(--text-tertiary); }
-        .cc-alert-list { list-style: none; display: grid; gap: var(--space-3); }
+
+        .cc-kicker {
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--np-muted);
+        }
+
+        .cc-title {
+          margin-top: 6px;
+          font-family: var(--np-font-display);
+          font-size: clamp(1.7rem, 1.4rem + 0.5vw, 2.2rem);
+          line-height: 0.95;
+          color: var(--np-ink);
+        }
+
+        .cc-copy {
+          font-size: var(--text-sm);
+          line-height: 1.6;
+          color: var(--np-muted);
+        }
+
+        .cc-alert-list {
+          list-style: none;
+          display: grid;
+          gap: var(--space-3);
+        }
+
         .cc-alert-item {
-          display: flex; align-items: flex-start; gap: var(--space-2);
-          padding: var(--space-3); border-radius: var(--radius-md);
-          border-left: 3px solid var(--status-critical);
-          background: var(--status-critical-bg);
-          font-size: var(--text-sm); color: var(--text-secondary);
+          display: flex;
+          align-items: flex-start;
+          gap: var(--space-2);
+          padding-top: var(--space-3);
+          border-top: 1px solid var(--np-line);
+          font-size: var(--text-sm);
+          color: var(--np-ink);
         }
-        .cc-empty {
-          border: 1px dashed var(--border-primary); border-radius: var(--radius-xl);
-          padding: var(--space-10); text-align: center; background: var(--surface-secondary);
+
+        @media (max-width: 900px) {
+          .cc-lower-grid {
+            grid-template-columns: 1fr;
+          }
         }
-        .cc-empty-title { margin-top: var(--space-3); font-size: var(--text-lg); color: var(--text-primary); }
-        .cc-empty-desc { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-tertiary); }
       `}</style>
     </ModuleShell>
   );

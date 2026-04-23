@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo-Print Catalog — Layout, Media, Specialized</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400&family=Libre+Bodoni:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --npms-bg: #f5f1ea;
+        --npms-panel: #fffdf9;
+        --npms-ink: #1f1a16;
+        --npms-muted: #6b5d4d;
+        --npms-accent: #ad3f14;
+        --npms-line: #d9cec0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        background: var(--npms-bg);
+        color: var(--npms-ink);
+        transition: background 220ms ease, color 220ms ease;
+      }
+
+      .npms-shell {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 34px 24px 80px;
+      }
+
+      .npms-top {
+        border-bottom: 1px solid var(--npms-line);
+        padding-bottom: 16px;
+        margin-bottom: 18px;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .npms-kicker {
+        font-size: 10px;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+        color: var(--npms-muted);
+        margin-bottom: 8px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Libre Bodoni", serif;
+      }
+
+      h1 {
+        font-size: clamp(31px, 5vw, 56px);
+        line-height: 0.93;
+      }
+
+      .npms-lead {
+        margin: 10px 0 0;
+        max-width: 780px;
+        color: var(--npms-muted);
+        font-size: 14px;
+      }
+
+      .npms-linkbar {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .npms-linkbar a,
+      .npms-toc a {
+        color: var(--npms-accent);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--npms-accent);
+        font-size: 13px;
+      }
+
+      .npms-toggle {
+        border: 1px solid var(--npms-line);
+        background: var(--npms-panel);
+        color: var(--npms-ink);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .npms-toc {
+        border: 1px solid var(--npms-line);
+        background: var(--npms-panel);
+        padding: 16px;
+        margin-bottom: 22px;
+      }
+
+      .npms-toc h2 {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+
+      .npms-toc-grid {
+        display: grid;
+        gap: 6px 14px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .npms-section {
+        margin-top: 28px;
+      }
+
+      .npms-section > h2 {
+        font-size: 30px;
+        border-bottom: 1px solid var(--npms-line);
+        padding-bottom: 9px;
+        margin-bottom: 14px;
+      }
+
+      .npms-section-note {
+        font-size: 13px;
+        color: var(--npms-muted);
+        margin-bottom: 12px;
+      }
+
+      .npms-card {
+        border: 1px solid var(--npms-line);
+        background: var(--npms-panel);
+        margin-bottom: 14px;
+      }
+
+      .npms-card-head {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--npms-line);
+      }
+
+      .npms-card-head h3 {
+        font-size: 24px;
+      }
+
+      .npms-card-meta {
+        margin-top: 5px;
+        color: var(--npms-muted);
+        font-size: 12px;
+      }
+
+      .npms-card-body {
+        padding: 14px;
+      }
+
+      .npms-demo {
+        border: 1px dashed var(--npms-line);
+        padding: 12px;
+        min-height: 120px;
+      }
+
+      .npms-tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        color: var(--npms-muted);
+        margin-bottom: 7px;
+      }
+
+      .npms-code {
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      .npms-grid-12 {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .npms-chip {
+        border: 1px solid var(--npms-line);
+        font-size: 10px;
+        text-align: center;
+        padding: 5px 0;
+        background: color-mix(in oklab, var(--npms-accent) 8%, var(--npms-panel) 92%);
+      }
+
+      .npms-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .npms-palette-surface {
+        border: 1px solid var(--npms-line);
+        padding: 10px;
+        font-size: 12px;
+      }
+
+      .npms-scroller {
+        height: 180px;
+        overflow: auto;
+        border: 1px solid var(--npms-line);
+        background: color-mix(in oklab, var(--npms-bg) 82%, var(--npms-panel) 18%);
+      }
+
+      .npms-scroller-inner {
+        height: 360px;
+        padding: 8px;
+      }
+
+      .npms-sticky-item {
+        position: sticky;
+        top: 8px;
+        border: 1px solid var(--npms-accent);
+        background: color-mix(in oklab, var(--npms-accent) 11%, var(--npms-panel) 89%);
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .npms-stars {
+        color: var(--npms-accent);
+        letter-spacing: 0.08em;
+      }
+
+      .npms-kanban {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .npms-col {
+        border: 1px solid var(--npms-line);
+        padding: 8px;
+      }
+
+      .npms-col h4 {
+        margin: 0 0 6px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--npms-muted);
+      }
+
+      @media (max-width: 820px) {
+        .npms-kanban {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const PALETTES = {
+        light: { bg: "#f5f1ea", panel: "#fffdf9", ink: "#1f1a16", muted: "#6b5d4d", accent: "#ad3f14", line: "#d9cec0" },
+        dark: { bg: "#141311", panel: "#1d1a17", ink: "#f0e7d8", muted: "#baa98d", accent: "#c46a2d", line: "#473d32" }
+      };
+
+      const Card = ({ id, title, note, children }) => (
+        <article className="npms-card" id={id}>
+          <div className="npms-card-head">
+            <h3>{title}</h3>
+            <div className="npms-card-meta">{note}</div>
+          </div>
+          <div className="npms-card-body">
+            <div className="npms-demo">{children}</div>
+          </div>
+        </article>
+      );
+
+      const LAYOUT = [
+        ["container", "Container", "Fluid and fixed max-width shells"],
+        ["grid", "Grid", "12-column responsive structure"],
+        ["flex", "Flex Container", "Row, column, and wrap behavior"],
+        ["divider", "Divider", "Horizontal, vertical, and labeled separators"],
+        ["spacer", "Spacer", "Fixed spacing blocks"],
+        ["section", "Section", "Background variants and hierarchy"],
+        ["accordion", "Accordion / Collapse", "Single and multiple open items"],
+        ["ratio", "Aspect Ratio Box", "16:9, 4:3, and 1:1 media frames"],
+        ["stack", "Stack", "Vertical and horizontal spacing stacks"],
+        ["masonry", "Masonry Grid", "Variable height visual rhythm"],
+        ["sticky", "Sticky Container", "Scroll-aware sticky behavior demo"]
+      ];
+
+      const MEDIA = [
+        ["image", "Image", "Responsive image, lazy-loading placeholder, caption"],
+        ["video", "Video Player", "Controls mock with timeline"],
+        ["carousel", "Carousel / Slider", "Arrows and auto-play indicator"],
+        ["gallery", "Gallery", "Filter tabs with responsive image grid"],
+        ["audio", "Audio Player", "Waveform mock and progress state"],
+        ["icon", "Icon", "Sizes, tones, outlined and filled styles"],
+        ["thumb", "Thumbnail", "Overlay label and status badge"],
+        ["bgvideo", "Background Video", "Backdrop treatment with content overlay"]
+      ];
+
+      const SPECIALIZED = [
+        ["hero", "Hero Section", "Editorial masthead with CTA"],
+        ["feature", "Feature Card", "Icon-led vertical/horizontal feature blocks"],
+        ["testimonial", "Testimonial", "Avatar quote and rating signal"],
+        ["pricing", "Pricing Card", "Featured tier with feature matrix"],
+        ["ctabanner", "CTA Banner", "Full-width conversion rail"],
+        ["footer", "Footer", "Multi-column information and social links"],
+        ["logo", "Logo", "Full lockup, icon-only, light/dark modes"],
+        ["share", "Social Share Buttons", "Icon-first action chips"],
+        ["cookie", "Cookie Consent Banner", "Consent controls and policy hint"],
+        ["search", "Search Results", "Highlighted query matches"],
+        ["comments", "Comment Thread", "Nested responses with metadata"],
+        ["notify", "Notification Center", "Unread states and timestamps"],
+        ["profile", "User Profile Card", "Compact and detailed profile modes"],
+        ["calendar", "Calendar", "Month grid with event marks"],
+        ["kanban", "Kanban Board", "Columns with draggable-style cards"],
+        ["chat", "Chat Message", "Sent and received bubble states"]
+      ];
+
+      function CatalogPage() {
+        const [mode, setMode] = React.useState("light");
+        const [openSingle, setOpenSingle] = React.useState("a");
+        const [openMany, setOpenMany] = React.useState(["x"]);
+        const [slide, setSlide] = React.useState(0);
+        const [galleryFilter, setGalleryFilter] = React.useState("All");
+        const [audioProgress, setAudioProgress] = React.useState(36);
+
+        React.useEffect(() => {
+          const t = PALETTES[mode];
+          Object.entries(t).forEach(([k, v]) => document.documentElement.style.setProperty(`--npms-${k}`, v));
+        }, [mode]);
+
+        React.useEffect(() => {
+          const timer = setInterval(() => setSlide((s) => (s + 1) % 4), 2600);
+          return () => clearInterval(timer);
+        }, []);
+
+        const filters = ["All", "Poster", "Editorial", "Product"];
+        const galleryItems = [
+          { id: 1, type: "Poster", label: "Campaign A", image: "../../../output/image-1776865548795-4593b1a0.jpg" },
+          { id: 2, type: "Editorial", label: "Issue Desk", image: "../../../output/image-1776865639119-6d35fe5f.jpg" },
+          { id: 3, type: "Product", label: "Press Unit", image: "../../../output/image-1776865863401-9ffccf85.jpg" },
+          { id: 4, type: "Poster", label: "Neon Fold", image: "../../../output/image-1776865797815-591c1210.jpg" }
+        ].filter((i) => galleryFilter === "All" || i.type === galleryFilter);
+        const carouselImages = [
+          "../../../output/image-1776865548795-4593b1a0.jpg",
+          "../../../output/image-1776865797815-591c1210.jpg",
+          "../../../output/image-1776865829867-83a8ddff.jpg",
+          "../../../output/image-1776865639119-6d35fe5f.jpg"
+        ];
+
+        const tocItems = [
+          ...LAYOUT.map(([id, name]) => [`layout-${id}`, `Layout · ${name}`]),
+          ...MEDIA.map(([id, name]) => [`media-${id}`, `Media · ${name}`]),
+          ...SPECIALIZED.map(([id, name]) => [`specialized-${id}`, `Specialized · ${name}`])
+        ];
+
+        const toggleMany = (k) => {
+          setOpenMany((prev) => (prev.includes(k) ? prev.filter((v) => v !== k) : [...prev, k]));
+        };
+
+        return (
+          <div className="npms-shell">
+            <header className="npms-top">
+              <div>
+                <div className="npms-kicker">Neo-Print Poster Grid · Component Showcase</div>
+                <h1>Layout, Media, Specialized</h1>
+                <p className="npms-lead">
+                  Live component catalog for structural primitives, media modules, and product-specific surface patterns. Each block renders directly in-page and follows the Neo-Print palette and typography system.
+                </p>
+                <div className="npms-linkbar">
+                  <a href="./components-index.html">Catalog Index</a>
+                  <a href="./component-catalog.html">Base Catalog</a>
+                  <a href="../index.html">Main App</a>
+                </div>
+              </div>
+              <button className="npms-toggle" onClick={() => setMode(mode === "light" ? "dark" : "light")}>Toggle {mode === "light" ? "Dark" : "Light"} Theme</button>
+            </header>
+
+            <section className="npms-toc">
+              <h2>Table of Contents</h2>
+              <div className="npms-toc-grid">
+                {tocItems.map(([id, label]) => (
+                  <a key={id} href={`#${id}`}>{label}</a>
+                ))}
+              </div>
+            </section>
+
+            <section className="npms-section" id="layout-root">
+              <h2>Layout (11)</h2>
+              <div className="npms-section-note">Foundational containers and flow systems for responsive editorial composition.</div>
+
+              <Card id="layout-container" title="Container" note="Fluid shell with fixed max-width variant">
+                <div className="npms-tag">Fluid + Fixed</div>
+                <div style={{ border: "1px solid var(--npms-line)", padding: 8, marginBottom: 8 }}>
+                  <div className="npms-code">.container-fluid → width: 100%</div>
+                </div>
+                <div style={{ border: "1px solid var(--npms-line)", padding: 8, margin: "0 auto", maxWidth: 420 }}>
+                  <div className="npms-code">.container-fixed → max-width: 72rem</div>
+                </div>
+              </Card>
+
+              <Card id="layout-grid" title="Grid" note="12-column responsive grid">
+                <div className="npms-tag">12 Columns</div>
+                <div className="npms-grid-12">{Array.from({ length: 12 }).map((_, i) => <div className="npms-chip" key={i}>{i + 1}</div>)}</div>
+              </Card>
+
+              <Card id="layout-flex" title="Flex Container" note="Row, column, and wrap demos">
+                <div className="npms-tag">Row</div>
+                <div className="npms-row" style={{ marginBottom: 8 }}>{["A", "B", "C"].map((x) => <div key={x} className="npms-chip" style={{ flex: 1 }}>{x}</div>)}</div>
+                <div className="npms-tag">Column</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 8 }}>{["One", "Two"].map((x) => <div key={x} className="npms-chip">{x}</div>)}</div>
+                <div className="npms-tag">Wrap</div>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{["Wrap-1", "Wrap-2", "Wrap-3", "Wrap-4"].map((x) => <div key={x} className="npms-chip" style={{ width: 86 }}>{x}</div>)}</div>
+              </Card>
+
+              <Card id="layout-divider" title="Divider" note="Horizontal, vertical, and text-centered variants">
+                <div style={{ borderTop: "1px solid var(--npms-line)", marginBottom: 10 }}></div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <div style={{ borderTop: "1px solid var(--npms-line)" }}></div>
+                  <span className="npms-tag" style={{ margin: 0 }}>Or continue</span>
+                  <div style={{ borderTop: "1px solid var(--npms-line)" }}></div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}><div style={{ width: 1, height: 42, background: "var(--npms-line)" }}></div><div style={{ fontSize: 12 }}>Vertical divider in row layout</div></div>
+              </Card>
+
+              <Card id="layout-spacer" title="Spacer" note="Fixed spacing tokens">
+                {[8, 16, 24, 32].map((size) => (
+                  <div key={size} style={{ marginBottom: 8 }}>
+                    <div className="npms-tag" style={{ marginBottom: 3 }}>{size}px spacer</div>
+                    <div style={{ height: size, border: "1px dashed var(--npms-line)", background: "color-mix(in oklab, var(--npms-accent) 8%, var(--npms-panel) 92%)" }}></div>
+                  </div>
+                ))}
+              </Card>
+
+              <Card id="layout-section" title="Section" note="Neutral, accent-tinted, and contrast background variants">
+                <div className="npms-palette-surface" style={{ background: "var(--npms-panel)", marginBottom: 7 }}>Neutral section surface</div>
+                <div className="npms-palette-surface" style={{ background: "color-mix(in oklab, var(--npms-accent) 10%, var(--npms-panel) 90%)", marginBottom: 7 }}>Accent-wash section for emphasis</div>
+                <div className="npms-palette-surface" style={{ background: "var(--npms-ink)", color: "var(--npms-bg)" }}>High-contrast section for calls-to-action</div>
+              </Card>
+
+              <Card id="layout-accordion" title="Accordion / Collapse" note="Single-open and multiple-open interactive examples">
+                <div className="npms-tag">Single Open</div>
+                {[["a", "Production metrics by region"], ["b", "Editorial deadlines by lane"]].map(([k, t]) => (
+                  <div key={k} style={{ marginBottom: 6, border: "1px solid var(--npms-line)" }}>
+                    <button onClick={() => setOpenSingle(k)} style={{ width: "100%", textAlign: "left", padding: "8px", background: "transparent", border: 0, color: "var(--npms-ink)" }}>{t}</button>
+                    {openSingle === k && <div style={{ padding: "0 8px 8px", fontSize: 12, color: "var(--npms-muted)" }}>Expanded content area for {t.toLowerCase()}.</div>}
+                  </div>
+                ))}
+                <div className="npms-tag">Multiple Open</div>
+                {[["x", "Print queue exceptions"], ["y", "Color profile warnings"]].map(([k, t]) => (
+                  <div key={k} style={{ marginBottom: 6, border: "1px solid var(--npms-line)" }}>
+                    <button onClick={() => toggleMany(k)} style={{ width: "100%", textAlign: "left", padding: "8px", background: "transparent", border: 0, color: "var(--npms-ink)" }}>{t}</button>
+                    {openMany.includes(k) && <div style={{ padding: "0 8px 8px", fontSize: 12, color: "var(--npms-muted)" }}>Open state preserved independently.</div>}
+                  </div>
+                ))}
+              </Card>
+
+              <Card id="layout-ratio" title="Aspect Ratio Box" note="16:9, 4:3, and square content regions">
+                <div className="npms-row" style={{ flexWrap: "wrap" }}>
+                  {["16 / 9", "4 / 3", "1 / 1"].map((r) => (
+                    <div key={r} style={{ flex: "1 1 150px", border: "1px solid var(--npms-line)", aspectRatio: r, display: "grid", placeItems: "center", fontSize: 12 }}>{r}</div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card id="layout-stack" title="Stack" note="Vertical and horizontal stacks with spacing scale">
+                <div style={{ display: "grid", gap: 6, marginBottom: 8 }}>{["Heading", "Body copy", "Action row"].map((x) => <div key={x} className="npms-chip">{x}</div>)}</div>
+                <div style={{ display: "flex", gap: 10 }}>{["Tag A", "Tag B", "Tag C"].map((x) => <div key={x} className="npms-chip">{x}</div>)}</div>
+              </Card>
+
+              <Card id="layout-masonry" title="Masonry Grid" note="Variable height columns using CSS multi-column flow">
+                <div style={{ columnCount: 3, columnGap: 8 }}>
+                  {[58, 88, 66, 102, 74, 92].map((h, i) => (
+                    <div key={i} style={{ breakInside: "avoid", border: "1px solid var(--npms-line)", background: "color-mix(in oklab, var(--npms-accent) 8%, var(--npms-panel) 92%)", height: h, marginBottom: 8, display: "grid", placeItems: "center", fontSize: 11 }}>Tile {i + 1}</div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card id="layout-sticky" title="Sticky Container" note="Sticky side panel inside a scrollable zone">
+                <div className="npms-scroller">
+                  <div className="npms-scroller-inner">
+                    <div className="npms-sticky-item">Sticky inspector panel stays pinned while inner content scrolls.</div>
+                    {Array.from({ length: 8 }).map((_, i) => <div key={i} style={{ marginTop: 10, fontSize: 12, color: "var(--npms-muted)" }}>Scroll line {i + 1}: poster run diagnostics and order notes.</div>)}
+                  </div>
+                </div>
+              </Card>
+            </section>
+
+            <section className="npms-section" id="media-root">
+              <h2>Media (8)</h2>
+              <div className="npms-section-note">Media presentation components with loading, playback, and filtering behavior.</div>
+
+              <Card id="media-image" title="Image" note="Responsive lazy image with caption and fallback frame">
+                <figure style={{ margin: 0 }}>
+                  <img loading="lazy" alt="Editorial magazine spread with typographic grid" style={{ width: "100%", border: "1px solid var(--npms-line)", display: "block", aspectRatio: "16/10", objectFit: "cover" }} src="../../../output/image-1776865548795-4593b1a0.jpg" />
+                  <figcaption style={{ marginTop: 7, fontSize: 12, color: "var(--npms-muted)" }}>Figure: responsive hero media with loading="lazy" and caption metadata.</figcaption>
+                </figure>
+              </Card>
+
+              <Card id="media-video" title="Video Player" note="Working HTML video player with public demo source">
+                <div style={{ border: "1px solid var(--npms-line)", padding: 9, background: "color-mix(in oklab, var(--npms-bg) 86%, var(--npms-panel) 14%)" }}>
+                  <video controls preload="metadata" playsInline poster="../../../output/image-1776865579237-d0aba741.jpg" style={{ width: "100%", display: "block", border: "1px solid var(--npms-line)", background: "var(--npms-ink)", aspectRatio: "16/9" }}>
+                    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                  </video>
+                  <div className="npms-tag" style={{ marginTop: 8 }}>Live demo source · controls enabled</div>
+                </div>
+              </Card>
+
+              <Card id="media-carousel" title="Carousel / Slider" note="Arrow controls and autoplay state indicator">
+                <div style={{ border: "1px solid var(--npms-line)", padding: 9 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 36px", gap: 8, alignItems: "center" }}>
+                    <button onClick={() => setSlide((s) => (s + 3) % 4)} style={{ border: "1px solid var(--npms-line)", background: "transparent", color: "var(--npms-ink)" }}>←</button>
+                    <div style={{ border: "1px solid var(--npms-line)", position: "relative", aspectRatio: "16/9", overflow: "hidden" }}>
+                      <img loading="lazy" alt={`Carousel slide ${slide + 1}`} src={carouselImages[slide]} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      <div style={{ position: "absolute", inset: "auto 0 0 0", padding: "8px 10px", background: "linear-gradient(to top, rgba(0,0,0,0.72), transparent)", color: "#f5f1ea", fontSize: 12 }}>Slide {slide + 1} / 4</div>
+                    </div>
+                    <button onClick={() => setSlide((s) => (s + 1) % 4)} style={{ border: "1px solid var(--npms-line)", background: "transparent", color: "var(--npms-ink)" }}>→</button>
+                  </div>
+                  <div className="npms-tag" style={{ marginTop: 8 }}>Auto-play active · index {slide + 1}</div>
+                </div>
+              </Card>
+
+              <Card id="media-gallery" title="Gallery" note="Filtered media collection with category tabs">
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+                  {filters.map((f) => (
+                    <button key={f} onClick={() => setGalleryFilter(f)} style={{ border: `1px solid ${galleryFilter === f ? "var(--npms-accent)" : "var(--npms-line)"}`, background: "transparent", color: "var(--npms-ink)", fontSize: 11, padding: "5px 7px" }}>{f}</button>
+                  ))}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 6 }}>
+                  {galleryItems.map((item) => (
+                    <figure key={item.id} style={{ margin: 0, border: "1px solid var(--npms-line)", background: "var(--npms-panel)" }}>
+                      <img loading="lazy" alt={`${item.label} preview`} src={item.image} style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", display: "block" }} />
+                      <figcaption style={{ padding: 8, fontSize: 12 }}>{item.label} · <span style={{ color: "var(--npms-muted)" }}>{item.type}</span></figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </Card>
+
+              <Card id="media-audio" title="Audio Player" note="Working HTML audio player with public demo source">
+                <div style={{ border: "1px solid var(--npms-line)", padding: 10, background: "color-mix(in oklab, var(--npms-accent) 6%, var(--npms-panel) 94%)" }}>
+                  <div style={{ marginBottom: 8, fontSize: 12, color: "var(--npms-muted)" }}>Press play to preview the embedded MP3 sample.</div>
+                  <audio controls preload="metadata" style={{ width: "100%" }}>
+                    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg" />
+                  </audio>
+                  <div className="npms-tag" style={{ marginTop: 8 }}>Live demo source · controls enabled</div>
+                </div>
+              </Card>
+
+              <Card id="media-icon" title="Icon" note="Scale, color, outline, and fill icon treatments">
+                <div className="npms-row" style={{ alignItems: "center", flexWrap: "wrap" }}>
+                  {[14, 20, 28].map((s) => <svg key={s} width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--npms-ink)"><circle cx="12" cy="12" r="9" strokeWidth="2" /><path d="M8 12h8" strokeWidth="2" /></svg>)}
+                  {[14, 20, 28].map((s) => <svg key={`f-${s}`} width={s} height={s} viewBox="0 0 24 24" fill="var(--npms-accent)"><path d="M12 2l3.2 6.5L22 9.4l-5 4.8L18.2 22 12 18.5 5.8 22 7 14.2 2 9.4l6.8-.9z" /></svg>)}
+                </div>
+              </Card>
+
+              <Card id="media-thumb" title="Thumbnail" note="Overlay metadata and corner badge">
+                <div style={{ position: "relative", border: "1px solid var(--npms-line)", aspectRatio: "4/3", overflow: "hidden", background: "var(--npms-ink)" }}>
+                  <img loading="lazy" alt="Thumbnail preview for live queue item" src="../../../output/image-1776865863401-9ffccf85.jpg" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div style={{ position: "absolute", top: 8, right: 8, border: "1px solid var(--npms-line)", background: "var(--npms-panel)", fontSize: 10, padding: "2px 6px" }}>LIVE</div>
+                  <div style={{ position: "absolute", inset: "auto 8px 8px 8px", background: "rgba(0,0,0,0.5)", color: "#f5f1ea", padding: 6, fontSize: 12 }}>Queue Preview #44B</div>
+                </div>
+              </Card>
+
+              <Card id="media-bgvideo" title="Background Video" note="Mock motion backdrop with foreground overlay content">
+                <div style={{ border: "1px solid var(--npms-line)", position: "relative", minHeight: 140, overflow: "hidden", background: "var(--npms-ink)" }}>
+                  <img loading="lazy" alt="Backdrop visual for background video hero treatment" src="../../../output/image-1776865829867-83a8ddff.jpg" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.72 }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.18))" }}></div>
+                  <div style={{ position: "relative", zIndex: 1, padding: 14, color: "#f5f1ea" }}>
+                    <div className="npms-tag" style={{ color: "#e7d8bf" }}>Background video layer</div>
+                    <div style={{ fontFamily: "Libre Bodoni, serif", fontSize: 22 }}>Storyline Overlay Copy</div>
+                  </div>
+                </div>
+              </Card>
+            </section>
+
+            <section className="npms-section" id="specialized-root">
+              <h2>Specialized (16)</h2>
+              <div className="npms-section-note">Product-level components for marketing, SaaS workflows, and social interaction patterns.</div>
+
+              <Card id="specialized-hero" title="Hero Section" note="Masthead with support copy and clear CTA">
+                <div className="npms-kicker">Neo-Print Platform</div>
+                <div style={{ fontFamily: "Libre Bodoni, serif", fontSize: 30, lineHeight: 1 }}>Launch campaign-ready posters in one control room.</div>
+                <p style={{ color: "var(--npms-muted)", fontSize: 13 }}>Design, schedule, and publish with editorial-grade layout tools and production telemetry.</p>
+                <button className="npms-toggle" style={{ fontSize: 11 }}>Start New Campaign</button>
+              </Card>
+
+              <Card id="specialized-feature" title="Feature Card" note="Icon-led cards in vertical and horizontal directions">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: 8 }}><div>◆</div><strong>Vertical Card</strong><div style={{ fontSize: 12, color: "var(--npms-muted)" }}>Batch render and route.</div></div>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: 8, display: "flex", gap: 8, alignItems: "center" }}><div>◉</div><div><strong>Horizontal Card</strong><div style={{ fontSize: 12, color: "var(--npms-muted)" }}>Surface diagnostics inline.</div></div></div>
+                </div>
+              </Card>
+
+              <Card id="specialized-testimonial" title="Testimonial" note="Avatar, quote, and rating scale">
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid var(--npms-line)", display: "grid", placeItems: "center" }}>TH</div>
+                  <div>
+                    <div style={{ fontSize: 13 }}>“The grid system reduced campaign setup time by 41%.”</div>
+                    <div className="npms-stars">★★★★★</div>
+                  </div>
+                </div>
+              </Card>
+
+              <Card id="specialized-pricing" title="Pricing Card" note="Featured tier and concise feature list">
+                <div style={{ border: "1px solid var(--npms-accent)", padding: 10 }}>
+                  <div className="npms-tag">Featured · Studio Plan</div>
+                  <div style={{ fontFamily: "Libre Bodoni, serif", fontSize: 34 }}>$49<span style={{ fontSize: 14 }}>/mo</span></div>
+                  <ul style={{ margin: "8px 0", paddingLeft: 18, fontSize: 12 }}>
+                    <li>Unlimited campaigns</li><li>Shared brand kits</li><li>Priority exports</li>
+                  </ul>
+                </div>
+              </Card>
+
+              <Card id="specialized-ctabanner" title="CTA Banner" note="Full-width acquisition strip">
+                <div style={{ border: "1px solid var(--npms-line)", background: "var(--npms-ink)", color: "var(--npms-bg)", padding: 12, display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+                  <div>Ready to move your print ops into one editorial system?</div>
+                  <button className="npms-toggle" style={{ color: "var(--npms-bg)", borderColor: "var(--npms-bg)", background: "transparent" }}>Book Demo</button>
+                </div>
+              </Card>
+
+              <Card id="specialized-footer" title="Footer" note="Multi-column link groups and social row">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 8, fontSize: 12 }}>
+                  {["Product", "Resources", "Company", "Legal"].map((h) => <div key={h}><strong>{h}</strong><div style={{ color: "var(--npms-muted)" }}>Link set</div></div>)}
+                </div>
+                <div style={{ marginTop: 8, color: "var(--npms-muted)", fontSize: 12 }}>Social: X · LinkedIn · Dribbble</div>
+              </Card>
+
+              <Card id="specialized-logo" title="Logo" note="Full lockup and icon-only variants in both themes">
+                <div className="npms-row" style={{ alignItems: "center", flexWrap: "wrap" }}>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: "6px 9px", fontFamily: "Libre Bodoni, serif" }}>NEO · PRINT</div>
+                  <div style={{ border: "1px solid var(--npms-line)", width: 34, height: 34, display: "grid", placeItems: "center" }}>NP</div>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: "6px 9px", background: "var(--npms-ink)", color: "var(--npms-bg)", fontFamily: "Libre Bodoni, serif" }}>NEO · PRINT</div>
+                </div>
+              </Card>
+
+              <Card id="specialized-share" title="Social Share Buttons" note="Icon-only share actions">
+                <div className="npms-row">{["X", "in", "↗"].map((x) => <button key={x} style={{ width: 34, height: 34, border: "1px solid var(--npms-line)", background: "transparent", color: "var(--npms-ink)" }}>{x}</button>)}</div>
+              </Card>
+
+              <Card id="specialized-cookie" title="Cookie Consent Banner" note="Consent action rail with policy hint">
+                <div style={{ border: "1px solid var(--npms-line)", padding: 10, display: "flex", gap: 10, justifyContent: "space-between", flexWrap: "wrap" }}>
+                  <div style={{ fontSize: 12 }}>We use analytics cookies to improve dashboard flow and campaign insights.</div>
+                  <div className="npms-row"><button className="npms-toggle" style={{ fontSize: 10 }}>Reject</button><button className="npms-toggle" style={{ fontSize: 10 }}>Accept</button></div>
+                </div>
+              </Card>
+
+              <Card id="specialized-search" title="Search Results" note="Query highlighting and ranked snippets">
+                {[
+                  ["Poster Grid routing guide", "Use **grid** primitives for section orchestration."],
+                  ["Media module docs", "Lazy image loading and **grid** gallery filtering setup."]
+                ].map(([t, d]) => (
+                  <div key={t} style={{ borderBottom: "1px dashed var(--npms-line)", padding: "6px 0", fontSize: 12 }}>
+                    <div><strong>{t}</strong></div>
+                    <div style={{ color: "var(--npms-muted)" }}>{d.replaceAll("**grid**", "grid")}</div>
+                  </div>
+                ))}
+              </Card>
+
+              <Card id="specialized-comments" title="Comment Thread" note="Nested replies and author metadata">
+                <div style={{ fontSize: 12 }}>
+                  <div><strong>Thu Hang</strong> · We should simplify the hero line-height.</div>
+                  <div style={{ marginLeft: 16, marginTop: 6, borderLeft: "1px solid var(--npms-line)", paddingLeft: 8 }}><strong>Lam Anh</strong> · Agreed, adjusted to 0.95 for print parity.</div>
+                </div>
+              </Card>
+
+              <Card id="specialized-notify" title="Notification Center" note="Unread and read notification states">
+                <div style={{ display: "grid", gap: 6 }}>
+                  <div style={{ border: "1px solid var(--npms-accent)", padding: 8, fontSize: 12 }}>• Unread — Export queue finished (2m)</div>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: 8, fontSize: 12, color: "var(--npms-muted)" }}>Read — Team invited to Campaign 44B (1h)</div>
+                </div>
+              </Card>
+
+              <Card id="specialized-profile" title="User Profile Card" note="Compact and expanded user identity presentation">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: 8, fontSize: 12 }}>TH · Managing Editor</div>
+                  <div style={{ border: "1px solid var(--npms-line)", padding: 8, fontSize: 12 }}><strong>Thu Hang</strong><div style={{ color: "var(--npms-muted)" }}>Permissions: Publish, Review, Route</div></div>
+                </div>
+              </Card>
+
+              <Card id="specialized-calendar" title="Calendar" note="Month view with event markers">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 4 }}>
+                  {Array.from({ length: 28 }).map((_, i) => <div key={i} style={{ border: "1px solid var(--npms-line)", padding: 5, fontSize: 10, background: [4, 11, 20].includes(i) ? "color-mix(in oklab, var(--npms-accent) 18%, var(--npms-panel) 82%)" : "transparent" }}>{i + 1}</div>)}
+                </div>
+              </Card>
+
+              <Card id="specialized-kanban" title="Kanban Board" note="Column-based task organization with cards">
+                <div className="npms-kanban">
+                  <div className="npms-col"><h4>Backlog</h4><div className="npms-chip">Draft print brief</div></div>
+                  <div className="npms-col"><h4>In Progress</h4><div className="npms-chip">Refine gallery filters</div></div>
+                  <div className="npms-col"><h4>Done</h4><div className="npms-chip">Publish token sheet</div></div>
+                </div>
+              </Card>
+
+              <Card id="specialized-chat" title="Chat Message" note="Sent and received bubble variants">
+                <div style={{ display: "grid", gap: 6, fontSize: 12 }}>
+                  <div style={{ justifySelf: "start", border: "1px solid var(--npms-line)", padding: "6px 8px", maxWidth: 240 }}>Received: Can we lock the campaign by 6pm?</div>
+                  <div style={{ justifySelf: "end", border: "1px solid var(--npms-accent)", background: "color-mix(in oklab, var(--npms-accent) 14%, var(--npms-panel) 86%)", padding: "6px 8px", maxWidth: 240 }}>Sent: Yes, final review starts at 5:30pm.</div>
+                </div>
+              </Card>
+            </section>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<CatalogPage />);
+    </script>
+  </body>
+</html>

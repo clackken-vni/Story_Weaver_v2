@@ -1,6 +1,7 @@
 import { ArrowDownAZ, ArrowUpAZ, Database } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { SkeletonLoader } from './SkeletonLoader';
+import { NeoPrintCard } from '../neo-print';
 
 export interface DataTableColumn<T> {
   key: string;
@@ -85,96 +86,96 @@ export function DataTable<T>({
 
   if (sortedData.length === 0) {
     return (
-      <div
-        style={{
-          border: '1px dashed var(--border-primary)',
-          borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-8)',
-          textAlign: 'center',
-          color: 'var(--text-tertiary)',
-          background: 'var(--surface-secondary)',
-        }}
-      >
+      <NeoPrintCard style={{ display: 'grid', justifyItems: 'center', textAlign: 'center', gap: 'var(--space-2)' }}>
         <Database size={20} aria-hidden="true" />
-        <p style={{ marginTop: 'var(--space-2)', fontSize: 'var(--text-sm)' }}>{emptyLabel}</p>
-      </div>
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--np-muted)' }}>{emptyLabel}</p>
+      </NeoPrintCard>
     );
   }
 
   return (
     <>
-      <div className="data-table-desktop" style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ background: 'var(--table-header-bg)' }}>
-              {columns.map((column) => (
-                <th
-                  key={column.key}
-                  aria-sort={
-                    !column.sortable
-                      ? undefined
-                      : sortBy === column.key
-                        ? direction === 'asc'
-                          ? 'ascending'
-                          : 'descending'
-                        : 'none'
-                  }
-                  style={{
-                    textAlign: column.align ?? 'left',
-                    padding: 'var(--space-3)',
-                    borderBottom: '1px solid var(--table-border)',
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--text-secondary)',
-                    fontWeight: 'var(--weight-semibold)' as unknown as number,
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => onSort(column)}
-                    disabled={!column.sortable}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-1)',
-                      border: 'none',
-                      background: 'transparent',
-                      color: 'inherit',
-                      cursor: column.sortable ? 'pointer' : 'default',
-                      fontSize: 'inherit',
-                      fontWeight: 'inherit',
-                    }}
-                  >
-                    {column.header}
-                    {column.sortable && (
-                      sortBy === column.key && direction === 'desc' ?
-                        <ArrowDownAZ size={14} aria-hidden="true" /> :
-                        <ArrowUpAZ size={14} aria-hidden="true" />
-                    )}
-                  </button>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sortedData.map((row) => (
-              <tr key={rowKey(row)} style={{ borderBottom: '1px solid var(--table-border)' }} className="data-row">
-                {columns.map((column) => (
-                  <td
-                    key={`${rowKey(row)}-${column.key}`}
-                    style={{
-                      textAlign: column.align ?? 'left',
-                      padding: 'var(--space-3)',
-                      fontSize: 'var(--text-sm)',
-                      color: 'var(--text-primary)',
-                    }}
-                  >
-                    {column.render(row)}
-                  </td>
+      <div className="data-table-desktop">
+        <NeoPrintCard style={{ padding: 0, overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: 'var(--np-surface-muted)' }}>
+                  {columns.map((column) => (
+                    <th
+                      key={column.key}
+                      aria-sort={
+                        !column.sortable
+                          ? undefined
+                          : sortBy === column.key
+                            ? direction === 'asc'
+                              ? 'ascending'
+                              : 'descending'
+                            : 'none'
+                      }
+                      style={{
+                        textAlign: column.align ?? 'left',
+                        padding: '12px 16px',
+                        borderBottom: '1px solid var(--np-line)',
+                        fontSize: 11,
+                        letterSpacing: '0.16em',
+                        textTransform: 'uppercase',
+                        color: 'var(--np-muted)',
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => onSort(column)}
+                        disabled={!column.sortable}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 'var(--space-1)',
+                          border: 'none',
+                          background: 'transparent',
+                          color: 'inherit',
+                          cursor: column.sortable ? 'pointer' : 'default',
+                          fontSize: 'inherit',
+                          letterSpacing: 'inherit',
+                          textTransform: 'inherit',
+                        }}
+                      >
+                        {column.header}
+                        {column.sortable &&
+                          (sortBy === column.key && direction === 'desc' ? (
+                            <ArrowDownAZ size={14} aria-hidden="true" />
+                          ) : (
+                            <ArrowUpAZ size={14} aria-hidden="true" />
+                          ))}
+                      </button>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sortedData.map((row) => (
+                  <tr key={rowKey(row)} className="data-row">
+                    {columns.map((column) => (
+                      <td
+                        key={`${rowKey(row)}-${column.key}`}
+                        style={{
+                          textAlign: column.align ?? 'left',
+                          padding: '14px 16px',
+                          fontSize: 'var(--text-sm)',
+                          color: 'var(--np-ink)',
+                          borderBottom: '1px solid var(--np-line)',
+                          verticalAlign: 'top',
+                        }}
+                      >
+                        {column.render(row)}
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+        </NeoPrintCard>
       </div>
 
       <div className="data-table-mobile" style={{ display: 'none' }}>
@@ -183,7 +184,7 @@ export function DataTable<T>({
 
       <style jsx>{`
         .data-row:hover {
-          background: var(--table-row-hover);
+          background: var(--np-accent-soft);
         }
 
         @media (max-width: 767px) {

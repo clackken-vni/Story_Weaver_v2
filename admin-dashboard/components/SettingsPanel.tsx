@@ -1,11 +1,10 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import {
   Clock3,
   RotateCcw,
   Save,
   Eye,
   EyeOff,
-  ChevronRight,
   Shield,
   Wifi,
   Bot,
@@ -18,6 +17,7 @@ import {
 import { ModuleShell } from './ModuleShell';
 import { SkeletonLoader } from './ui/SkeletonLoader';
 import { useSettings } from '../hooks/useSettings';
+import { NeoPrintButton, NeoPrintCard, NeoPrintTag } from './neo-print';
 
 const GROUP_LABELS: Record<string, { label: string; icon: typeof Shield }> = {
   auth: { label: 'Authentication', icon: Shield },
@@ -133,11 +133,7 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
       ) : (
         <section style={{ display: 'grid', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', gap: 'var(--space-2)', overflowX: 'auto', paddingBottom: 'var(--space-2)' }}>
-            <button
-              type="button"
-              onClick={() => setActiveGroup('')}
-              style={tabButtonStyle(!activeGroup)}
-            >
+            <button type="button" onClick={() => setActiveGroup('')} style={tabButtonStyle(!activeGroup)}>
               General
             </button>
             {groups.map((group) => {
@@ -145,23 +141,20 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
               const Icon = metadata?.icon;
               const active = activeGroup === group;
               return (
-                <button
-                  key={group}
-                  type="button"
-                  onClick={() => setActiveGroup(group)}
-                  style={tabButtonStyle(active)}
-                >
-                  {Icon && <Icon size={14} aria-hidden="true" />}
+                <button key={group} type="button" onClick={() => setActiveGroup(group)} style={tabButtonStyle(active)}>
+                  {Icon ? <Icon size={14} aria-hidden="true" /> : null}
                   {groupLabel(group)}
                 </button>
               );
             })}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 'var(--space-4)', minHeight: 400 }} className="settings-layout">
+          <div className="settings-layout">
             <div style={{ display: 'grid', gap: 'var(--space-2)', alignContent: 'start' }}>
               {filteredItems.length === 0 ? (
-                <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>No settings in this group.</p>
+                <NeoPrintCard>
+                  <p className="settings-copy">No settings in this group.</p>
+                </NeoPrintCard>
               ) : (
                 filteredItems.map((item) => {
                   const isSelected = selectedKey === item.key;
@@ -172,13 +165,13 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
                       onClick={() => handleSelect(item.key)}
                       className={`settings-item ${isSelected ? 'settings-item--selected' : ''}`}
                     >
-                      <div>
-                        <strong>{settingLabel(item.key)}</strong>
-                        <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)', marginTop: 2 }}>
+                      <div style={{ display: 'grid', gap: 4 }}>
+                        <strong className="settings-item-title">{settingLabel(item.key)}</strong>
+                        <div className="settings-item-meta">
                           {item.key} · {item.is_secret ? '●●●●' : item.value} · v{item.version}
                         </div>
                       </div>
-                      <ChevronRight size={14} style={{ color: 'var(--text-tertiary)' }} aria-hidden="true" />
+                      <NeoPrintTag tone={item.is_secret ? 'accent' : 'default'}>{item.is_secret ? 'secret' : item.group}</NeoPrintTag>
                     </button>
                   );
                 })
@@ -186,40 +179,31 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
             </div>
 
             <div style={{ display: 'grid', gap: 'var(--space-4)', alignContent: 'start' }}>
-              {selectedItem && selectedSchema && (
-                <article
-                  style={{
-                    border: '1px solid var(--card-border)',
-                    borderRadius: 'var(--radius-xl)',
-                    background: 'var(--card-bg)',
-                    padding: 'var(--space-4)',
-                    display: 'grid',
-                    gap: 'var(--space-3)',
-                  }}
-                >
-                  <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {selectedItem && selectedSchema ? (
+                <NeoPrintCard style={{ display: 'grid', gap: 'var(--space-4)' }}>
+                  <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
                     <div>
-                      <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'var(--weight-semibold)' as unknown as number }}>
-                        {selectedItem.key}
-                      </h3>
-                      <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: 2 }}>
+                      <p className="settings-kicker">Selected key</p>
+                      <h3 className="settings-title">{selectedItem.key}</h3>
+                      <p className="settings-copy">
                         {selectedSchema.description || 'No description'} · Type: {selectedSchema.type} · v{selectedItem.version}
                       </p>
                     </div>
-                    {selectedItem.is_secret && (
-                      <button
+                    {selectedItem.is_secret ? (
+                      <NeoPrintButton
                         type="button"
+                        variant="secondary"
                         onClick={() => setShowSecret((prev) => !prev)}
-                        style={{ border: 'none', background: 'transparent', color: 'var(--text-tertiary)', cursor: 'pointer' }}
-                        aria-label={showSecret ? 'Hide secret' : 'Reveal secret'}
+                        ariaLabel={showSecret ? 'Hide secret' : 'Reveal secret'}
                       >
                         {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    )}
+                        {showSecret ? 'Hide' : 'Reveal'}
+                      </NeoPrintButton>
+                    ) : null}
                   </header>
 
                   {selectedSchema.type === 'bool' ? (
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: 'var(--text-sm)' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: 'var(--text-sm)', color: 'var(--np-ink)' }}>
                       <input
                         type="checkbox"
                         checked={draftValue === 'true'}
@@ -234,165 +218,164 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
                       value={draftValue}
                       onChange={(event) => setDraftValue(event.target.value)}
                       disabled={!canWrite}
-                      style={{
-                        border: '1px solid var(--input-border)',
-                        borderRadius: 'var(--input-radius)',
-                        background: 'var(--input-bg)',
-                        color: 'var(--text-primary)',
-                        padding: '8px 12px',
-                        fontSize: 'var(--text-sm)',
-                        fontFamily: selectedSchema.type === 'number' ? 'var(--font-mono)' : 'var(--font-ui)',
-                      }}
+                      className="settings-input"
                     />
                   )}
 
-                  {canWrite && (
+                  {canWrite ? (
                     <>
                       <input
                         type="text"
                         placeholder="Reason for change (required)"
                         value={draftReason}
                         onChange={(event) => setDraftReason(event.target.value)}
-                        style={{
-                          border: '1px solid var(--input-border)',
-                          borderRadius: 'var(--input-radius)',
-                          background: 'var(--input-bg)',
-                          color: 'var(--text-primary)',
-                          padding: '8px 12px',
-                          fontSize: 'var(--text-sm)',
-                        }}
+                        className="settings-input"
                       />
-                      {saveError && (
-                        <div role="alert" style={{ color: 'var(--status-critical)', fontSize: 'var(--text-sm)' }}>
-                          {saveError}
+                      {saveError ? (
+                        <div role="alert">
+                          <NeoPrintCard tone="danger">
+                            <p className="settings-copy" style={{ color: 'var(--status-critical)' }}>{saveError}</p>
+                          </NeoPrintCard>
                         </div>
-                      )}
-                      <button
+                      ) : null}
+                      <NeoPrintButton
                         type="button"
+                        variant="primary"
                         onClick={handleSave}
                         disabled={saving || !draftReason.trim() || draftValue === selectedItem.value}
-                        style={{
-                          justifySelf: 'start',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 'var(--space-1)',
-                          border: '1px solid var(--primary-600)',
-                          borderRadius: 'var(--radius-lg)',
-                          background: 'linear-gradient(90deg, var(--primary-600), var(--primary-700))',
-                          color: '#fff',
-                          padding: '8px 16px',
-                          fontSize: 'var(--text-sm)',
-                          cursor: saving ? 'not-allowed' : 'pointer',
-                          opacity: saving ? 0.6 : 1,
-                        }}
+                        style={{ justifySelf: 'start' }}
                       >
                         <Save size={14} aria-hidden="true" />
                         {saving ? 'Saving...' : 'Save changes'}
-                      </button>
+                      </NeoPrintButton>
                     </>
+                  ) : (
+                    <NeoPrintCard tone="accent">
+                      <p className="settings-copy">You have read-only access to this settings ledger.</p>
+                    </NeoPrintCard>
                   )}
 
-                  <button
+                  <NeoPrintButton
                     type="button"
+                    variant="secondary"
                     onClick={() => setShowHistory((prev) => !prev)}
-                    style={{
-                      justifySelf: 'start',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-1)',
-                      border: '1px solid var(--border-primary)',
-                      borderRadius: 'var(--radius-lg)',
-                      background: 'var(--surface-tertiary)',
-                      color: 'var(--text-secondary)',
-                      padding: '6px 10px',
-                      fontSize: 'var(--text-xs)',
-                      cursor: 'pointer',
-                    }}
+                    style={{ justifySelf: 'start' }}
                   >
                     <Clock3 size={12} aria-hidden="true" />
                     {showHistory ? 'Hide history' : `Show history (${history.length})`}
-                  </button>
+                  </NeoPrintButton>
 
-                  {showHistory && history.length > 0 && (
+                  {showHistory && history.length > 0 ? (
                     <div style={{ display: 'grid', gap: 'var(--space-2)', maxHeight: 300, overflowY: 'auto' }}>
                       {history.map((entry) => (
-                        <div
-                          key={`${entry.setting_key}-${entry.to_version}`}
-                          style={{
-                            border: '1px solid var(--card-border)',
-                            borderRadius: 'var(--radius-md)',
-                            padding: 'var(--space-2) var(--space-3)',
-                            fontSize: 'var(--text-xs)',
-                            display: 'grid',
-                            gap: 'var(--space-1)',
-                          }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <strong>
+                        <NeoPrintCard key={`${entry.setting_key}-${entry.to_version}`} style={{ display: 'grid', gap: 'var(--space-2)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                            <strong className="settings-item-title">
                               v{entry.from_version} → v{entry.to_version}
                             </strong>
-                            {canWrite && (
-                              <button
+                            {canWrite ? (
+                              <NeoPrintButton
                                 type="button"
+                                variant="ghost"
                                 onClick={() => handleRollback(entry.to_version)}
                                 disabled={saving}
-                                style={{
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: 'var(--space-1)',
-                                  border: '1px solid var(--border-primary)',
-                                  borderRadius: 'var(--radius-md)',
-                                  background: 'var(--surface-tertiary)',
-                                  color: 'var(--text-secondary)',
-                                  padding: '2px 6px',
-                                  fontSize: 'var(--text-xs)',
-                                  cursor: 'pointer',
-                                }}
                               >
                                 <RotateCcw size={10} aria-hidden="true" />
                                 Rollback
-                              </button>
-                            )}
+                              </NeoPrintButton>
+                            ) : null}
                           </div>
-                          <span style={{ color: 'var(--text-tertiary)' }}>
+                          <span className="settings-item-meta">
                             By {entry.changed_by} · {new Date(entry.changed_at).toLocaleString()} · {entry.reason}
                           </span>
-                        </div>
+                        </NeoPrintCard>
                       ))}
                     </div>
-                  )}
-                </article>
+                  ) : null}
+                </NeoPrintCard>
+              ) : (
+                <NeoPrintCard>
+                  <p className="settings-copy">Select a setting from the left ledger to inspect or update it.</p>
+                </NeoPrintCard>
               )}
             </div>
           </div>
 
           <style jsx>{`
+            .settings-layout {
+              display: grid;
+              grid-template-columns: 300px 1fr;
+              gap: var(--space-4);
+              min-height: 400px;
+            }
+
+            .settings-kicker,
+            .settings-item-meta {
+              font-size: 11px;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+              color: var(--np-muted);
+            }
+
+            .settings-title,
+            .settings-item-title {
+              font-family: var(--np-font-display);
+              color: var(--np-ink);
+            }
+
+            .settings-title {
+              margin-top: 6px;
+              font-size: clamp(1.7rem, 1.45rem + 0.45vw, 2.15rem);
+              line-height: 0.95;
+            }
+
+            .settings-item-title {
+              font-size: 1.1rem;
+              line-height: 0.96;
+            }
+
+            .settings-copy {
+              font-size: var(--text-sm);
+              line-height: 1.6;
+              color: var(--np-muted);
+            }
+
             .settings-item {
               display: flex;
               justify-content: space-between;
               align-items: center;
-              border: 1px solid var(--card-border);
-              border-radius: var(--radius-lg);
-              background: var(--card-bg);
+              border: 1px solid var(--np-line);
+              background: var(--np-surface);
               padding: var(--space-3);
               cursor: pointer;
               text-align: left;
-              color: var(--text-primary);
-              font-size: var(--text-sm);
               width: 100%;
-              transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+              gap: var(--space-3);
             }
-            .settings-item:hover {
-              border-color: var(--primary-500);
-              background: var(--surface-tertiary);
-            }
+
+            .settings-item:hover,
             .settings-item--selected {
-              border-color: var(--primary-500);
-              background: var(--table-row-hover);
+              background: var(--np-surface-muted);
             }
+
+            .settings-input {
+              border: 1px solid var(--np-line);
+              background: var(--np-surface);
+              color: var(--np-ink);
+              padding: 10px 12px;
+              font-size: var(--text-sm);
+              outline: none;
+              min-height: 40px;
+            }
+
+            .settings-input:focus {
+              border-color: var(--np-accent);
+              box-shadow: inset 0 0 0 1px var(--np-accent);
+            }
+
             @media (max-width: 767px) {
               .settings-layout {
-                grid-template-columns: 1fr !important;
+                grid-template-columns: 1fr;
               }
             }
           `}</style>
@@ -404,17 +387,17 @@ export function SettingsPanel({ canWrite }: SettingsPanelProps) {
 
 function tabButtonStyle(active: boolean) {
   return {
-    border: `1px solid ${active ? 'var(--primary-600)' : 'var(--border-primary)'}`,
-    borderRadius: 'var(--radius-lg)',
-    background: active ? 'linear-gradient(90deg, var(--primary-600), var(--primary-700))' : 'var(--surface-secondary)',
-    color: active ? '#ffffff' : 'var(--text-secondary)',
+    border: `1px solid ${active ? 'var(--np-accent)' : 'var(--np-line)'}`,
+    background: active ? 'var(--np-accent)' : 'var(--np-surface)',
+    color: active ? '#ffffff' : 'var(--np-ink)',
     padding: '8px 12px',
-    fontSize: 'var(--text-sm)',
-    fontWeight: 'var(--weight-medium)' as unknown as number,
+    fontSize: '11px',
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase' as const,
     whiteSpace: 'nowrap' as const,
     cursor: 'pointer',
     display: 'inline-flex',
     alignItems: 'center',
     gap: 'var(--space-2)',
-  };
+  } as const;
 }

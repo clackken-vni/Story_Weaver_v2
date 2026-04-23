@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryWeaver Admin v2 · Warm Analog Dashboard</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body style="margin: 0">
+    <div id="root"></div>
+    <script type="text/babel">
+      const ROUTES = ["index", "users", "projects", "monitoring", "audit", "settings", "ai", "kb", "tts", "login"];
+      const content = {
+        index: { title: "Master Console", note: "Central instrument cluster" },
+        users: { title: "Identity Bench", note: "User trust and role pressure" },
+        projects: { title: "Project Dials", note: "Execution torque and milestones" },
+        monitoring: { title: "Telemetry Wall", note: "Signal temperature and variance" },
+        audit: { title: "Audit Register", note: "Chronological accountability" },
+        settings: { title: "Workshop Settings", note: "Machine tolerances and defaults" },
+        ai: { title: "AI Lab", note: "Model confidence and intervention level" },
+        kb: { title: "Knowledge Shelves", note: "Reference quality and freshness" },
+        tts: { title: "Voice Lathe", note: "Speech profile and rendering fidelity" },
+        login: { title: "Gatehouse", note: "Access channels and lock states" },
+      };
+
+      const users = [
+        { name: "Mai Hoang", role: "Owner", status: "Stable", last: "2m" },
+        { name: "Khanh Vu", role: "Ops", status: "Review", last: "8m" },
+        { name: "Eri Sato", role: "Compliance", status: "Stable", last: "22m" },
+        { name: "Duc Tran", role: "Editor", status: "Limited", last: "37m" },
+      ];
+
+      const activities = [
+        "Copper lane deploy completed with no drift.",
+        "Analog incident gauge peaked at 62% then normalized.",
+        "Knowledge cabinet sync run archived 12 stale docs.",
+        "Security tumbler reset after policy signature update.",
+      ];
+
+      function Gauge({ label, value, palette }) {
+        const angle = Math.max(-120, Math.min(120, value * 2.4 - 120));
+        return (
+          <div style={{ background: palette.panel, border: `1px solid ${palette.border}`, borderRadius: 16, padding: 14 }}>
+            <div style={{ fontSize: 12, color: palette.muted, letterSpacing: "0.05em", textTransform: "uppercase" }}>{label}</div>
+            <div style={{ marginTop: 10, height: 72, position: "relative" }}>
+              <div style={{ position: "absolute", left: 0, right: 0, top: 36, height: 36, borderTop: `2px solid ${palette.accentSoft}`, borderRadius: "100% 100% 0 0" }} />
+              <div style={{ position: "absolute", left: "50%", bottom: 0, width: 2, height: 44, background: palette.accent, transform: `translateX(-50%) rotate(${angle}deg)`, transformOrigin: "bottom center", transition: "transform 220ms ease" }} />
+              <div style={{ position: "absolute", left: "50%", bottom: 0, width: 14, height: 14, borderRadius: "50%", background: palette.accent, transform: "translateX(-50%)" }} />
+            </div>
+            <div style={{ marginTop: 8, fontWeight: 700, fontSize: 24 }}>{value}%</div>
+          </div>
+        );
+      }
+
+      function App() {
+        const [active, setActive] = React.useState("index");
+        const [night, setNight] = React.useState(false);
+
+        // Palette (Warm Analog):
+        // Clay: #B56A3B, Brass: #C89B3C, Parchment: #EFE3CF, Walnut: #3C2C23, Oxide: #8E4F3A
+        const palette = night
+          ? { bg: "#1c1714", panel: "#2a221d", text: "#f0e4d6", muted: "#b6a590", border: "#5f4a3b", accent: "#c89b3c", accentSoft: "#8e4f3a" }
+          : { bg: "#efe3cf", panel: "#f6ecdc", text: "#35251d", muted: "#7a5f4f", border: "#c9ae93", accent: "#b56a3b", accentSoft: "#c89b3c" };
+
+        return (
+          <div
+            style={{
+              minHeight: "100vh",
+              fontFamily: "Manrope, system-ui, sans-serif",
+              color: palette.text,
+              background: `radial-gradient(circle at 20% 10%, ${night ? "#2b211a" : "#f9f1e4"}, ${palette.bg})`,
+              display: "grid",
+              gridTemplateColumns: "240px 1fr",
+            }}
+          >
+            <aside style={{ borderRight: `1px solid ${palette.border}`, padding: 14, display: "grid", gap: 10, alignContent: "start", background: palette.panel }}>
+              <div style={{ border: `1px solid ${palette.border}`, borderRadius: 14, padding: 12 }}>
+                <div style={{ fontFamily: "Fraunces, serif", fontSize: 24, fontWeight: 700 }}>Warm Analog</div>
+                <div style={{ color: palette.muted, fontSize: 12, marginTop: 4 }}>StoryWeaver Admin v2</div>
+              </div>
+              <button
+                onClick={() => setNight(!night)}
+                style={{
+                  height: 44,
+                  borderRadius: 12,
+                  border: `1px solid ${palette.border}`,
+                  background: palette.accent,
+                  color: "#fff",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "filter 180ms ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.filter = "brightness(1.08)")}
+                onMouseLeave={(e) => (e.currentTarget.style.filter = "brightness(1)")}
+              >
+                {night ? "Sunlit Mode" : "Night Shift"}
+              </button>
+              {ROUTES.map((route) => (
+                <Nav key={route} route={route} active={active} setActive={setActive} palette={palette} />
+              ))}
+            </aside>
+
+            <main style={{ padding: 18, display: "grid", gap: 14 }}>
+              <section style={{ background: palette.panel, border: `1px solid ${palette.border}`, borderRadius: 18, padding: 18 }}>
+                <div style={{ fontFamily: "Fraunces, serif", fontSize: 36, fontWeight: 700 }}>{content[active].title}</div>
+                <div style={{ color: palette.muted, marginTop: 6 }}>{content[active].note}</div>
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 12 }}>
+                <Gauge label="System Heat" value={66} palette={palette} />
+                <Gauge label="Trust Pressure" value={84} palette={palette} />
+                <Gauge label="Queue Load" value={48} palette={palette} />
+                <Gauge label="Release Confidence" value={72} palette={palette} />
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 12 }}>
+                <article style={{ background: palette.panel, border: `1px solid ${palette.border}`, borderRadius: 18, padding: 12 }}>
+                  <div style={{ fontFamily: "Fraunces, serif", fontSize: 22, marginBottom: 10 }}>User Table</div>
+                  <Table palette={palette} users={users} />
+                </article>
+                <article style={{ background: palette.panel, border: `1px solid ${palette.border}`, borderRadius: 18, padding: 12 }}>
+                  <div style={{ fontFamily: "Fraunces, serif", fontSize: 22, marginBottom: 10 }}>Activity Feed</div>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {activities.map((item, idx) => (
+                      <div key={idx} style={{ borderLeft: `4px solid ${idx % 2 ? palette.accent : palette.accentSoft}`, paddingLeft: 10, lineHeight: 1.45 }}>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </main>
+          </div>
+        );
+      }
+
+      function Nav({ route, active, setActive, palette }) {
+        const isActive = active === route;
+        return (
+          <button
+            onClick={() => setActive(route)}
+            style={{
+              height: 42,
+              borderRadius: 10,
+              border: `1px solid ${isActive ? palette.accent : palette.border}`,
+              background: isActive ? palette.accent : "transparent",
+              color: isActive ? "#fff" : palette.text,
+              fontWeight: 600,
+              textAlign: "left",
+              padding: "0 12px",
+              cursor: "pointer",
+              transition: "all 180ms ease",
+            }}
+          >
+            {route}
+          </button>
+        );
+      }
+
+      function Table({ users, palette }) {
+        return (
+          <div style={{ display: "grid", gap: 6 }}>
+            <Row palette={palette} item={{ name: "Name", role: "Role", status: "Status", last: "Last" }} header />
+            {users.map((u) => (
+              <Row key={u.name} palette={palette} item={u} />
+            ))}
+          </div>
+        );
+      }
+
+      function Row({ item, header, palette }) {
+        const [hover, setHover] = React.useState(false);
+        return (
+          <div
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.2fr .8fr .8fr .6fr",
+              padding: "10px 8px",
+              borderRadius: 10,
+              border: `1px solid ${palette.border}`,
+              background: header ? "transparent" : hover ? palette.bg : "transparent",
+              fontWeight: header ? 700 : 500,
+              fontSize: header ? 12 : 14,
+              textTransform: header ? "uppercase" : "none",
+              letterSpacing: header ? "0.06em" : "normal",
+              transition: "background 180ms ease",
+              cursor: header ? "default" : "pointer",
+            }}
+          >
+            <span>{item.name}</span>
+            <span>{item.role}</span>
+            <span>{item.status}</span>
+            <span>{item.last}</span>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
