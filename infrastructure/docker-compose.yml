@@ -224,10 +224,24 @@ services:
     ports:
       - "3004:3004"
     environment:
+      PORT: 3004
+      DATABASE_URL: postgres://sw_user:sw_secret@postgres:5432/storyweaver?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      NATS_URL: nats://nats:4222
       EXA_API_KEY: ${EXA_API_KEY}
       BRAVE_API_KEY: ${BRAVE_API_KEY}
       TAVILY_API_KEY: ${TAVILY_API_KEY}
-      PORT: 3004
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      DEFAULT_PROVIDER: ${DEFAULT_PROVIDER:-gemini}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://127.0.0.1:3004/health || exit 1"]
       interval: 10s

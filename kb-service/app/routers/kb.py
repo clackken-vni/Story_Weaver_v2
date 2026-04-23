@@ -1,43 +1,52 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import List, Optional
-import os
-from app.services.research import ResearchService
+from fastapi import APIRouter, HTTPException, BackgroundTasks
+from typing import List
+from app.database import db
+from app.repositories.kb_repo import KBRepository
+from app.models.kb import KB, KBCreate, KBUpdate
+from app.services.collection_pipeline import CollectionPipeline
 
-router = APIRouter(prefix="/api/v1", tags=["knowledge-base"])
-research_service = ResearchService()
-
-
-class ResearchRequest(BaseModel):
-    query: str
-    providers: Optional[List[str]] = None
-    num_results: Optional[int] = 5
+router = APIRouter(prefix="/api/v1/kb", tags=["kb"])
 
 
-class SearchResult(BaseModel):
-    title: str
-    url: str
-    snippet: Optional[str] = None
-    source: str
+@router.post("/", response_model=KB)
+async def create_kb(data: KBCreate, background_tasks: BackgroundTasks):
+    repo = KBRepository(db)
+    kb = await repo.create(data)
+
+    pipeline = CollectionPipeline(db)
+    background_tasks.add_task(pipeline.run, kb.id, kb.name, kb.genres)
+
+    return kb
 
 
-@router.post("/research", response_model=dict)
-async def research(request: ResearchRequest):
-    """Research a topic using available search providers"""
-    results = await research_service.research_topic(
-        request.query,
-        request.providers
-    )
-    return {"query": request.query, "results": results}
+@router.get("/", response_model=List[KB])
+async def list_kbs():
+    repo = KBRepository(db)
+    return await repo.list_all()
 
 
-@router.get("/providers")
-async def list_providers():
-    """List available research providers"""
-    return {
-        "providers": [
-            {"id": "exa", "name": "Exa AI", "enabled": bool(os.getenv("EXA_API_KEY"))},
-            {"id": "brave", "name": "Brave Search", "enabled": bool(os.getenv("BRAVE_API_KEY"))},
-            {"id": "tavily", "name": "Tavily", "enabled": bool(os.getenv("TAVILY_API_KEY"))},
-        ]
-    }
+@router.get("/{kb_id}", response_model=KB)
+async def get_kb(kb_id: str):
+    repo = KBRepository(db)
+    kb = await repo.get_by_id(kb_id)
+    if not kb:
+        raise HTTPException(status_code=404, detail="KB not found")
+    return kb
+
+
+@router.patch("/{kb_id}", response_model=KB)
+async def update_kb(kb_id: str, data: KBUpdate):
+    repo = KBRepository(db)
+    kb = await repo.update(kb_id, data)
+    if not kb:
+        raise HTTPException(status_code=404, detail="KB not found")
+    return kb
+
+
+@router.delete("/{kb_id}")
+async def delete_kb(kb_id: str):
+    repo = KBRepository(db)
+    success = await repo.delete(kb_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="KB not found")
+    return {"message": "KB deleted"}
